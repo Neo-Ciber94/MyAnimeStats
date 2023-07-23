@@ -2,6 +2,7 @@
 	import '../app.css';
 	import Footer from '../layout/Footer.svelte';
 	import Header from '../layout/Header.svelte';
+	import SessionProvider from '../provider/SessionProvider.svelte';
 </script>
 
 <svelte:head>
@@ -17,12 +18,12 @@
 	<title>MyAnimeStats</title>
 </svelte:head>
 
-<div class="flex flex-col justify-between min-h-screen">
-	<Header />
-
-	<div class="container mx-auto p-4 h-full">
-		<slot />
+<SessionProvider>
+	<div class="flex flex-col justify-between min-h-screen">
+		<Header />
+		<div class="container mx-auto p-4 h-full">
+			<slot />
+		</div>
+		<Footer />
 	</div>
-
-	<Footer />
-</div>
+</SessionProvider>

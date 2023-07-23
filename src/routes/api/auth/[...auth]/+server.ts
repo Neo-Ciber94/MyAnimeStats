@@ -48,11 +48,11 @@ async function handleSession(cookies: Cookies) {
 
 	// OAuth2 expires_in is in seconds
 	// https://www.rfc-editor.org/rfc/rfc6749#section-5.1
-	const expiresInMs = expires_in * 1000;
+	const accessTokenExpiresMs = expires_in * 1000;
 
 	// Keep in mind some delay could exists in the time, so we should consider the token
 	// will expire before the actual expiration date.
-	const expiresAt = new Date(expiresInMs + Date.now());
+	const expiresAt = new Date(accessTokenExpiresMs + Date.now());
 
 	return Response.json({
 		accessToken,

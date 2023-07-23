@@ -6,7 +6,7 @@
 
 {#await getUser({ accessToken })}
 	<slot name="loading">
-		<span>Loading...</span>
+		<span class="text-white">Loading...</span>
 	</slot>
 {:then user}
 	<slot {user} name="user">
@@ -16,7 +16,7 @@
 				alt={user.name}
 				class="shadow-md rounded-lg border border-gray-200/50 overflow-hidden aspect-square object-cover"
 			/>
-			<span class="text-2xl font-bold font-mono">{user.name}</span>
+			<span class="text-2xl font-bold font-mono text-white">{user.name}</span>
 		</div>
 	</slot>
 {:catch error}

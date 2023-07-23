@@ -3,7 +3,7 @@
 	import UserProfile from '$lib/myanimelist/svelte/UserProfile.svelte';
 </script>
 
-<div class="flex flex-col justify-center items-center my-4 w-full gap-4">
+<div class="flex flex-col justify-center items-center my-4 w-full gap-4 text-white">
 	{#await getSessionToken()}
 		Loading...
 	{:then sessionToken}
