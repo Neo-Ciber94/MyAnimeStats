@@ -38,7 +38,7 @@ export type SessionToken = z.infer<typeof sessionSchema>;
 export interface MyAnimeListRequestOptions {
     endpoint: string;
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD',
-    accessToken: string;
+    accessToken?: string;
     reverseProxyUrl?: string;
 }
 
@@ -68,7 +68,7 @@ export async function getSessionToken(): Promise<SessionToken | null> {
     return session;
 }
 
-export async function request(options: MyAnimeListRequestOptions) {
+export async function request<T = unknown>(options: MyAnimeListRequestOptions) {
     const {
         accessToken,
         endpoint,
@@ -89,13 +89,14 @@ export async function request(options: MyAnimeListRequestOptions) {
         throw new Error(msg);
     }
 
-    const json = await res.json() as User;
-    return json;
+    return await res.json() as T;
 }
 
 export async function getUser(options: GetUserOptions) {
-    return request({
+    const result = await request<User>({
         ...options,
         endpoint: '/users/@me?fields=anime_statistic'
-    })
+    });
+
+    return result;
 }
