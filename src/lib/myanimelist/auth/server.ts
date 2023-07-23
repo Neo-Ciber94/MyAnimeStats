@@ -2,6 +2,7 @@ import { MY_ANIME_LIST_CLIENT_ID, MY_ANIME_LIST_CLIENT_SECRET } from '$env/stati
 import crypto from 'node:crypto';
 import { z } from 'zod';
 
+const MY_ANIME_LIST_AUTH = "https://myanimelist.net/v1/oauth2";
 const CODE_VERIFIER = createCodeVerifier();
 
 export interface CreateAuthenticationUrlOptions {
@@ -26,7 +27,7 @@ export namespace MyAnimeListAuth {
      * @see https://myanimelist.net/apiconfig/references/authorization#obtaining-oauth-2.0-access-tokens
      */
     export function createAuthenticationUrl({ csrf, redirectTo }: CreateAuthenticationUrlOptions) {
-        const url = new URL("https://myanimelist.net/v1/oauth2/authorize");
+        const url = new URL(`${MY_ANIME_LIST_AUTH}/authorize`);
         url.searchParams.set("response_type", "code");
         url.searchParams.set("client_id", MY_ANIME_LIST_CLIENT_ID);
         url.searchParams.set("redirect_uri", redirectTo);
@@ -41,7 +42,7 @@ export namespace MyAnimeListAuth {
     }
 
     export async function authenticate({ code, redirectTo }: AuthenticateOptions) {
-        const url = new URL("https://myanimelist.net/v1/oauth2/token");
+        const url = new URL(`${MY_ANIME_LIST_AUTH}/token`);
         const searchParams = new URLSearchParams({
             client_id: MY_ANIME_LIST_CLIENT_ID,
             client_secret: MY_ANIME_LIST_CLIENT_SECRET,
@@ -82,7 +83,7 @@ export namespace MyAnimeListAuth {
     }
 
     export async function refreshToken({ refreshToken }: GetTokenOptions) {
-        const url = new URL("https://myanimelist.net/v1/oauth2/token");
+        const url = new URL(`${MY_ANIME_LIST_AUTH}/token`);
         const searchParams = new URLSearchParams({
             grant_type: "refresh_token",
             refresh_token: refreshToken

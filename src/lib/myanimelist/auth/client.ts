@@ -21,7 +21,8 @@ export interface AnimeStatistics {
 export interface User {
     id: number;
     name: string;
-    location: string;
+    location?: string;
+    gender?: string;
     joined_at: string;
     picture: string;
     anime_statistics: AnimeStatistics;
