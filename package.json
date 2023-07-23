@@ -39,6 +39,8 @@
 	"type": "module",
 	"dependencies": {
 		"color": "^4.2.3",
+		"flowbite": "^1.7.0",
+		"flowbite-svelte": "^0.40.1",
 		"zod": "^3.21.4"
 	}
 }
