@@ -10,7 +10,10 @@
 <div class="mx-10 text-white text-2xl uppercase font-bold mb-4">
 	<h1>{season} - {year}</h1>
 </div>
-<div class="grid grid-cols-6 gap-2 items-center mx-10">
+
+<div
+	class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center mx-10"
+>
 	{#each data.data as anime}
 		<AnimeCard {anime} />
 	{/each}

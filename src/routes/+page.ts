@@ -1,10 +1,14 @@
 import { getCurrentAnimeSeason } from "$lib/myanimelist/common/helpers";
 import type { AnimeApiResponse } from "$lib/myanimelist/common/types";
+import { error } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ fetch }) => {
     const { year, season } = getCurrentAnimeSeason();
-    const res = await fetch(`/api/myanimelist/anime/season/${year}/${season}?limit=100`);
+    const limit = 50;
+    const sort = "anime_num_list_users";
+    const fields = "nsfw,genres,status,mean"
+    const res = await fetch(`/api/myanimelist/anime/season/${year}/${season}?limit=${limit}&fields=${fields}&sort=${sort}`);
 
     if (!res.ok) {
         let msg: string;
@@ -14,7 +18,7 @@ export const load: PageLoad = async ({ fetch }) => {
             msg = `${res.status} - ${res.statusText}`;
         }
 
-        throw new Error(msg);
+        throw error(res.status, msg);
     }
 
     const result = await res.json() as AnimeApiResponse;
