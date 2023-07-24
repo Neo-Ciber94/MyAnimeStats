@@ -9,10 +9,15 @@
 	<div class="flex flex-row gap-2 justify-between shadow-lg px-20 py-8 bg-gray-950">
 		<Logo />
 
+		<div class="flex flex-row items-center ml-10 gap-5">
+			<a href="/stats" class="text-white text-xl hover:text-violet-400 transition duration-300">Stats</a>
+			<a href="/anime" class="text-white text-xl hover:text-violet-400 transition duration-300">Anime</a>
+		</div>
+
 		<div class="ml-auto">
 			<div>
 				{#if $session.loading}
-					<Spinner bg='transparent'/>
+					<Spinner bg="transparent" />
 				{:else if $session.user}
 					<div id="user-avatar" class="flex flex-row gap-2 items-center cursor-pointer">
 						<span class="text-white font-bold text-xl">{$session.user.name}</span>
@@ -20,10 +25,7 @@
 					</div>
 
 					<Dropdown triggeredBy="#user-avatar" containerClass="z-40" class="min-w-[150px] gap-2">
-						<DropdownItem
-							class="flex flex-row items-center gap-3"
-							on:click={() => signOut()}
-						>
+						<DropdownItem class="flex flex-row items-center gap-3" on:click={() => signOut()}>
 							<svg
 								class="w-[14px] h-[14px] text-gray-800 dark:text-white"
 								aria-hidden="true"

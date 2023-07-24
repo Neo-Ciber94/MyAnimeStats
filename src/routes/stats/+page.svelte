@@ -1,7 +1,8 @@
 <script lang="ts">
 	import session from '$stores/sessionStore';
-	import { Button, Spinner } from 'flowbite-svelte';
+	import { Button, Progressbar, Spinner } from 'flowbite-svelte';
 	import StatIndicator from '$components/StatIndicator.svelte';
+	import StatProgress from '$components/StatProgress.svelte';
 </script>
 
 <div class="flex flex-row h-full w-full grow">
@@ -60,7 +61,7 @@
 		{/if}
 	</div>
 
-	<div class="w-full mt-10 p-4 flex flex-row justify-center items-center h-full">
+	<div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
 		<Button size="lg" color="purple" class="text-xl flex flex-row items-center gap-3">
 			<svg
 				class="w-5 h-5 text-white"
@@ -80,5 +81,27 @@
 
 			<span>Calculate Stats</span>
 		</Button>
+
+		<div class="flex flex-col gap-4 mt-4 w-full px-20">
+			<StatProgress max={120} value={80} class="bg-red-700 h-10" delay={300}>
+				<span slot="title" class="text-white text-xl">Strength</span>
+				<span slot="text" class="text-white text-xl">80</span>
+			</StatProgress>
+
+			<StatProgress max={120} value={40} class="bg-pink-400 h-10" delay={200}>
+				<span slot="title" class="text-white text-xl">Charisma</span>
+				<span slot="text" class="text-white text-xl">40</span>
+			</StatProgress>
+
+			<StatProgress max={120} value={30} class="bg-purple-500 h-10" delay={150}>
+				<span slot="title" class="text-white text-xl">Intelligence</span>
+				<span slot="text" class="text-white text-xl">30</span>
+			</StatProgress>
+
+			<StatProgress max={300} value={250} class="bg-lime-500 h-10" delay={100}>
+				<span slot="title" class="text-white text-xl">Vitality</span>
+				<span slot="text" class="text-white text-xl">250</span>
+			</StatProgress>
+		</div>
 	</div>
 </div>
