@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getCurrentAnimeSeason } from '$lib/myanimelist/common/helpers';
-	import AnimeCard from '../components/AnimeCard.svelte';
+	import AnimeCard from '../../components/AnimeCard.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;

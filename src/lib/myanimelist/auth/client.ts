@@ -95,7 +95,7 @@ export async function request<T = unknown>(options: MyAnimeListRequestOptions) {
 export async function getUser(options: GetUserOptions) {
     const result = await request<User>({
         ...options,
-        endpoint: '/users/@me?fields=anime_statistic'
+        endpoint: '/users/@me?fields=anime_statistics'
     });
 
     return result;

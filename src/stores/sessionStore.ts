@@ -12,7 +12,7 @@ export type SessionStore = {
 const sessionStore = writable<SessionStore>({
     user: null,
     accessToken: null,
-    loading: false
+    loading: true
 });
 
 async function initialize() {

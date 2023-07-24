@@ -21,9 +21,7 @@
 <SessionProvider>
 	<div class="flex flex-col justify-between min-h-screen">
 		<Header />
-		<div class="container mx-auto p-4 h-full">
-			<slot />
-		</div>
+		<slot />
 		<Footer />
 	</div>
 </SessionProvider>
