@@ -10,8 +10,16 @@
 		<Logo />
 
 		<div class="flex flex-row items-center ml-10 gap-5">
-			<a href="/stats" class="text-white text-xl hover:text-violet-400 transition duration-300">Stats</a>
-			<a href="/anime" class="text-white text-xl hover:text-violet-400 transition duration-300">Anime</a>
+			<a
+				href="/stats"
+				class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"
+				>Stats</a
+			>
+			<a
+				href="/anime"
+				class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"
+				>Anime</a
+			>
 		</div>
 
 		<div class="ml-auto">

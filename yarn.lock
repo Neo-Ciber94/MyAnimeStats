@@ -1126,6 +1126,11 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
+flowbite-svelte-icons@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/flowbite-svelte-icons/-/flowbite-svelte-icons-0.2.6.tgz#568325a4e43a3e22f0c99cebd920fe105bdeb318"
+  integrity sha512-ln3VLVTj3RGtNU6Es95nr7GKYPg9yLBFo97cqLzn4ViuTMjfFxV1KCUhKOuqfjt1R2bFY7BScn36wly6bkjAgA==
+
 flowbite-svelte@^0.40.1:
   version "0.40.1"
   resolved "https://registry.yarnpkg.com/flowbite-svelte/-/flowbite-svelte-0.40.1.tgz#95c050d369b2609319dfa067aeb9f625a5baaa53"

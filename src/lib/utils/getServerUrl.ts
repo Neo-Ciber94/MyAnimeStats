@@ -4,5 +4,5 @@ export function getServerUrl() {
         return process.env.SERVER_URL;
     }
 
-    return `http://127.0.0.1:${process.env.PORT || 5173}`
+    return `http://localhost:${process.env.PORT || 5173}`
 }
