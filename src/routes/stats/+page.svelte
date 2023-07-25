@@ -4,6 +4,7 @@
 	import StatIndicator from '$components/StatIndicator.svelte';
 	import MyStatsSection from '$components/MyStatsSection.svelte';
 	import { UserSolid, ChartPieSolid } from 'flowbite-svelte-icons';
+	import ChartSection from '$components/ChartSection.svelte';
 </script>
 
 <div class="flex flex-row h-full w-full grow">
@@ -104,22 +105,17 @@
 			<TabItem
 				defaultClass="min-w-[100px] flex flex-row justify-center"
 				activeClasses="border-b-2 p-4 border-indigo-500"
-				open
 			>
 				<div slot="title" class="flex items-center gap-2">
 					<ChartPieSolid class="h-4 w-4" />
-					Graphs
+					Charts
 				</div>
-				<p class="text-sm text-gray-500 dark:text-gray-400">
-					<b>Dashboard:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-					incididunt ut labore et dolore magna aliqua.
-				</p>
+				<ChartSection />
 			</TabItem>
 
 			<TabItem
 				defaultClass="min-w-[100px] flex flex-row justify-center"
 				activeClasses="border-b-2 p-4 border-indigo-500"
-				open
 			>
 				<div slot="title" class="flex items-center gap-2">
 					<svg
@@ -145,7 +141,6 @@
 			<TabItem
 				defaultClass="min-w-[100px] flex flex-row justify-center"
 				activeClasses="border-b-2 p-4 border-indigo-500"
-				open
 			>
 				<div slot="title" class="flex items-center gap-2">
 					<svg
