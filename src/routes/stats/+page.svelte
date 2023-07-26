@@ -2,23 +2,33 @@
 	import StatSidebar from '$components/StatSidebar.svelte';
 	import StatTabs from '$components/StatTabs.svelte';
 	import { ChartSolid } from 'flowbite-svelte-icons';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
 	import { Button } from 'flowbite-svelte';
 
+	export let data: PageServerData;
 	export let form: ActionData;
 </script>
 
 <div class="flex flex-col md:flex-row h-full w-full grow">
 	<StatSidebar />
 
-	{#if form}
+	{#if data?.stats}
+		<StatTabs stats={data.stats} />
+	{:else if form?.stats}
 		<StatTabs stats={form.stats} />
 	{:else}
 		<div class="w-full flex flex-row justify-center mt-[10%] h-fit">
-			<Button size="lg" color="purple" class="text-xl flex flex-row items-center gap-3">
-				<ChartSolid class="w-5 h-5 text-white" />
-				<span>Calculate Stats</span>
-			</Button>
+			<form method="POST" action="?/calculate">
+				<Button
+					type="submit"
+					size="lg"
+					color="purple"
+					class="text-xl flex flex-row items-center gap-3"
+				>
+					<ChartSolid class="w-5 h-5 text-white" />
+					<span>Calculate Stats</span>
+				</Button>
+			</form>
 		</div>
 	{/if}
 </div>

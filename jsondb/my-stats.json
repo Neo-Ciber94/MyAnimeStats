@@ -1,0 +1,16 @@
+{
+    "stats": {
+        "personal": {
+            "strength": 75,
+            "charisma": 62,
+            "intelligence": 45,
+            "vitality": 233
+        },
+        "animeByGenre": {},
+        "watchedBySeason": {},
+        "watchedByYear": {},
+        "scoreByGenre": {},
+        "scoreByYear": {},
+        "storeByStudio": {}
+    }
+}

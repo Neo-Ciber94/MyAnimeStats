@@ -36,6 +36,8 @@ class LocalJsonDb {
             const json = await fs.readFile(this._filePath, 'utf8');
             data = JSON.parse(json);
         } catch {
+            const dir = path.dirname(this._filePath);
+            await fs.mkdir(dir, { recursive: true });
             await fs.writeFile(this._filePath, "{}");
         }
 

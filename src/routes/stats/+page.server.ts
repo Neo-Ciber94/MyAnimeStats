@@ -1,9 +1,28 @@
 import { openDb } from "$lib/jsondb";
-import { z } from "zod";
-import type { Actions } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import type { AnimeNode } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
+
+export const load = (async () => {
+    const db = openDb("my-stats");
+
+    try {
+        const data = await db.get('stats');
+        const result = calculatedStatsSchema.safeParse(data);
+
+        if (result.success === true) {
+            return { stats: result.data }
+        }
+
+        return { stats: null };
+    }
+    catch (err) {
+        console.error(err);
+        return { stats: null };
+    }
+}) satisfies PageServerLoad;
+
 
 export const actions = {
     async calculate({ fetch }) {
@@ -11,13 +30,14 @@ export const actions = {
 
         try {
             const data = await db.get('stats');
+            const result = calculatedStatsSchema.safeParse(data);
 
-            let stats: CalculatedStats;
-            if (data == null) {
-                stats = await calculateStats(fetch);
+            if (result.success === true) {
+                return { stats: result.data }
             }
 
-            stats = calculatedStatsSchema.parse(data);
+            const calculatedStats = await calculateUserStats(fetch);
+            const stats = calculatedStatsSchema.parse(calculatedStats);
             await db.set("stats", stats);
             return { stats };
         }
@@ -28,7 +48,7 @@ export const actions = {
     }
 } satisfies Actions;
 
-async function calculateStats(fetch: typeof window.fetch): Promise<CalculatedStats> {
+async function calculateUserStats(fetch: typeof window.fetch): Promise<CalculatedStats> {
     const anime: AnimeNode[] = [];
     const stats: CalculatedStats = {
         personal: {
