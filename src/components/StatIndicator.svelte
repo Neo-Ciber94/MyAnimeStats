@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Color from 'color'; // Import the color package
+	import { twMerge } from 'tailwind-merge';
 
 	// Props
 	export let color: string;
@@ -13,7 +14,11 @@
 
 <div class="flex flex-row gap-4 items-center">
 	<div
-		class="w-10 h-10 flex flex-row justify-center items-center rounded-full p-4 text-[14px] font-bold shadow-lg"
+		class={twMerge(
+			`w-5 h-5 md:w-10 md:h-10 flex flex-row justify-center items-center 
+		rounded-full p-4 text-[12px] md:text-[14px] font-semibold md:font-bold shadow-lg`,
+			$$restProps.class
+		)}
 		style={gradientStyle}
 	>
 		<slot name="count" />

@@ -1,51 +1,25 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import {
-		Chart,
-		CategoryScale,
-		LinearScale,
-		PointElement,
-		LineElement,
-		RadialLinearScale,
-		TimeScale,
-		ArcElement,
-		PolarAreaController
-	} from 'chart.js';
+	import { Chart, registerables } from 'chart.js';
 
 	let chartCanvas: HTMLCanvasElement;
 
 	const data = {
-		labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
+		labels: ['Red', 'Blue', 'Yellow'],
 		datasets: [
 			{
 				label: 'My First Dataset',
-				data: [11, 16, 7, 3, 14],
-				backgroundColor: [
-					'rgb(255, 99, 132)',
-					'rgb(75, 192, 192)',
-					'rgb(255, 205, 86)',
-					'rgb(201, 203, 207)',
-					'rgb(54, 162, 235)'
-				]
+				data: [300, 50, 100],
+				backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
+				hoverOffset: 4
 			}
 		]
 	};
-
 	onMount(() => {
-		Chart.register(
-			ArcElement,
-			RadialLinearScale,
-			CategoryScale,
-			LinearScale,
-			PointElement,
-			LineElement,
-			TimeScale,
-			PolarAreaController
-		);
-
+		Chart.register(...registerables);
 		new Chart(chartCanvas, {
-			type: 'polarArea',
-			data,
+			type: 'doughnut',
+			data: data,
 			options: {
 				responsive: true,
 				plugins: {
@@ -54,14 +28,15 @@
 					},
 					title: {
 						display: true,
-						text: 'Chart.js Polar Area Chart'
-					}
+						text: 'Chart.js Doughnut Chart'
+					},
+					tooltip: {}
 				}
 			}
 		});
 	});
 </script>
 
-<div class="w-9/12 text-center mx-auto">
-	<canvas id="my-chart" bind:this={chartCanvas} />
+<div class="w-11/12 lg:w-7/12 flex flex-row justify-center mx-auto">
+	<canvas bind:this={chartCanvas} />
 </div>

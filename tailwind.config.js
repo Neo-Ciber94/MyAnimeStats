@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 const config = {
 	content: [
@@ -11,6 +13,11 @@ const config = {
 	darkMode: 'class',
 
 	theme: {
+		screens: {
+			xs: '475px',
+			...defaultTheme.screens
+		},
+
 		extend: {
 			colors: {
 				// flowbite-svelte
