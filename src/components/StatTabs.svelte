@@ -7,7 +7,7 @@
 		CalendarMonthSolid,
 		CheckCircleSolid
 	} from 'flowbite-svelte-icons';
-	import ChartSection from '$components/ChartSection.svelte';
+	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
 
 	export let stats: CalculatedStats;
@@ -40,7 +40,7 @@
 				<ChartPieSolid class="h-4 w-4" />
 				Genres
 			</div>
-			<ChartSection />
+			<AnimeByGenreGraph stats={stats}/>
 		</TabItem>
 
 		<TabItem
