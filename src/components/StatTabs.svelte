@@ -3,29 +3,12 @@
 	import MyStatsSection from '$components/MyStatsSection.svelte';
 	import { UserSolid, ChartPieSolid, AdjustmentsVerticalOutline } from 'flowbite-svelte-icons';
 	import ChartSection from '$components/ChartSection.svelte';
+	import type { CalculatedStats } from '$lib/types';
+
+	export let stats: CalculatedStats;
 </script>
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
-	<Button size="lg" color="purple" class="text-xl flex flex-row items-center gap-3">
-		<svg
-			class="w-5 h-5 text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 18 16"
-		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4"
-			/>
-		</svg>
-
-		<span>Calculate Stats</span>
-	</Button>
-
 	<Tabs
 		style="underline"
 		activeClass="text-indigo-500"
