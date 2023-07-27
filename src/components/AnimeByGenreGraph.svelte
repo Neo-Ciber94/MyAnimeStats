@@ -2,70 +2,97 @@
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
 	import type { CalculatedStats } from '$lib/types';
+	import Color from 'color';
+	import { PASTEL_COLORS } from '../common/constants';
 
 	export let stats: CalculatedStats;
 	let chartCanvas: HTMLCanvasElement;
+	let animeData: { genre: string; totalWatched: number }[] = [];
 
-	const dataSet: { genre: string; totalWatched: number }[] = [];
 	for (const [genre, totalWatched] of Object.entries(stats.animeByGenre)) {
-		dataSet.push({ genre, totalWatched });
+		animeData.push({ genre, totalWatched });
 	}
 
-	const bgColors = [
-		'rgb(255, 204, 204)', // Light Pink
-		'rgb(255, 229, 204)', // Pale Orange
-		'rgb(204, 255, 204)', // Light Green
-		'rgb(204, 204, 255)', // Light Blue
-		'rgb(255, 204, 255)', // Lavender
-		'rgb(255, 255, 204)', // Light Yellow
-		'rgb(204, 255, 255)', // Light Cyan
-		'rgb(255, 219, 172)', // Peach
-		'rgb(204, 255, 230)', // Mint Green
-		'rgb(255, 204, 229)', // Pale Pink
-		'rgb(204, 229, 255)', // Baby Blue
-		'rgb(255, 230, 204)', // Apricot
-		'rgb(204, 255, 253)', // Light Turquoise
-		'rgb(255, 204, 179)', // Light Coral
-		'rgb(204, 179, 255)', // Lilac
-		'rgb(255, 204, 255)', // Pale Lavender
-		'rgb(204, 255, 204)', // Light Mint
-		'rgb(255, 204, 229)', // Pale Pink
-		'rgb(204, 255, 204)', // Light Green
-		'rgb(255, 204, 204)' // Light Pink
-	];
-	const data = {
-		labels: dataSet.map((x) => x.genre),
-		datasets: [
-			{
-				label: 'Anime By Genre',
-				data: dataSet.map((x) => x.totalWatched),
-				backgroundColor: bgColors,
-				hoverOffset: 30
-			}
-		]
-	};
+	animeData.sort((a, b) => {
+		return b.totalWatched - a.totalWatched;
+	});
+
+	const minWidth = animeData.length * 4;
+	const labels = animeData.map((x) => x.genre);
 
 	onMount(() => {
 		Chart.register(...registerables);
 		new Chart(chartCanvas, {
-			type: 'doughnut',
-			data: data,
+			type: 'bar',
+			data: {
+				labels,
+				datasets: [
+					{
+						label: 'Genres',
+						data: animeData.map((x) => x.totalWatched),
+						borderColor: Color(PASTEL_COLORS).darken(0.3).hex(),
+						backgroundColor: PASTEL_COLORS.map((c) => Color(c).darken(0.1).hex()),
+						barThickness: 20,
+						categoryPercentage: 1,
+						barPercentage: 0.5
+					}
+				]
+			},
 			options: {
+				indexAxis: 'y',
+				// Elements options apply to all of the options unless overridden in a dataset
+				// In this case, we are setting the border of each horizontal bar to be 2px wide
+				elements: {
+					bar: {
+						borderWidth: 2
+					}
+				},
+				onClick(event, elements, chart) {
+					if (elements.length > 0) {
+						// Get the first element (only single click in this example)
+						const element = elements[0];
+
+						// Get the index of the clicked bar within the dataset
+						const index = element.index;
+
+						// Get the label of the clicked element (genre in this case)
+						const clickedLabel = labels[index];
+
+						console.log('Clicked label:', clickedLabel);
+					}
+
+					console.log({ event, elements, chart });
+				},
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						stacked: true,
+						ticks: {
+							color: 'white',
+							autoSkip: false,
+							font: {
+								size: 15
+							}
+						}
+					}
+				},
 				responsive: true,
 				plugins: {
-					legend: {
-						position: 'center'
+					legend: false,
+					title: {
+						display: true,
+						text: 'Watch By Genre',
+						color: 'white',
+						font: {
+							size: 20
+						}
 					}
-					// title: {
-					// 	display: true,
-					// 	text: 'Anime By Genre'
-					// }
 				}
 			}
 		});
 	});
 </script>
 
-<div class="w-11/12 lg:w-7/12 flex flex-row justify-center mx-auto">
+<div class="w-11/12 flex flex-row justify-center mx-auto" style="min-height: {minWidth}vh;">
 	<canvas bind:this={chartCanvas} />
 </div>

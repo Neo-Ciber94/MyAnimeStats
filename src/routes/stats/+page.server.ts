@@ -95,19 +95,6 @@ async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies):
     return stats;
 }
 
-function groupBy<T, K>(items: T[], keySelector: (item: T) => K): Map<K, T[]> {
-    const groups = new Map();
-
-    for (const item of items) {
-        const key = keySelector(item);
-        const grouping = groups.get(key) || [];
-        grouping.push(item);
-        groups.set(key, grouping);
-    }
-
-    return groups;
-}
-
 async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
     const anime: AnimeNode[] = [];
     const refreshToken = cookies.get("auth-session");
