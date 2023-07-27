@@ -18,7 +18,7 @@
 		style="underline"
 		activeClass="text-indigo-500"
 		contentClass="bg-transparent w-full pt-10"
-		defaultClass="text-indigo-500 mt-5 flex flex-row justify-around w-full"
+		defaultClass="text-indigo-500 mt-5 flex flex-row justify-around w-full flex-wrap"
 	>
 		<TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
