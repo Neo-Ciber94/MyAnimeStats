@@ -1,4 +1,4 @@
-import type { AnimeSeason } from "./helpers";
+import dayjs from "dayjs";
 
 export type Nsfw = 'white' | 'gray' | 'black';
 
@@ -79,3 +79,41 @@ export type AnimeApiResponse = {
         season: string;
     };
 };
+
+// https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
+export type AnimeSeason = 'winter' | 'spring' | 'summer' | 'fall';
+
+export function getCurrentAnimeSeason() {
+    const now = dayjs();
+    const month = now.month();
+    const year = now.year();
+
+    let season: AnimeSeason;
+
+    if ([0, 1, 2].includes(month)) {
+        season = 'winter';
+    } else if ([3, 4, 5].includes(month)) {
+        season = 'spring'
+    } else if ([6, 7, 8].includes(month)) {
+        season = 'summer'
+    } else {
+        season = 'fall';
+    }
+
+    return { season, year }
+}
+
+export function seasonToNumber(season: AnimeSeason) {
+    switch (season) {
+        case 'winter':
+            return 1;
+        case 'spring':
+            return 2;
+        case 'summer':
+            return 3;
+        case 'fall':
+            return 4;
+        default:
+            throw new Error(`Invalid season: ${season}`);
+    }
+}

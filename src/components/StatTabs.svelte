@@ -9,8 +9,11 @@
 	} from 'flowbite-svelte-icons';
 	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
+	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
+	import type { AnimeNode } from '$lib/myanimelist/common/types';
 
 	export let stats: CalculatedStats;
+	export let animeList: AnimeNode[];
 </script>
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
@@ -30,7 +33,7 @@
 				<span>Me</span>
 			</div>
 
-			<MyStatsSection {stats}/>
+			<MyStatsSection {stats} />
 		</TabItem>
 		<TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
@@ -40,7 +43,7 @@
 				<ChartPieSolid class="h-4 w-4" />
 				Genres
 			</div>
-			<AnimeByGenreGraph stats={stats}/>
+			<AnimeByGenreGraph {stats} />
 		</TabItem>
 
 		<TabItem
@@ -51,10 +54,7 @@
 				<CalendarMonthSolid class="h-4 w-4" />
 				<span>Behaviour</span>
 			</div>
-			<p class="text-sm text-gray-500 dark:text-gray-400">
-				<b>Contacts:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-				incididunt ut labore et dolore magna aliqua.
-			</p>
+			<AnimeWatchedByYear {animeList}/>
 		</TabItem>
 
 		<TabItem

@@ -5,18 +5,19 @@ import type { AnimeApiResponse, AnimeNode } from "$lib/myanimelist/common/types"
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { MyAnimeListAuth } from "$lib/myanimelist/auth/server";
 
-export const load = (async () => {
-    const db = openDb("my-stats");
+export const load = (async ({ fetch, cookies }) => {
+    const statsDb = openDb("my-stats");
 
     try {
-        const data = await db.get('stats');
+        const data = await statsDb.get('stats');
+        const animeList = await getMyAnimeList(fetch, cookies);
         const result = calculatedStatsSchema.safeParse(data);
 
         if (result.success === true) {
-            return { stats: result.data }
+            return { stats: result.data, animeList }
         }
 
-        return { stats: null };
+        return { stats: null, animeList: null };
     }
     catch (err) {
         console.error(err);
@@ -26,29 +27,30 @@ export const load = (async () => {
 
 export const actions = {
     async calculate({ fetch, cookies }) {
-        const db = openDb("my-stats");
+        const statsDb = openDb("my-stats");
 
         try {
-            const data = await db.get('stats');
+            const data = await statsDb.get('stats');
             const result = calculatedStatsSchema.safeParse(data);
+            const animeList = await getMyAnimeList(fetch, cookies);
 
             if (result.success === true) {
-                return { stats: result.data }
+                return { stats: result.data, animeList }
             }
 
-            const calculatedStats = await calculateUserStats(fetch, cookies);
-            const stats = calculatedStatsSchema.parse(calculatedStats);
-            await db.set("stats", stats);
-            return { stats };
+            const calculatedResults = await calculateUserStats(fetch, cookies);
+            const stats = calculatedStatsSchema.parse(calculatedResults.stats);
+            await statsDb.set("stats", stats);
+            return { stats, animeList: calculatedResults.animeList };
         }
         catch (err) {
             console.error(err);
             throw error(400, "Failed to calculate stats");
         }
-    }
+    },
 } satisfies Actions;
 
-async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies): Promise<CalculatedStats> {
+async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies) {
     const stats: CalculatedStats = {
         personal: {
             strength: 80,
@@ -64,14 +66,7 @@ async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies):
         watchedByYear: {}
     }
 
-    const db = openDb("myanime");
-    let animeList = await db.get("anime") as AnimeNode[] | undefined;
-
-    if (animeList == null) {
-        animeList = await fetchMyAnimeList(fetch, cookies);
-        await db.set("anime", animeList);
-    }
-
+    const animeList = await getMyAnimeList(fetch, cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
     // Calculate stats
@@ -92,7 +87,19 @@ async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies):
 
     console.log(stats);
 
-    return stats;
+    return { stats, animeList };
+}
+
+async function getMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
+    const animeDb = openDb("myanime");
+    let animeList = await animeDb.get("anime") as AnimeNode[] | undefined;
+
+    if (animeList == null) {
+        animeList = await fetchMyAnimeList(fetch, cookies);
+        await animeDb.set("anime", animeList);
+    }
+
+    return animeList;
 }
 
 async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
@@ -111,7 +118,7 @@ async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
     // eslint-disable-next-line no-constant-condition
     while (true) {
         const url = new URL("https://api.myanimelist.net/v2/users/@me/animelist");
-        url.searchParams.set("fields", "genres,start_season,studios,my_list_status");
+        url.searchParams.set("fields", "genres,start_season,studios,my_list_status,end_date");
         url.searchParams.set("limit", limit.toString());
         url.searchParams.set("offset", offset.toString());
 

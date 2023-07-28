@@ -47,6 +47,7 @@
 		"dayjs": "^1.11.9",
 		"flowbite": "^1.7.0",
 		"flowbite-svelte": "^0.40.1",
+		"linq": "^4.0.1",
 		"tailwind-merge": "^1.14.0",
 		"zod": "^3.21.4"
 	}
