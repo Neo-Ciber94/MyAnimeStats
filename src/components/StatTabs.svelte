@@ -4,8 +4,8 @@
 	import {
 		UserSolid,
 		ChartPieSolid,
-		CalendarMonthSolid,
-		CheckCircleSolid
+		CheckCircleSolid,
+		ChartLineUpSolid
 	} from 'flowbite-svelte-icons';
 	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
@@ -51,10 +51,10 @@
 			activeClasses="border-b-2 p-4 border-indigo-500"
 		>
 			<div slot="title" class="flex items-center gap-2">
-				<CalendarMonthSolid class="h-4 w-4" />
+				<ChartLineUpSolid class="h-4 w-4" />
 				<span>Behaviour</span>
 			</div>
-			<AnimeWatchedByYear {animeList}/>
+			<AnimeWatchedByYear {animeList} />
 		</TabItem>
 
 		<TabItem
