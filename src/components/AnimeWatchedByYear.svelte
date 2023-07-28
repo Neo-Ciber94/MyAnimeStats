@@ -60,7 +60,9 @@
 		.thenBy(([_, x]) => seasonToNumber(x.season as AnimeSeason))
 		.toArray();
 
-	const labels = entries.map(([seasonAndYear, _]) => seasonAndYear);
+	const labels = entries.map(
+		([seasonAndYear, _]) => seasonAndYear[0].toUpperCase() + seasonAndYear.slice(1)
+	);
 	const animeWatchedCount = entries.map(([_, watched]) => watched.animeList.length);
 
 	onMount(() => {
