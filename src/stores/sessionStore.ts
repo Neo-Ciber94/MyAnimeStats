@@ -3,13 +3,13 @@ import { get, writable } from "svelte/store";
 
 let initialized = false;
 
-export type SessionStore = {
+export type SessionState = {
     user: User | null;
     accessToken: string | null;
     loading: boolean;
 }
 
-const sessionStore = writable<SessionStore>({
+const sessionStore = writable<SessionState>({
     user: null,
     accessToken: null,
     loading: true
