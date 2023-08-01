@@ -1,4 +1,4 @@
-import { getSessionToken, getUser, type User } from "$lib/myanimelist/auth/client";
+import { getUserToken, getUser, type User } from "$lib/myanimelist/auth/client";
 import { get, writable } from "svelte/store";
 
 let initialized = false;
@@ -23,7 +23,7 @@ async function initialize() {
     initialized = true;
 
     sessionStore.set({ loading: true, accessToken: null, user: null });
-    const session = await getSessionToken();
+    const session = await getUserToken();
 
     if (session == null) {
         return sessionStore.set({ loading: false, accessToken: null, user: null });
