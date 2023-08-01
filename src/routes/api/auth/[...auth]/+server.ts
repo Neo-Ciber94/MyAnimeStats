@@ -1,8 +1,7 @@
 import { error, redirect, type Cookies } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getServerUrl } from '$lib/utils/getServerUrl';
-import crypto from 'node:crypto';
-import { MyAnimeListAuth } from '$lib/myanimelist/auth/server';
+import { Auth } from '$lib/myanimelist/auth/server';
 
 const AUTH_SESSION = 'auth-session';
 
@@ -18,9 +17,15 @@ export const GET = (async ({ url, params, cookies }) => {
 			return handleSession(cookies);
 		}
 		case '/sign-in': {
-			const csrf = crypto.randomUUID();
+
 			const redirectTo = `${getServerUrl()}/api/auth/callback`;
-			const url = MyAnimeListAuth.createAuthenticationUrl({ csrf, redirectTo });
+			const { url, state } = Auth.getAuthenticationUrl({ redirectTo });
+			cookies.set("auth.csrf", state, {
+				path: "/",
+				httpOnly: true,
+				maxAge: 60 * 3, // 3min
+			});
+
 			throw redirect(307, url);
 		}
 		case '/sign-out': {
@@ -44,7 +49,7 @@ async function handleSession(cookies: Cookies) {
 		throw error(401);
 	}
 
-	const { access_token: accessToken, expires_in } = await MyAnimeListAuth.refreshToken({ refreshToken });
+	const { access_token: accessToken, expires_in } = await Auth.refreshToken({ refreshToken });
 
 	// OAuth2 expires_in is in seconds
 	// https://www.rfc-editor.org/rfc/rfc6749#section-5.1
@@ -66,17 +71,24 @@ async function handleCallback(url: URL, cookies: Cookies) {
 	const state = searchParams.get('state');
 
 	if (code == null) {
-		throw redirect(307, '/error=NoCodeReceived');
+		throw error(401, "No oauth2 code was received");
+	}
+
+	const csrf = cookies.get("auth.csrf");
+	cookies.delete("auth.csrf"); // We delete the old csrf code
+
+	if (state == null || state != csrf) {
+		throw error(401, "Invalid auth state");
 	}
 
 	// TODO: Check state
 	console.log({ url, code, state });
-	const result = await MyAnimeListAuth.authenticate({ code, redirectTo: `${getServerUrl()}/api/auth/callback` });
+	const result = await Auth.getToken({ code, redirectTo: `${getServerUrl()}/api/auth/callback` });
 	console.log({ result });
 
 	cookies.set(AUTH_SESSION, result.refresh_token, {
 		path: '/',
-		maxAge: 1000 * 60 * 60 * 24,
+		maxAge: 60 * 60 * 24 * 7, // 7 days
 		httpOnly: true,
 		sameSite: 'strict'
 	});

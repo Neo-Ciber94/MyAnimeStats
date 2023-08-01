@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies } from "@sveltejs/kit";
 import type { AnimeApiResponse, AnimeNode } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
-import { MyAnimeListAuth } from "$lib/myanimelist/auth/server";
+import { Auth } from "$lib/myanimelist/auth/server";
 import { db } from "$lib/db";
 
 export const load = (async ({ fetch, cookies }) => {
@@ -106,7 +106,7 @@ async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
         throw error(401, "unable to get session");
     }
 
-    const { access_token: accessToken } = await MyAnimeListAuth.refreshToken({ refreshToken });
+    const { access_token: accessToken } = await Auth.refreshToken({ refreshToken });
 
     const limit = 500;
     let offset = 0;

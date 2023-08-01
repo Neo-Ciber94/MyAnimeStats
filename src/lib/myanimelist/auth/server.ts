@@ -5,43 +5,60 @@ import { z } from 'zod';
 const MY_ANIME_LIST_AUTH = "https://myanimelist.net/v1/oauth2";
 const CODE_VERIFIER = createCodeVerifier();
 
-export interface CreateAuthenticationUrlOptions {
-    csrf?: string;
-    redirectTo: string;
-}
-
-export interface AuthenticateOptions {
-    code: string,
+export interface GetAuthenticationUrlOptions {
     redirectTo?: string;
 }
 
 export interface GetTokenOptions {
+    code: string,
+    redirectTo?: string;
+}
+
+export interface RefreshTokenOptions {
     refreshToken: string;
 }
 
+export interface GetUserProfileOptions {
+    accessToken: string;
+}
+
+/**
+ * Utilities for authenticate with `MyAnimeList`.
+ */
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace MyAnimeListAuth {
+export namespace Auth {
     /**
      * Create an `OAuth2` authentication url for myanimelist.
      * 
      * @see https://myanimelist.net/apiconfig/references/authorization#obtaining-oauth-2.0-access-tokens
      */
-    export function createAuthenticationUrl({ csrf, redirectTo }: CreateAuthenticationUrlOptions) {
+    export function getAuthenticationUrl(options: GetAuthenticationUrlOptions) {
+        const { redirectTo } = options;
+        const state = crypto.randomUUID();
+
         const url = new URL(`${MY_ANIME_LIST_AUTH}/authorize`);
         url.searchParams.set("response_type", "code");
         url.searchParams.set("client_id", MY_ANIME_LIST_CLIENT_ID);
-        url.searchParams.set("redirect_uri", redirectTo);
         url.searchParams.set("code_challenge", CODE_VERIFIER)
         url.searchParams.set("code_challenge_method", "plain");
+        url.searchParams.set("state", state);
 
-        if (csrf) {
-            url.searchParams.set("state", csrf);
+        if (redirectTo) {
+            url.searchParams.set("redirect_uri", redirectTo);
         }
 
-        return url.toString();
+        return {
+            url: url.toString(),
+            state
+        }
     }
 
-    export async function authenticate({ code, redirectTo }: AuthenticateOptions) {
+    /**
+     * Authenticate with `MyAnimeList` using the code returned after authentication.
+     * @returns Returns the tokens to access the `MyAnimeList` API.
+     */
+    export async function getToken(options: GetTokenOptions) {
+        const { code, redirectTo } = options;
         const url = new URL(`${MY_ANIME_LIST_AUTH}/token`);
         const searchParams = new URLSearchParams({
             client_id: MY_ANIME_LIST_CLIENT_ID,
@@ -82,7 +99,11 @@ export namespace MyAnimeListAuth {
         return responseSchema.parse(json);
     }
 
-    export async function refreshToken({ refreshToken }: GetTokenOptions) {
+    /**
+     * Refresh the access token using a refresh token.
+     */
+    export async function refreshToken(options: RefreshTokenOptions) {
+        const { refreshToken } = options;
         const url = new URL(`${MY_ANIME_LIST_AUTH}/token`);
         const searchParams = new URLSearchParams({
             grant_type: "refresh_token",
