@@ -1,15 +1,14 @@
-import { openDb } from "$lib/jsondb";
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies } from "@sveltejs/kit";
 import type { AnimeApiResponse, AnimeNode } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { MyAnimeListAuth } from "$lib/myanimelist/auth/server";
+import { db } from "$lib/db";
 
 export const load = (async ({ fetch, cookies }) => {
-    const statsDb = openDb("my-stats");
 
     try {
-        const data = await statsDb.get('stats');
+        const data = await db.get("stats");
         const animeList = await getMyAnimeList(fetch, cookies);
         const result = calculatedStatsSchema.safeParse(data);
 
@@ -27,10 +26,8 @@ export const load = (async ({ fetch, cookies }) => {
 
 export const actions = {
     async calculate({ fetch, cookies }) {
-        const statsDb = openDb("my-stats");
-
         try {
-            const data = await statsDb.get('stats');
+            const data = await db.get('stats');
             const result = calculatedStatsSchema.safeParse(data);
             const animeList = await getMyAnimeList(fetch, cookies);
 
@@ -40,7 +37,7 @@ export const actions = {
 
             const calculatedResults = await calculateUserStats(fetch, cookies);
             const stats = calculatedStatsSchema.parse(calculatedResults.stats);
-            await statsDb.set("stats", stats);
+            await db.put("stats", stats);
             return { stats, animeList: calculatedResults.animeList };
         }
         catch (err) {
@@ -91,12 +88,11 @@ async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies) 
 }
 
 async function getMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
-    const animeDb = openDb("myanime");
-    let animeList = await animeDb.get("anime") as AnimeNode[] | undefined;
+    let animeList = await db.get("anime") as AnimeNode[] | undefined;
 
     if (animeList == null) {
         animeList = await fetchMyAnimeList(fetch, cookies);
-        await animeDb.set("anime", animeList);
+        await db.put("anime", animeList);
     }
 
     return animeList;

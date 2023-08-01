@@ -1,5 +1,4 @@
-import { getCurrentAnimeSeason } from "$lib/myanimelist/common/helpers";
-import type { AnimeApiResponse } from "$lib/myanimelist/common/types";
+import { type AnimeApiResponse, getCurrentAnimeSeason } from "$lib/myanimelist/common/types";
 import { error } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
