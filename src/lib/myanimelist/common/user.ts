@@ -24,4 +24,6 @@ export interface User {
     joined_at: string;
     picture: string;
     anime_statistics?: AnimeStatistics;
+    time_zone?: string;
+    is_supporter?: boolean;
 }
