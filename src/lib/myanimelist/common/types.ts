@@ -8,6 +8,16 @@ export type MediaType = "unknown" | "tv" | "ova" | "movie" | "special" | "ona" |
 
 export type WatchStatus = 'watching' | 'completed' | 'on_hold' | 'dropped' | 'plan_to_watch'
 
+export type RankingType = 'all'
+    | 'airing'
+    | 'upcoming'
+    | 'tv'
+    | 'ova'
+    | 'movie'
+    | 'special'
+    | 'bypopularity'
+    | 'favorite';
+
 export type AnimeStudio = {
     id: number,
     name: string;
@@ -68,17 +78,29 @@ export type AnimeNode = {
     };
 };
 
-export type AnimeApiResponse = {
-    data: AnimeNode[];
+export type AnimeNodeWithRanking = AnimeNode & {
+    ranking: {
+        rank: number,
+        previous_rank?: number
+    }
+}
+
+export type AnimeNodeWithStatus = AnimeNode & {
+    status: MyListStatus
+}
+
+export type AnimeApiResponse<T extends AnimeNode = AnimeNode> = {
+    data: T[];
     paging: {
         next?: string;
         previous?: string;
     };
-    season: {
-        year: number;
-        season: string;
-    };
 };
+
+export type AnimeRankingApiResponse = AnimeApiResponse<AnimeNodeWithRanking>;
+
+export type AnimeStatusApiResponse = AnimeApiResponse<AnimeNodeWithStatus>;
+
 
 // https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
 export type AnimeSeason = 'winter' | 'spring' | 'summer' | 'fall';
