@@ -70,10 +70,12 @@ function getApiUrl() {
      */
 
     // URL to access from the proxy server: https://api.myanimelist.net/v2
-    return process.env.MY_ANIME_LIST_API_URL ?? "/api/myanimelist";
+    // return process.env.MY_ANIME_LIST_API_URL ?? "/api/myanimelist";
+    return "https://api.myanimelist.net/v2"
 }
 
 interface MALRequestInit {
+    fetch?: typeof fetch,
     resource: `/${string}`;
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     params?: Record<string, unknown>,
@@ -95,10 +97,11 @@ async function sendRequest<T extends object>(init: MALRequestInit): Promise<T | 
         body,
         params,
         returnNullOn404 = false,
+        fetch: fetchFunction = global.fetch,
         ...rest
     } = init;
 
-    let url = `${getApiUrl()}/${resource}`;
+    let url = `${getApiUrl()}${resource}`;
     const headers: Record<string, string> = rest.headers || {};
 
     if (params && Object.keys(params).length > 0) {
@@ -114,7 +117,7 @@ async function sendRequest<T extends object>(init: MALRequestInit): Promise<T | 
         url += "?" + searchParams.toString()
     }
 
-    if (accessToken == null || clientId == null) {
+    if (accessToken == null && clientId == null) {
         throw new Error("access token or client id are required");
     }
 
@@ -126,7 +129,7 @@ async function sendRequest<T extends object>(init: MALRequestInit): Promise<T | 
         headers["X-MAL-CLIENT-ID"] = clientId;
     }
 
-    const res = await fetch(url, {
+    const res = await fetchFunction(url, {
         method,
         headers,
         body

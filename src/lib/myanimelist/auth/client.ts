@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { User } from "../common/user";
+import { getApiUrl } from "../common/getApiUrl";
 
 const userTokenSchema = z.object({
     accessToken: z.string(),
@@ -8,25 +9,17 @@ const userTokenSchema = z.object({
 
 export type UserToken = z.infer<typeof userTokenSchema>;
 
-export interface GetUserOptions {
-    accessToken: string;
-    reverseProxyUrl?: string;
-}
-
-function getAuthUrl() {
-    return process.env.MY_ANIME_STATS_AUTH_URL ?? "/api/auth";
-}
 
 export function signIn() {
-    window.location.href = `${window.location.origin}/${getAuthUrl()}/sign-in`
+    window.location.href = `${window.location.origin}${getApiUrl()}/auth/sign-in`
 }
 
 export function signOut() {
-    window.location.href = `${window.location.origin}/${getAuthUrl()}/sign-out`
+    window.location.href = `${window.location.origin}${getApiUrl()}/auth/sign-out`
 }
 
 export async function getUserToken(): Promise<UserToken | null> {
-    const res = await fetch(`${getAuthUrl()}/session`);
+    const res = await fetch(`${getApiUrl()}/auth/token`);
 
     if (!res.ok) {
         const msg = await res.text();
@@ -38,14 +31,13 @@ export async function getUserToken(): Promise<UserToken | null> {
     return userToken;
 }
 
-export async function getUser(options: GetUserOptions) {
-    const { accessToken } = options;
-    const res = await fetch(`/api/myanimelist/users/@me?fields=anime_statistics`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
+type Session = UserToken & {
+    user: User
+}
+
+export async function getSession() {
+    const url = `${getApiUrl()}/auth/session`;
+    const res = await fetch(`${url}?include_anime_statistics=true`);
 
     if (!res.ok) {
         const msg = await res.text();
@@ -53,5 +45,5 @@ export async function getUser(options: GetUserOptions) {
         throw new Error(msg);
     }
 
-    return await res.json() as User;
+    return await res.json() as Session
 }

@@ -2,6 +2,7 @@ import { getServerUrl } from "$lib/utils/getServerUrl";
 import { error, redirect, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
 import { MyAnimeListAPI } from "../api";
+import { getApiUrl } from "../common/getApiUrl";
 
 const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
 const AUTH_SESSION_COOKIE = 'myanimestats.session';
@@ -25,8 +26,6 @@ type AuthCallbacks = {
 }
 
 export interface MyAnimeListHandlerOptions {
-    apiUrl?: string;
-
     auth?: {
         sessionDurationSeconds?: number;
     }
@@ -35,7 +34,7 @@ export interface MyAnimeListHandlerOptions {
 export function MyAnimeListHandler(options: MyAnimeListHandlerOptions = {}) {
     const { auth = {} } = options;
     const { sessionDurationSeconds = DEFAULT_SESSION_DURATION_SECONDS } = auth;
-    const apiUrl = options?.apiUrl || process.env.MY_ANIME_LIST_API_URL || "/api/myanimelist";
+    const apiUrl = getApiUrl();
     const authPath = `${apiUrl}/auth`;
 
     if (apiUrl.endsWith("/")) {
@@ -44,6 +43,8 @@ export function MyAnimeListHandler(options: MyAnimeListHandlerOptions = {}) {
 
     return async (event: RequestEvent): Promise<Response> => {
         const pathname = event.url.pathname;
+
+        console.log({ pathname, apiUrl })
 
         if (!startsWithPathSegment(pathname, apiUrl)) {
             throw new Error(`Invalid url pathname, expected path starting with ${apiUrl}`);
@@ -70,10 +71,12 @@ type HandleAuthOptions = {
 
 async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
     const { action, apiUrl, sessionDurationSeconds } = options;
+    const originUrl = `${event.url.origin}${apiUrl}/auth`;
 
     switch (action) {
         case '/sign-in': {
-            const redirectTo = `${getServerUrl()}/api/auth/callback`;
+            const redirectTo = `${originUrl}/callback`;
+            console.log({ redirectTo });
             const { url, state } = Auth.getAuthenticationUrl({ redirectTo });
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
                 path: apiUrl,
@@ -104,12 +107,11 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 throw error(401, "Invalid auth state");
             }
 
-            // TODO: Check state
-            console.log({ url, code, state });
-            const result = await Auth.getToken({ code, redirectTo: `${getServerUrl()}/api/auth/callback` });
-            console.log({ result });
+            console.log({ url: url.toString(), code, state });
+            const tokens = await Auth.getToken({ code, redirectTo: `${originUrl}/callback` });
+            console.log({ tokens });
 
-            event.cookies.set(AUTH_SESSION_COOKIE, result.refresh_token, {
+            event.cookies.set(AUTH_SESSION_COOKIE, tokens.refresh_token, {
                 path: apiUrl,
                 maxAge: sessionDurationSeconds,
                 httpOnly: true,
@@ -124,7 +126,13 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
         }
         case '/session': {
             const { accessToken, expiresAt } = await getAuthToken(event);
-            const user = await MyAnimeListAPI.getMyUserInfo({ accessToken });
+            const includeStatistics = event.url.searchParams.get('include_anime_statistics') === "true";
+
+            const user = await MyAnimeListAPI.getMyUserInfo({
+                accessToken,
+                fields: includeStatistics ? ['anime_statistics'] : []
+            });
+
             return Response.json({
                 user,
                 accessToken,
@@ -173,7 +181,7 @@ async function proxyRequestToMyAnimeListAPI(apiUrl: string, event: RequestEvent)
     // 🍥 GET: https://api.example.com/users
     console.log(`🍥 ${event.request.method}: ${myAnimeListApiUrl}`)
 
-    const res = await fetch(path, {
+    const res = await event.fetch(path, {
         method: event.request.method,
         body: event.request.body,
         headers: forwardHeaders,
@@ -204,7 +212,7 @@ function startsWithPathSegment(pathname: string, other: string) {
         return false;
     }
 
-    for (let i = 0; i < a.length; i++) {
+    for (let i = 0; i < b.length; i++) {
         if (a[i] !== b[i]) {
             return false;
         }
