@@ -7,11 +7,11 @@ import { db } from "$lib/db";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { AUTH_SESSION_COOKIE } from "$lib/myanimelist/svelte/handle";
 
-export const load = (async ({ fetch, cookies }) => {
+export const load = (async ({ cookies }) => {
 
     try {
         const data = await db.get("stats");
-        const animeList = await getMyAnimeList(fetch, cookies);
+        const animeList = await getMyAnimeList(cookies);
         const result = calculatedStatsSchema.safeParse(data);
 
         if (result.success === true) {
@@ -27,17 +27,17 @@ export const load = (async ({ fetch, cookies }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    async calculate({ fetch, cookies }) {
+    async calculate({ cookies }) {
         try {
             const data = await db.get('stats');
             const result = calculatedStatsSchema.safeParse(data);
-            const animeList = await getMyAnimeList(fetch, cookies);
+            const animeList = await getMyAnimeList(cookies);
 
             if (result.success === true) {
                 return { stats: result.data, animeList }
             }
 
-            const calculatedResults = await calculateUserStats(fetch, cookies);
+            const calculatedResults = await calculateUserStats(cookies);
             const stats = calculatedStatsSchema.parse(calculatedResults.stats);
             await db.put("stats", stats);
             return { stats, animeList: calculatedResults.animeList };
@@ -49,7 +49,7 @@ export const actions = {
     },
 } satisfies Actions;
 
-async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies) {
+async function calculateUserStats(cookies: Cookies) {
     const stats: CalculatedStats = {
         personal: {
             strength: 80,
@@ -65,7 +65,7 @@ async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies) 
         watchedByYear: {}
     }
 
-    const animeList = await getMyAnimeList(fetch, cookies);
+    const animeList = await getMyAnimeList(cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
     // Calculate stats
@@ -89,18 +89,18 @@ async function calculateUserStats(fetch: typeof window.fetch, cookies: Cookies) 
     return { stats, animeList };
 }
 
-async function getMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
+async function getMyAnimeList(cookies: Cookies) {
     let animeList = await db.get("anime") as AnimeNode[] | undefined;
 
     if (animeList == null) {
-        animeList = await fetchMyAnimeList(fetch, cookies);
+        animeList = await fetchMyAnimeList(cookies);
         await db.put("anime", animeList);
     }
 
     return animeList;
 }
 
-async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
+async function fetchMyAnimeList(cookies: Cookies) {
     const anime: AnimeNode[] = [];
     const refreshToken = cookies.get(AUTH_SESSION_COOKIE);
 
