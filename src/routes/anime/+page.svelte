@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getCurrentAnimeSeason } from '$lib/myanimelist/common/helpers';
+	import { getCurrentAnimeSeason } from '$lib/myanimelist/common/types';
 	import AnimeCard from '../../components/AnimeCard.svelte';
 	import type { PageData } from './$types';
 
@@ -11,9 +11,7 @@
 	<h1>{season} - {year}</h1>
 </div>
 
-<div
-	class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center mx-10"
->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center mx-10">
 	{#each data.data as anime}
 		<AnimeCard {anime} />
 	{/each}
