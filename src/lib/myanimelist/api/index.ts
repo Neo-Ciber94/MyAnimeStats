@@ -4,31 +4,25 @@ import type { User } from "../common/user";
 
 type Empty = Record<string, never>
 
-interface MyAnimeListOptions {
-    accessToken?: string;
-    clientId?: string;
-}
-
 export interface GetMyUserInfoOptions {
-    accessToken: string;
     fields?: string[];
 }
 
-export interface GetAnimeListOptions extends MyAnimeListOptions {
+export interface GetAnimeListOptions {
     q?: string;
     limit?: number,
     offset?: number;
     fields?: string[]
 }
 
-export interface GetAnimeRankingOptions extends MyAnimeListOptions {
+export interface GetAnimeRankingOptions {
     ranking_type: RankingType,
     limit?: number;
     offset?: number;
     fields?: string[]
 }
 
-export interface GetSeasonalAnimeOptions extends MyAnimeListOptions {
+export interface GetSeasonalAnimeOptions {
     year: number,
     season: AnimeSeason,
     sort?: 'anime_score' | 'anime_num_list_users',
@@ -38,14 +32,12 @@ export interface GetSeasonalAnimeOptions extends MyAnimeListOptions {
 }
 
 export interface GetSuggestedAnimeOptions {
-    accessToken: string;
     limit?: number;
     offset?: number;
     fields?: string[];
 }
 
 export interface UpdateMyAnimeListStatusOptions {
-    accessToken: string;
     status?: WatchStatus;
     is_rewatching?: boolean;
     score?: number;
@@ -56,107 +48,123 @@ export interface UpdateMyAnimeListStatusOptions {
     comments?: string;
 }
 
-export interface GetUserAnimeListOptions extends MyAnimeListOptions {
+export interface GetUserAnimeListOptions {
     status?: WatchStatus,
     sort?: 'list_score' | 'list_updated_at' | 'anime_title' | 'anime_start_date' | 'anime_id',
+    fields?: string[];
     limit?: number;
     offset?: number;
 }
 
-function getApiUrl() {
-    /**
-     * We cannot send request from the browser directly to myanimelist we need a proxy for that
-     * https://myanimelist.net/forum/?topicid=1924562
-     */
-
-    // URL to access from the proxy server: https://api.myanimelist.net/v2
-    // return process.env.MY_ANIME_LIST_API_URL ?? "/api/myanimelist";
-    return "https://api.myanimelist.net/v2"
+interface MALClientConfig {
+    fetch?: typeof fetch,
+    accessToken?: string;
+    clientId?: string;
+    proxyUrl?: string;
 }
 
 interface MALRequestInit {
-    fetch?: typeof fetch,
     resource: `/${string}`;
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     params?: Record<string, unknown>,
-    accessToken?: string;
-    clientId?: string;
     returnNullOn404?: boolean;
     headers?: Record<string, string>;
     body?: BodyInit | null | undefined;
 }
 
-function sendRequest<T extends object>(init: MALRequestInit & { returnNullOn404: true }): Promise<T | null>
-function sendRequest<T extends object>(init: MALRequestInit & { returnNullOn404?: undefined }): Promise<T>
-async function sendRequest<T extends object>(init: MALRequestInit): Promise<T | null> {
-    const {
-        resource,
-        method,
-        accessToken,
-        clientId,
-        body,
-        params,
-        returnNullOn404 = false,
-        fetch: fetchFunction = global.fetch,
-        ...rest
-    } = init;
+type UserName = "@me" | (string & Empty)
 
-    let url = `${getApiUrl()}${resource}`;
-    const headers: Record<string, string> = rest.headers || {};
-
-    if (params && Object.keys(params).length > 0) {
-        const searchParams = new URLSearchParams();
-        for (const [key, value] of Object.entries(params)) {
-            if (value === undefined) {
-                continue;
-            }
-
-            searchParams.set(key, String(value));
-        }
-
-        url += "?" + searchParams.toString()
+export class MalHttpError extends Error {
+    constructor(public readonly status: number, message: string, cause?: unknown) {
+        super(message, { cause })
     }
-
-    if (accessToken == null && clientId == null) {
-        throw new Error("access token or client id are required");
-    }
-
-    if (accessToken) {
-        headers.Authorization = `Bearer ${accessToken}`;
-    }
-
-    if (clientId) {
-        headers["X-MAL-CLIENT-ID"] = clientId;
-    }
-
-    const res = await fetchFunction(url, {
-        method,
-        headers,
-        body
-    });
-
-    if (returnNullOn404 === true && res.status === 404) {
-        return null;
-    }
-
-    if (!res.ok) {
-        const msg = await res.text();
-        console.error(`❌ ${msg}`);
-        throw new Error(msg);
-    }
-
-    const data = await res.json();
-    return data;
 }
 
-export namespace MyAnimeListAPI {
-    export async function getAnimeList(options: GetAnimeListOptions): Promise<AnimeApiResponse> {
-        const { accessToken, fields = [], ...rest } = options;
+export class MALClient {
+    #config: MALClientConfig;
 
-        const result = await sendRequest<AnimeApiResponse>({
+    constructor(config: MALClientConfig) {
+        if (config.accessToken == null && config.clientId == null) {
+            throw new Error("access token or client id are required");
+        }
+
+        // shallow copy to prevent modifying the original
+        this.#config = { ...config };
+    }
+
+    private sendRequest<T extends object>(init: MALRequestInit & { returnNullOn404: true }): Promise<T | null>
+    private sendRequest<T extends object>(init: MALRequestInit & { returnNullOn404?: undefined }): Promise<T>
+    private async sendRequest<T extends object>(init: MALRequestInit): Promise<T | null> {
+        const {
+            resource,
+            method,
+            body,
+            params,
+            returnNullOn404 = false,
+            headers = {},
+        } = init;
+
+        const {
+            accessToken,
+            clientId,
+            fetch: fetchFunction = global.fetch,
+            proxyUrl,
+        } = this.#config;
+
+        const apiUrl = proxyUrl ?? "https://api.myanimelist.net/v2";
+        let url = `${apiUrl}${resource}`;
+
+        if (params && Object.keys(params).length > 0) {
+            const searchParams = new URLSearchParams();
+            for (const [key, value] of Object.entries(params)) {
+                if (value === undefined) {
+                    continue;
+                }
+
+                searchParams.set(key, String(value));
+            }
+
+            url += "?" + searchParams.toString()
+        }
+
+        if (accessToken == null && clientId == null) {
+            throw new Error("access token or client id are required");
+        }
+
+        if (accessToken) {
+            headers.Authorization = `Bearer ${accessToken}`;
+        }
+
+        if (clientId) {
+            headers["X-MAL-CLIENT-ID"] = clientId;
+        }
+
+        const res = await fetchFunction(url, {
+            method,
+            headers,
+            body
+        });
+
+        if (returnNullOn404 === true && res.status === 404) {
+            return null;
+        }
+
+        if (!res.ok) {
+            const msg = await res.text();
+            console.error(`❌ ${msg}`);
+            throw new MalHttpError(res.status, msg);
+        }
+
+        const data = await res.json();
+        return data;
+    }
+
+    async getAnimeList(options: GetAnimeListOptions): Promise<AnimeApiResponse> {
+        const { fields = [], ...rest } = options;
+
+        const result = await this.sendRequest<AnimeApiResponse>({
             method: 'GET',
             resource: '/anime',
-            accessToken,
             params: {
                 q: rest.q,
                 limit: rest.limit,
@@ -168,15 +176,13 @@ export namespace MyAnimeListAPI {
         return result;
     }
 
-    export async function getAnimeDetails(animeId: number, options: MyAnimeListOptions & { fields?: string[] }) {
-        const { accessToken, clientId, fields = [] } = options;
+    async getAnimeDetails(animeId: number, options: { fields?: string[] }) {
+        const { fields = [] } = options;
 
-        const result = await sendRequest<AnimeNode['node']>({
+        const result = await this.sendRequest<AnimeNode['node']>({
             method: 'GET',
             resource: `/anime/${animeId}`,
             returnNullOn404: true,
-            accessToken,
-            clientId,
             params: {
                 fields: fields.length === 0 ? undefined : fields.join(",")
             }
@@ -185,14 +191,12 @@ export namespace MyAnimeListAPI {
         return result;
     }
 
-    export async function getAnimeRanking(options: GetAnimeRankingOptions) {
-        const { accessToken, clientId, fields = [], ...params } = options;
+    async getAnimeRanking(options: GetAnimeRankingOptions) {
+        const { fields = [], ...params } = options;
 
-        const result = await sendRequest<AnimeRankingApiResponse>({
+        const result = await this.sendRequest<AnimeRankingApiResponse>({
             method: 'GET',
             resource: `/anime/ranking`,
-            accessToken,
-            clientId,
             params: {
                 fields: fields.length === 0 ? undefined : fields.join(","),
                 ...params
@@ -202,14 +206,12 @@ export namespace MyAnimeListAPI {
         return result;
     }
 
-    export async function getSeasonalAnime(options: GetSeasonalAnimeOptions) {
-        const { accessToken, clientId, fields = [], year, season, ...params } = options;
+    async getSeasonalAnime(options: GetSeasonalAnimeOptions) {
+        const { fields = [], year, season, ...params } = options;
 
-        const result = await sendRequest<AnimeApiResponse>({
+        const result = await this.sendRequest<AnimeApiResponse>({
             method: 'GET',
             resource: `/anime/season/${year}/${season}`,
-            accessToken,
-            clientId,
             params: {
                 fields: fields.length === 0 ? undefined : fields.join(","),
                 ...params
@@ -219,13 +221,12 @@ export namespace MyAnimeListAPI {
         return result;
     }
 
-    export async function getSuggestedAnime(options: GetSuggestedAnimeOptions) {
-        const { accessToken, fields = [], ...params } = options;
+    async getSuggestedAnime(options: GetSuggestedAnimeOptions) {
+        const { fields = [], ...params } = options;
 
-        const result = await sendRequest<AnimeApiResponse>({
+        const result = await this.sendRequest<AnimeApiResponse>({
             method: 'GET',
             resource: `/anime/suggestions`,
-            accessToken,
             params: {
                 fields: fields.length === 0 ? undefined : fields.join(","),
                 ...params
@@ -235,8 +236,8 @@ export namespace MyAnimeListAPI {
         return result;
     }
 
-    export async function updateMyAnimeListStatus(animeId: number, options: UpdateMyAnimeListStatusOptions) {
-        const { accessToken, ...rest } = options;
+    async updateMyAnimeListStatus(animeId: number, options: UpdateMyAnimeListStatusOptions) {
+        const { ...rest } = options;
 
         const body = new URLSearchParams();
 
@@ -248,10 +249,9 @@ export namespace MyAnimeListAPI {
             body.set(key, String(value));
         }
 
-        const result = await sendRequest<AnimeNode['node']>({
+        const result = await this.sendRequest<AnimeNode['node']>({
             method: 'PATCH',
             resource: `/anime/${animeId}/my_list_status`,
-            accessToken,
             returnNullOn404: true,
             body,
             headers: {
@@ -262,40 +262,37 @@ export namespace MyAnimeListAPI {
         return result;
     }
 
-    export async function deleteMyAnimeListStatus(animeId: number, options: { accessToken: string }) {
-        const { accessToken } = options;
-
-        const result = await sendRequest<Empty>({
+    async deleteMyAnimeListStatus(animeId: number) {
+        const result = await this.sendRequest<Empty>({
             method: 'DELETE',
             resource: `/anime/${animeId}/my_list_status`,
-            accessToken,
             returnNullOn404: true,
         });
 
         return result;
     }
 
-    export async function getUserAnimeList(userName: string, options: GetUserAnimeListOptions) {
-        const { accessToken, clientId, ...params } = options;
+    async getUserAnimeList(userName: UserName, options: GetUserAnimeListOptions) {
+        const { fields = [], ...params } = options;
 
-        const result = await sendRequest<AnimeStatusApiResponse>({
+        const result = await this.sendRequest<AnimeStatusApiResponse>({
             method: 'GET',
             resource: `/users/${userName}/animelist`,
-            accessToken,
-            clientId,
-            params
+            params: {
+                fields: fields.length === 0 ? undefined : fields.join(","),
+                ...params
+            }
         });
 
         return result;
     }
 
-    export async function getMyUserInfo(options: GetMyUserInfoOptions): Promise<User> {
-        const { accessToken, fields = [] } = options;
+    async getMyUserInfo(options: GetMyUserInfoOptions): Promise<User> {
+        const { fields = [] } = options;
 
-        const result = await sendRequest<User>({
+        const result = await this.sendRequest<User>({
             method: 'GET',
             resource: "/users/@me",
-            accessToken,
             params: {
                 fields: fields.length > 0 ? fields.join(",") : undefined
             },

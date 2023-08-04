@@ -1,13 +1,12 @@
-import { getServerUrl } from "$lib/utils/getServerUrl";
 import { error, redirect, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
-import { MyAnimeListAPI } from "../api";
 import { getApiUrl } from "../common/getApiUrl";
+import { MALClient } from "../api";
 
-const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
-const AUTH_SESSION_COOKIE = 'myanimestats.session';
-const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
-const DEFAULT_SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days;
+export const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
+export const AUTH_SESSION_COOKIE = 'myanimestats.session';
+export const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
+export const DEFAULT_SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days;
 
 const ALLOWED_FORWARD_HEADERS = [
     "Authorization",
@@ -15,15 +14,15 @@ const ALLOWED_FORWARD_HEADERS = [
     "Content-Type"
 ]
 
-type MyAnimeListAuthToken = Awaited<ReturnType<typeof Auth.getToken>>;
+// type MyAnimeListAuthToken = Awaited<ReturnType<typeof Auth.getToken>>;
 
-type AuthCallbacks = {
-    onSignIn?: () => void,
-    onSignOut?: () => void,
-    onCallback?: () => void,
-    onToken?: () => void,
-    onSession?: () => void,
-}
+// type AuthCallbacks = {
+//     onSignIn?: () => void,
+//     onSignOut?: () => void,
+//     onCallback?: () => void,
+//     onToken?: () => void,
+//     onSession?: () => void,
+// }
 
 export interface MyAnimeListHandlerOptions {
     auth?: {
@@ -43,8 +42,6 @@ export function MyAnimeListHandler(options: MyAnimeListHandlerOptions = {}) {
 
     return async (event: RequestEvent): Promise<Response> => {
         const pathname = event.url.pathname;
-
-        console.log({ pathname, apiUrl })
 
         if (!startsWithPathSegment(pathname, apiUrl)) {
             throw new Error(`Invalid url pathname, expected path starting with ${apiUrl}`);
@@ -79,7 +76,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             console.log({ redirectTo });
             const { url, state } = Auth.getAuthenticationUrl({ redirectTo });
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
-                path: apiUrl,
+                path: "/",
                 httpOnly: true,
                 maxAge: sessionDurationSeconds
             });
@@ -87,8 +84,8 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             throw redirect(307, url);
         }
         case '/sign-out': {
-            event.cookies.delete(AUTH_SESSION_COOKIE, { path: apiUrl })
-            event.cookies.delete(AUTH_CSRF_COOKIE, { path: apiUrl });
+            event.cookies.delete(AUTH_SESSION_COOKIE, { path: "/" })
+            event.cookies.delete(AUTH_CSRF_COOKIE, { path: "/" });
             throw redirect(307, '/');
         }
         case '/callback': {
@@ -112,7 +109,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             console.log({ tokens });
 
             event.cookies.set(AUTH_SESSION_COOKIE, tokens.refresh_token, {
-                path: apiUrl,
+                path:  "/",
                 maxAge: sessionDurationSeconds,
                 httpOnly: true,
                 sameSite: 'strict'
@@ -128,8 +125,8 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             const { accessToken, expiresAt } = await getAuthToken(event);
             const includeStatistics = event.url.searchParams.get('include_anime_statistics') === "true";
 
-            const user = await MyAnimeListAPI.getMyUserInfo({
-                accessToken,
+            const malClient = new MALClient({ accessToken });
+            const user = await malClient.getMyUserInfo({
                 fields: includeStatistics ? ['anime_statistics'] : []
             });
 

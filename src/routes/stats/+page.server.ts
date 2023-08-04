@@ -1,9 +1,11 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies } from "@sveltejs/kit";
-import type { AnimeApiResponse, AnimeNode } from "$lib/myanimelist/common/types";
+import type { AnimeNode } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { Auth } from "$lib/myanimelist/auth/server";
 import { db } from "$lib/db";
+import { MALClient, MalHttpError } from "$lib/myanimelist/api";
+import { AUTH_SESSION_COOKIE } from "$lib/myanimelist/svelte/handle";
 
 export const load = (async ({ fetch, cookies }) => {
 
@@ -100,7 +102,7 @@ async function getMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
 
 async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
     const anime: AnimeNode[] = [];
-    const refreshToken = cookies.get("auth-session");
+    const refreshToken = cookies.get(AUTH_SESSION_COOKIE);
 
     if (refreshToken == null) {
         throw error(401, "unable to get session");
@@ -111,31 +113,43 @@ async function fetchMyAnimeList(fetch: typeof window.fetch, cookies: Cookies) {
     const limit = 500;
     let offset = 0;
 
+    const malClient = new MALClient({ accessToken });
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const url = new URL("https://api.myanimelist.net/v2/users/@me/animelist");
-        url.searchParams.set("fields", "genres,start_season,studios,my_list_status,end_date");
-        url.searchParams.set("limit", limit.toString());
-        url.searchParams.set("offset", offset.toString());
+        // const url = new URL("https://api.myanimelist.net/v2/users/@me/animelist");
+        // url.searchParams.set("fields", "genres,start_season,studios,my_list_status,end_date");
+        // url.searchParams.set("limit", limit.toString());
+        // url.searchParams.set("offset", offset.toString());
 
-        const res = await fetch(url, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
+        // const res = await fetch(url, {
+        //     headers: {
+        //         Authorization: `Bearer ${accessToken}`
+        //     }
+        // });
+
+        try {
+            const res = await malClient.getUserAnimeList("@me", {
+                limit,
+                offset,
+                fields: ["genres", "start_season", "studios", "my_list_status", "end_date"]
+            });
+
+            const data = res.data;
+            anime.push(...data);
+
+            if (res.paging.next == null) {
+                break;
             }
-        });
-
-        if (!res.ok) {
-            const msg = await res.text();
-            console.error(msg);
-            throw error(res.status, msg ?? "failed to load myanimelist");
         }
+        catch (err) {
+            console.error(err);
 
-        const json = await res.json() as AnimeApiResponse;
-        const data = json.data;
-        anime.push(...data);
+            if (err instanceof MalHttpError) {
+                throw error(err.status, err.message ?? "failed to load myanimelist");
+            }
 
-        if (json.paging.next == null) {
-            break;
+            throw error(500, err?.toString() ?? "failed to load myanimelist");
         }
 
         offset += limit;
