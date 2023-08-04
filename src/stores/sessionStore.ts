@@ -40,6 +40,7 @@ async function initialize() {
     }
     catch (err) {
         console.error(err);
+        initialized = false;
         sessionStore.set({ user: null, accessToken: null, loading: false })
     }
 }
@@ -49,7 +50,7 @@ export default {
 
     subscribe: sessionStore.subscribe,
 
-    get session() {
+    get current() {
         return get(sessionStore);
     }
 }

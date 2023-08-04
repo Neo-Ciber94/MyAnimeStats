@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import sessionStore from '../stores/sessionStore';
+	import session from '../stores/sessionStore';
 
-	onMount(() => {
-		sessionStore.initialize();
+	onMount(async () => {
+		await session.initialize();
 	});
 </script>
 
-<slot session={sessionStore.session} />
+<slot session={session.current} />
