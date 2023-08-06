@@ -1,17 +1,14 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+/* eslint-disable @typescript-eslint/no-var-requires */
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 const config = {
+	darkMode: 'class',
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
 		'./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}',
-		'./node_modules/flowbite-svelte-icons/**/*.{html,js,svelte,ts}'
+		'./node_modules/flowbite-svelte-icons/**/*.{html,js,svelte,ts}',
 	],
-
-	plugins: [require('flowbite/plugin')],
-
-	darkMode: 'class',
-
 	theme: {
 		screens: {
 			xs: '475px',
@@ -35,7 +32,10 @@ const config = {
 				}
 			}
 		}
-	}
+	},
+	plugins: [
+		require('flowbite/plugin'),
+	]
 };
 
 module.exports = config;
