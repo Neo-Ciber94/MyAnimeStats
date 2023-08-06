@@ -9,8 +9,7 @@
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
-	import { Input, Label, Select } from 'flowbite-svelte';
-	import { CalendarMonthSolid } from 'flowbite-svelte-icons';
+	import { Input } from 'flowbite-svelte';
 	import Color from 'color';
 	import { capitalize, hash, numberToColor } from '$lib/utils/helpers';
 	import type { AutocompleteItem } from './Autocomplete.svelte';
@@ -23,11 +22,10 @@
 	let chart: Chart;
 	let fromYear = now.year() - 5;
 	let toYear = now.year();
-	let currentGenre: string | undefined;
 	let isInit = false;
-
+	
+	let currentGenre: string | undefined;
 	let animeWatched: AnimeNode[] = [];
-	let watchedBySeason = new Map<string, AnimeBySeason>();
 
 	// Genres
 	const animeGenres: AutocompleteItem[] = Enumerable.from(animeList)
@@ -36,7 +34,7 @@
 		.select((x) => ({ label: x.name, value: x.name }))
 		.toArray();
 
-	animeGenres.splice(0, 0, { label: 'All', value: undefined });
+	animeGenres.splice(0, 0, { label: 'All Anime', value: undefined });
 
 	function drawGraph() {
 		if (!isInit) {
@@ -45,6 +43,27 @@
 
 		if (chart) {
 			chart.destroy();
+		}
+
+		const watchedBySeason = new Map<string, AnimeBySeason>();
+
+		for (const anime of animeWatched) {
+			const season = anime.node.start_season?.season;
+
+			if (season == null) {
+				console.warn(`Anime '${anime.node.title}' do not have a start season`);
+				continue;
+			}
+
+			const year = dayjs(anime.node.end_date).year();
+			const key = `${season} (${year})`;
+			const animeList = watchedBySeason.get(key)?.animeList || [];
+			animeList.push(anime);
+			watchedBySeason.set(key, {
+				animeList,
+				season,
+				year
+			});
 		}
 
 		const entries = Enumerable.from(watchedBySeason.entries())
@@ -100,32 +119,11 @@
 	});
 
 	$: {
-		watchedBySeason = new Map<string, AnimeBySeason>();
-
 		animeWatched = getAnimeWatchedByYear(animeList, {
 			from: Number(fromYear),
 			to: Number(toYear),
-			genre: currentGenre === '0' ? undefined : currentGenre
+			genre: currentGenre == null ? undefined : currentGenre
 		});
-
-		for (const anime of animeWatched) {
-			const season = anime.node.start_season?.season;
-
-			if (season == null) {
-				console.warn(`Anime '${anime.node.title}' do not have a start season`);
-				continue;
-			}
-
-			const year = dayjs(anime.node.end_date).year();
-			const key = `${season} (${year})`;
-			const animeList = watchedBySeason.get(key)?.animeList || [];
-			animeList.push(anime);
-			watchedBySeason.set(key, {
-				animeList,
-				season,
-				year
-			});
-		}
 
 		drawGraph();
 	}
