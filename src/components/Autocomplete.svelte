@@ -114,7 +114,7 @@
 </script>
 
 <div class="relative w-full" bind:this={containerRef}>
-	<div class="w-full h-full relative mb-2">
+	<div class="w-full h-full relative">
 		<input
 			bind:value={textValue}
 			bind:this={textInputRef}
@@ -137,7 +137,7 @@
 
 	<ul
 		bind:this={listRef}
-		class={`overflow-x-hidden overflow-y-auto absolute w-full rounded-md max-h-52 ${
+		class={`z-10 mt-2 border border-gray-300/50 overflow-x-hidden overflow-y-auto absolute w-full rounded-md max-h-52 ${
 			open ? 'visible' : 'invisible'
 		}`}
 	>

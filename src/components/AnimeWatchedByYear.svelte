@@ -9,11 +9,12 @@
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
-	import { Input } from 'flowbite-svelte';
+	import { Button, CloseButton, Input } from 'flowbite-svelte';
 	import Color from 'color';
 	import { capitalize, hash, numberToColor } from '$lib/utils/helpers';
 	import type { AutocompleteItem } from './Autocomplete.svelte';
 	import Autocomplete from './Autocomplete.svelte';
+	import { CalendarMonthSolid, TrashBinSolid } from 'flowbite-svelte-icons';
 
 	export let animeList: AnimeNode[];
 
@@ -23,9 +24,6 @@
 	let fromYear = now.year() - 5;
 	let toYear = now.year();
 	let isInit = false;
-	
-	let currentGenre: string | undefined;
-	let animeWatched: AnimeNode[] = [];
 
 	// Genres
 	const animeGenres: AutocompleteItem[] = Enumerable.from(animeList)
@@ -34,7 +32,28 @@
 		.select((x) => ({ label: x.name, value: x.name }))
 		.toArray();
 
-	animeGenres.splice(0, 0, { label: 'All Anime', value: undefined });
+	animeGenres.splice(0, 0, { label: 'All Anime', value: null });
+
+	let filters: { genre?: string | null; watched: AnimeNode[] }[] = [
+		{
+			genre: null,
+			watched: []
+		}
+	];
+
+	function getHashColor(s: string) {
+		return Color(numberToColor(hash(s)))
+			.saturate(50)
+			.hex();
+	}
+
+	function addDataset() {
+		filters = [...filters, { genre: undefined, watched: [] }];
+	}
+
+	function removeDataset(index: number) {
+		filters = filters.filter((_, i) => i !== index);
+	}
 
 	function drawGraph() {
 		if (!isInit) {
@@ -45,34 +64,56 @@
 			chart.destroy();
 		}
 
-		const watchedBySeason = new Map<string, AnimeBySeason>();
+		const datasets = [];
+		let labels: string[] = [];
 
-		for (const anime of animeWatched) {
-			const season = anime.node.start_season?.season;
+		for (const filter of filters) {
+			const watchedBySeason = new Map<string, AnimeBySeason>();
 
-			if (season == null) {
-				console.warn(`Anime '${anime.node.title}' do not have a start season`);
-				continue;
+			for (const anime of filter.watched) {
+				const season = anime.node.start_season?.season;
+
+				if (season == null) {
+					console.warn(`Anime '${anime.node.title}' do not have a start season`);
+					continue;
+				}
+
+				const year = dayjs(anime.node.end_date).year();
+				const key = `${season} (${year})`;
+				const animeList = watchedBySeason.get(key)?.animeList || [];
+				animeList.push(anime);
+				watchedBySeason.set(key, {
+					animeList,
+					season,
+					year
+				});
 			}
 
-			const year = dayjs(anime.node.end_date).year();
-			const key = `${season} (${year})`;
-			const animeList = watchedBySeason.get(key)?.animeList || [];
-			animeList.push(anime);
-			watchedBySeason.set(key, {
-				animeList,
-				season,
-				year
+			const entries = Enumerable.from(watchedBySeason.entries())
+				.orderBy(([_, x]) => x.year)
+				.thenBy(([_, x]) => seasonToNumber(x.season as AnimeSeason))
+				.toArray();
+
+			// Set the graph labels once
+			if (labels.length === 0) {
+				labels = entries.map(([seasonAndYear, _]) => capitalize(seasonAndYear));
+			}
+
+			const animeWatchedCount = entries.map(([_, watched]) => watched.animeList.length);
+			const yearRange = `${fromYear}-${toYear}`;
+
+			// prettier-ignore
+			const label = `${filter.genre == null ? 'Anime watched' : `${filter.genre} anime watched`} in ${yearRange}`;
+			const borderColor = filter.genre == null ? 'rgb(75, 192, 192)' : getHashColor(filter.genre);
+
+			datasets.push({
+				label,
+				data: animeWatchedCount,
+				fill: false,
+				borderColor,
+				tension: 0.1
 			});
 		}
-
-		const entries = Enumerable.from(watchedBySeason.entries())
-			.orderBy(([_, x]) => x.year)
-			.thenBy(([_, x]) => seasonToNumber(x.season as AnimeSeason))
-			.toArray();
-
-		const labels = entries.map(([seasonAndYear, _]) => capitalize(seasonAndYear));
-		const animeWatchedCount = entries.map(([_, watched]) => watched.animeList.length);
 
 		Chart.register(...registerables);
 
@@ -80,22 +121,7 @@
 			type: 'line',
 			data: {
 				labels,
-				datasets: [
-					{
-						label: `${
-							currentGenre == null ? 'Anime watched' : `${currentGenre} anime watched`
-						} in ${fromYear}-${toYear}`,
-						data: animeWatchedCount,
-						fill: false,
-						borderColor:
-							currentGenre == null
-								? 'rgb(75, 192, 192)'
-								: Color(numberToColor(hash(currentGenre)))
-										.saturate(50)
-										.hex(),
-						tension: 0.1
-					}
-				]
+				datasets
 			},
 			options: {
 				plugins: {
@@ -119,18 +145,20 @@
 	});
 
 	$: {
-		animeWatched = getAnimeWatchedByYear(animeList, {
-			from: Number(fromYear),
-			to: Number(toYear),
-			genre: currentGenre == null ? undefined : currentGenre
-		});
+		for (const filter of filters) {
+			filter.watched = getAnimeWatchedByYear(animeList, {
+				from: Number(fromYear),
+				to: Number(toYear),
+				genre: filter.genre == null ? undefined : filter.genre
+			});
+		}
 
 		drawGraph();
 	}
 </script>
 
 <div class="w-11/12">
-	<div class="ml-3 mb-14 flex flex-row gap-4">
+	<div class="ml-3 mb-4 flex flex-row gap-4 h-10">
 		<div class="flex flex-row gap-3 w-[400px]">
 			<Input
 				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -138,7 +166,20 @@
 				type="number"
 				max={toYear}
 				bind:value={fromYear}
-			/>
+			>
+				<svg
+					slot="left"
+					class="w-4 h-4 text-violet-500"
+					aria-hidden="true"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="currentColor"
+					viewBox="0 0 20 20"
+				>
+					<path
+						d="M0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm14-7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4Z"
+					/>
+				</svg>
+			</Input>
 			<Input
 				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
 				placeholder="To Year"
@@ -150,11 +191,35 @@
 		</div>
 
 		<Autocomplete
-			bind:value={currentGenre}
+			bind:value={filters[0].genre}
 			items={animeGenres}
 			placeholder="Select a genre..."
 			class="w-full rounded-md h-full px-2 border-none outline-none"
 		/>
+	</div>
+
+	<div class="ml-3 mb-12 flex flex-col gap-2">
+		{#each filters as filter, index}
+			{#if index > 0}
+				<div class="flex flex-row gap-2 items-center">
+					<Autocomplete
+						bind:value={filter.genre}
+						items={animeGenres}
+						placeholder="Select a genre..."
+						class="w-full rounded-md h-10 px-2 border-none outline-none"
+					/>
+
+					<button
+						on:click={() => removeDataset(index)}
+						class="group h-full w-12 justify-center bg-transparent hover:bg-transparent flex flex-row items-center"
+					>
+						<TrashBinSolid class="text-red-500 group-hover:text-red-600 !outline-none" />
+					</button>
+				</div>
+			{/if}
+		{/each}
+
+		<Button class="mt-2" on:click={addDataset}>Add Dataset</Button>
 	</div>
 
 	<div class="flex flex-row justify-center mx-auto min-h-screen">
