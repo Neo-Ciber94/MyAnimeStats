@@ -9,7 +9,7 @@
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
-	import { Button, CloseButton, Input } from 'flowbite-svelte';
+	import { Button, Input } from 'flowbite-svelte';
 	import Color from 'color';
 	import { capitalize, hash, numberToColor } from '$lib/utils/helpers';
 	import type { AutocompleteItem } from './Autocomplete.svelte';

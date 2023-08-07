@@ -22,7 +22,10 @@
 	let elementRefs: HTMLElement[] = [];
 
 	$: currentItems = items.filter((item) =>
-		item.label.toLowerCase().includes(search.trim().toLowerCase())
+		item.label
+			.toLowerCase()
+			.replaceAll(/\s+/g, '')
+			.includes(search.toLowerCase().replaceAll(/\s+/g, ''))
 	);
 
 	$: activeIndex = currentItems.findIndex((item) => item?.value === value);
