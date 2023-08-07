@@ -26,7 +26,7 @@
 	let isInit = false;
 
 	// Genres
-	const animeGenres: AutocompleteItem[] = Enumerable.from(animeList)
+	const animeGenres: AutocompleteItem<string | null>[] = Enumerable.from(animeList)
 		.selectMany(({ node }) => node.genres)
 		.distinct((x) => x.id)
 		.select((x) => ({ label: x.name, value: x.name }))

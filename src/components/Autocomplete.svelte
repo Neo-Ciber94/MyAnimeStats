@@ -1,16 +1,16 @@
 <script context="module" lang="ts">
-	export type AutocompleteItem = {
+	export type AutocompleteItem<T> = {
 		label: string;
-		value: unknown;
+		value: T;
 	};
 </script>
 
-<script lang="ts">
+<script lang="ts" generics="T">
 	import { CloseButton } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
-	export let items: AutocompleteItem[];
-	export let value: unknown;
+	export let items: AutocompleteItem<T>[];
+	export let value: T | undefined;
 	export let placeholder: string | undefined = undefined;
 	export let closeOnClickOutside = true;
 
@@ -60,7 +60,7 @@
 		value = item?.value;
 	}
 
-	function handleSelect(item: AutocompleteItem) {
+	function handleSelect(item: AutocompleteItem<T>) {
 		setValue(item.value);
 		open = false;
 	}
