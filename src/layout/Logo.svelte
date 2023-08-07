@@ -1,3 +1,3 @@
-<div class="text-white text-4xl font-bold" style="word-spacing: 0em;">
+<div class="text-white text-3xl font-bold" style="word-spacing: 0em;">
 	<a href="/"> MyAnimeStats </a>
 </div>
