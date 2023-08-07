@@ -52,6 +52,11 @@
 	}
 
 	function removeDataset(index: number) {
+		if (index === 0) {
+			console.warn('Cannot remove base dataset');
+			return;
+		}
+
 		filters = filters.filter((_, i) => i !== index);
 	}
 
@@ -158,8 +163,8 @@
 </script>
 
 <div class="w-11/12">
-	<div class="ml-3 mb-4 flex flex-row gap-4 h-10">
-		<div class="flex flex-row gap-3 w-[400px]">
+	<div class="ml-3 mb-4 flex flex-col sm:flex-row gap-4 h-full sm:h-10">
+		<div class="flex flex-row gap-3 w-full sm:w-[400px] h-10">
 			<Input
 				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
 				placeholder="From Year"
@@ -167,18 +172,7 @@
 				max={toYear}
 				bind:value={fromYear}
 			>
-				<svg
-					slot="left"
-					class="w-4 h-4 text-violet-500"
-					aria-hidden="true"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="currentColor"
-					viewBox="0 0 20 20"
-				>
-					<path
-						d="M0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm14-7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4Z"
-					/>
-				</svg>
+				<CalendarMonthSolid slot="left" class="w-4 h-4 text-violet-500" />
 			</Input>
 			<Input
 				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -187,14 +181,16 @@
 				min={fromYear}
 				max={now.year()}
 				bind:value={toYear}
-			/>
+			>
+				<CalendarMonthSolid slot="left" class="w-4 h-4 text-orange-500" />
+			</Input>
 		</div>
 
 		<Autocomplete
 			bind:value={filters[0].genre}
 			items={animeGenres}
 			placeholder="Select a genre..."
-			class="w-full rounded-md h-full px-2 border-none outline-none"
+			class="w-full rounded-md h-10 px-2 border-none outline-none"
 		/>
 	</div>
 

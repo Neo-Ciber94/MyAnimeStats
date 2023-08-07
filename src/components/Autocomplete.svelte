@@ -14,15 +14,15 @@
 	export let placeholder: string | undefined = undefined;
 	export let closeOnClickOutside = true;
 
-	let textValue = '';
+	let search = '';
 	let open = false;
-	let textInputRef: HTMLInputElement;
+	let searchInputRef: HTMLInputElement;
 	let containerRef: HTMLDivElement;
 	let listRef: HTMLUListElement;
 	let elementRefs: HTMLElement[] = [];
 
 	$: currentItems = items.filter((item) =>
-		item.label.toLowerCase().includes(textValue.trim().toLowerCase())
+		item.label.toLowerCase().includes(search.trim().toLowerCase())
 	);
 
 	$: activeIndex = currentItems.findIndex((item) => item?.value === value);
@@ -53,7 +53,7 @@
 	function setValue(newValue: unknown) {
 		const itemIndex = currentItems.findIndex((x) => x.value === newValue);
 		const item = currentItems[itemIndex];
-		textValue = item?.label ?? '';
+		search = item?.label ?? '';
 		value = item?.value;
 	}
 
@@ -67,12 +67,12 @@
 	}
 
 	function handleClear() {
-		textValue = '';
+		search = '';
 		value = undefined;
 		open = false;
 
-		if (textInputRef) {
-			textInputRef.focus();
+		if (searchInputRef) {
+			searchInputRef.focus();
 		}
 	}
 
@@ -116,21 +116,21 @@
 <div class="relative w-full" bind:this={containerRef}>
 	<div class="w-full h-full relative">
 		<input
-			bind:value={textValue}
-			bind:this={textInputRef}
+			bind:value={search}
+			bind:this={searchInputRef}
 			on:click={handleOpen}
 			on:focus={handleOpen}
 			on:input={handleOpen}
 			on:keydown={handleKeyDown}
-			{placeholder}
 			class={$$props.class}
+			{placeholder}
 		/>
-		<slot name="clear" clear={handleClear} canClear={textValue.length}>
+		<slot name="clear" clear={handleClear} canClear={search.length}>
 			<CloseButton
 				on:click={handleClear}
 				class={`absolute right-0 -translate-y-1/2 top-1/2 
                     hover:text-red-500 hover:bg-transparent focus:ring-transparent focus:bg-transparent
-                    ${textValue.length > 0 ? 'visible' : 'invisible'}`}
+                    ${search.length > 0 ? 'visible' : 'invisible'}`}
 			/>
 		</slot>
 	</div>
@@ -144,14 +144,13 @@
 		{#each currentItems as item, index}
 			<li bind:this={elementRefs[index]}>
 				<button on:click={() => handleSelect(item)} class="h-full w-full" tabIndex={0}>
-					<slot name="option" {item} active={activeIndex === index}>
+					<slot name="option" {item} {index} active={activeIndex === index}>
 						<div
 							class={`py-2 pl-4 w-full h-full text-left ${
 								activeIndex === index
 									? 'bg-violet-500 text-white'
 									: 'hover:bg-violet-200 bg-white text-black'
-							}
-                        `}
+							}`}
 						>
 							{item.label}
 						</div>
