@@ -187,7 +187,7 @@
 		</div>
 
 		<Autocomplete
-			bind:value={filters[0].genre}
+			bind:selected={filters[0].genre}
 			items={animeGenres}
 			placeholder="Select a genre..."
 			class="w-full rounded-md h-10 px-2 border-none outline-none"
@@ -199,7 +199,7 @@
 			{#if index > 0}
 				<div class="flex flex-row gap-2 items-center">
 					<Autocomplete
-						bind:value={filter.genre}
+						bind:selected={filter.genre}
 						items={animeGenres}
 						placeholder="Select a genre..."
 						class="w-full rounded-md h-10 px-2 border-none outline-none"

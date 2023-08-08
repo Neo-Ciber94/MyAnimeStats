@@ -6,12 +6,15 @@
 </script>
 
 <script lang="ts" generics="T">
+	import { twMerge } from 'tailwind-merge';
+
 	import { CloseButton } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
 	export let items: AutocompleteItem<T>[];
-	export let value: T | undefined;
+	export let selected: T | undefined;
 	export let placeholder: string | undefined = undefined;
+	export let multiple = false;
 	export let closeOnClickOutside = true;
 
 	let search = '';
@@ -28,10 +31,10 @@
 			.includes(search.toLowerCase().replaceAll(/\s+/g, ''))
 	);
 
-	$: activeIndex = currentItems.findIndex((item) => item?.value === value);
+	$: activeIndex = currentItems.findIndex((item) => item?.value === selected);
 
 	onMount(() => {
-		setValue(value);
+		setValue(selected);
 	});
 
 	onMount(() => {
@@ -57,7 +60,7 @@
 		const itemIndex = currentItems.findIndex((x) => x.value === newValue);
 		const item = currentItems[itemIndex];
 		search = item?.label ?? '';
-		value = item?.value;
+		selected = item?.value;
 	}
 
 	function handleSelect(item: AutocompleteItem<T>) {
@@ -71,7 +74,7 @@
 
 	function handleClear() {
 		search = '';
-		value = undefined;
+		selected = undefined;
 		open = false;
 
 		if (searchInputRef) {
@@ -117,26 +120,41 @@
 </script>
 
 <div class="relative w-full" bind:this={containerRef}>
-	<div class="w-full h-full relative">
-		<input
-			bind:value={search}
-			bind:this={searchInputRef}
-			on:click={handleOpen}
-			on:focus={handleOpen}
-			on:input={handleOpen}
-			on:keydown={handleKeyDown}
-			class={$$props.class}
-			{placeholder}
-		/>
-		<slot name="clear" clear={handleClear} canClear={search.length}>
-			<CloseButton
-				on:click={handleClear}
-				class={`absolute right-0 -translate-y-1/2 top-1/2 
+	{#if multiple}
+		<div class="w-full h-12 bg-white rounded-md">
+			<input
+				bind:value={search}
+				bind:this={searchInputRef}
+				on:click={handleOpen}
+				on:focus={handleOpen}
+				on:input={handleOpen}
+				on:keydown={handleKeyDown}
+				class={twMerge($$props.class, 'bg-transparent')}
+				{placeholder}
+			/>
+		</div>
+	{:else}
+		<div class="w-full h-full relative">
+			<input
+				bind:value={search}
+				bind:this={searchInputRef}
+				on:click={handleOpen}
+				on:focus={handleOpen}
+				on:input={handleOpen}
+				on:keydown={handleKeyDown}
+				class={$$props.class}
+				{placeholder}
+			/>
+			<slot name="clear" clear={handleClear} canClear={search.length}>
+				<CloseButton
+					on:click={handleClear}
+					class={`absolute right-0 -translate-y-1/2 top-1/2 
                     hover:text-red-500 hover:bg-transparent focus:ring-transparent focus:bg-transparent
                     ${search.length > 0 ? 'visible' : 'invisible'}`}
-			/>
-		</slot>
-	</div>
+				/>
+			</slot>
+		</div>
+	{/if}
 
 	<ul
 		bind:this={listRef}

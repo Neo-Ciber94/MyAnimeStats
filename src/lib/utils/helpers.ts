@@ -21,3 +21,7 @@ export function numberToColor(value: number): string {
 
     return `#${rr}${gg}${bb}`;
 }
+
+export function getArray<T>(value: T | T[]): T[] {
+    return Array.isArray(value) ? value : [value];
+}
