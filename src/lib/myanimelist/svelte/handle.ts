@@ -109,7 +109,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             console.log({ tokens });
 
             event.cookies.set(AUTH_SESSION_COOKIE, tokens.refresh_token, {
-                path:  "/",
+                path: "/",
                 maxAge: sessionDurationSeconds,
                 httpOnly: true,
                 sameSite: 'strict'
@@ -167,18 +167,19 @@ async function proxyRequestToMyAnimeListAPI(apiUrl: string, event: RequestEvent)
     const forwardHeaders: Record<string, string> = {};
 
     for (const [key, value] of event.request.headers.entries()) {
-        if (ALLOWED_FORWARD_HEADERS.includes(key)) {
+        if (ALLOWED_FORWARD_HEADERS.some(x => x.toLowerCase() === key.toLowerCase())) {
             forwardHeaders[key] = value;
         }
     }
 
-    const path = event.url.toString().slice(apiUrl.length);
-    const myAnimeListApiUrl = `${MY_ANIME_LIST_API_URL}/${path}`
-
+    const path = event.url.pathname.slice(apiUrl.length);
+    const search = event.url.search;
+    const myAnimeListApiUrl = `${MY_ANIME_LIST_API_URL}${path}${search}`
+    
     // 🍥 GET: https://api.example.com/users
     console.log(`🍥 ${event.request.method}: ${myAnimeListApiUrl}`)
 
-    const res = await event.fetch(path, {
+    const res = await event.fetch(myAnimeListApiUrl, {
         method: event.request.method,
         body: event.request.body,
         headers: forwardHeaders,

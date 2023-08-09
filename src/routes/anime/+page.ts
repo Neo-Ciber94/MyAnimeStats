@@ -1,25 +1,23 @@
-import { type AnimeApiResponse, getCurrentAnimeSeason } from "$lib/myanimelist/common/types";
-import { error } from "@sveltejs/kit";
+import { getCurrentAnimeSeason } from "$lib/myanimelist/common/types";
 import type { PageLoad } from "./$types";
+import { MALClient } from "$lib/myanimelist/api";
+import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 
 export const load: PageLoad = async ({ fetch }) => {
     const { year, season } = getCurrentAnimeSeason();
-    const limit = 50;
-    const sort = "anime_num_list_users";
-    const fields = "nsfw,genres,status,mean"
-    const res = await fetch(`/api/myanimelist/anime/season/${year}/${season}?limit=${limit}&fields=${fields}&sort=${sort}`);
+    const malClient = new MALClient({
+        fetch,
+        proxyUrl: "/api/myanimelist",
+        clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
+    });
 
-    if (!res.ok) {
-        let msg: string;
-        if (res.headers.get('content-type') === 'application/json') {
-            msg = await res.text();
-        } else {
-            msg = `${res.status} - ${res.statusText}`;
-        }
+    const result = await malClient.getSeasonalAnime({
+        season,
+        year,
+        limit: 50,
+        sort: 'anime_num_list_users',
+        fields: ["nsfw", "genres", "status", "mean"]
+    });
 
-        throw error(res.status, msg);
-    }
-
-    const result = await res.json() as AnimeApiResponse;
     return result;
 };
