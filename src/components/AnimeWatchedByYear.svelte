@@ -9,12 +9,12 @@
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
-	import { Button, Input } from 'flowbite-svelte';
+	import { Input } from 'flowbite-svelte';
 	import Color from 'color';
 	import { capitalize, hash, numberToColor } from '$lib/utils/helpers';
 	import type { AutocompleteItem } from './Autocomplete.svelte';
-	import Autocomplete from './Autocomplete.svelte';
-	import { CalendarMonthSolid, TrashBinSolid } from 'flowbite-svelte-icons';
+	import { CalendarMonthSolid, ListSolid } from 'flowbite-svelte-icons';
+	import TagInput from './TagInput.svelte';
 
 	export let animeList: AnimeNode[];
 
@@ -41,23 +41,12 @@
 		}
 	];
 
+	$: selectedGenres = filters.map((x) => x.genre);
+
 	function getHashColor(s: string) {
 		return Color(numberToColor(hash(s)))
 			.saturate(50)
 			.hex();
-	}
-
-	function addDataset() {
-		filters = [...filters, { genre: undefined, watched: [] }];
-	}
-
-	function removeDataset(index: number) {
-		if (index === 0) {
-			console.warn('Cannot remove base dataset');
-			return;
-		}
-
-		filters = filters.filter((_, i) => i !== index);
 	}
 
 	function drawGraph() {
@@ -105,10 +94,9 @@
 			}
 
 			const animeWatchedCount = entries.map(([_, watched]) => watched.animeList.length);
-			const yearRange = `${fromYear}-${toYear}`;
 
 			// prettier-ignore
-			const label = `${filter.genre == null ? 'Anime watched' : `${filter.genre} anime watched`} in ${yearRange}`;
+			const label = `${filter.genre == null ? 'Anime watched' : `${filter.genre} anime watched`}`;
 			const borderColor = filter.genre == null ? 'rgb(75, 192, 192)' : getHashColor(filter.genre);
 
 			datasets.push({
@@ -134,7 +122,7 @@
 						labels: {
 							color: 'white',
 							font: {
-								size: 20,
+								size: 14,
 								weight: 'bold'
 							}
 						}
@@ -142,6 +130,18 @@
 				}
 			}
 		});
+	}
+
+	function handleAdd(event: CustomEvent<AutocompleteItem<string | null | undefined>>) {
+		const item = {
+			genre: event.detail.value,
+			watched: []
+		};
+		filters = [...filters, item];
+	}
+
+	function handleRemove(event: CustomEvent<AutocompleteItem<string | null | undefined>>) {
+		filters = filters.filter((x) => x.genre !== event.detail.value);
 	}
 
 	onMount(() => {
@@ -164,7 +164,7 @@
 
 <div class="w-11/12">
 	<div class="ml-3 mb-4 flex flex-col sm:flex-row gap-4 h-full sm:h-10">
-		<div class="flex flex-row gap-3 w-full sm:w-[400px] h-10">
+		<div class="flex flex-row gap-3 w-full h-10">
 			<Input
 				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
 				placeholder="From Year"
@@ -185,37 +185,20 @@
 				<CalendarMonthSolid slot="left" class="w-4 h-4 text-orange-500" />
 			</Input>
 		</div>
-
-		<Autocomplete
-			bind:selected={filters[0].genre}
-			items={animeGenres}
-			placeholder="Select a genre..."
-			class="w-full rounded-md h-10 px-2 border-none outline-none"
-		/>
 	</div>
 
 	<div class="ml-3 mb-12 flex flex-col gap-2">
-		{#each filters as filter, index}
-			{#if index > 0}
-				<div class="flex flex-row gap-2 items-center">
-					<Autocomplete
-						bind:selected={filter.genre}
-						items={animeGenres}
-						placeholder="Select a genre..."
-						class="w-full rounded-md h-10 px-2 border-none outline-none"
-					/>
-
-					<button
-						on:click={() => removeDataset(index)}
-						class="group h-full w-12 justify-center bg-transparent hover:bg-transparent flex flex-row items-center"
-					>
-						<TrashBinSolid class="text-red-500 group-hover:text-red-600 !outline-none" />
-					</button>
-				</div>
-			{/if}
-		{/each}
-
-		<Button class="mt-2" on:click={addDataset}>Add Dataset</Button>
+		<TagInput
+			placeholder="Select the genres..."
+			items={animeGenres}
+			bind:selected={selectedGenres}
+			on:added={handleAdd}
+			on:removed={handleRemove}
+		>
+			<div slot="icon" class="mx-2">
+				<ListSolid class="text-orange-500 !outline-none" />
+			</div>
+		</TagInput>
 	</div>
 
 	<div class="flex flex-row justify-center mx-auto min-h-screen">

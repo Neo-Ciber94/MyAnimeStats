@@ -14,7 +14,6 @@
 	export let items: AutocompleteItem<T>[];
 	export let selected: T | undefined;
 	export let placeholder: string | undefined = undefined;
-	export let multiple = false;
 	export let closeOnClickOutside = true;
 
 	let search = '';
@@ -120,41 +119,26 @@
 </script>
 
 <div class="relative w-full" bind:this={containerRef}>
-	{#if multiple}
-		<div class="w-full h-12 bg-white rounded-md">
-			<input
-				bind:value={search}
-				bind:this={searchInputRef}
-				on:click={handleOpen}
-				on:focus={handleOpen}
-				on:input={handleOpen}
-				on:keydown={handleKeyDown}
-				class={twMerge($$props.class, 'bg-transparent')}
-				{placeholder}
+	<div class="w-full h-full relative">
+		<input
+			bind:value={search}
+			bind:this={searchInputRef}
+			on:click={handleOpen}
+			on:focus={handleOpen}
+			on:input={handleOpen}
+			on:keydown={handleKeyDown}
+			class={$$props.class}
+			{placeholder}
+		/>
+		<slot name="clear" clear={handleClear} canClear={search.length}>
+			<CloseButton
+				on:click={handleClear}
+				class={`absolute right-0 -translate-y-1/2 top-1/2 
+				hover:text-red-500 hover:bg-transparent focus:ring-transparent focus:bg-transparent
+				${search.length > 0 ? 'visible' : 'invisible'}`}
 			/>
-		</div>
-	{:else}
-		<div class="w-full h-full relative">
-			<input
-				bind:value={search}
-				bind:this={searchInputRef}
-				on:click={handleOpen}
-				on:focus={handleOpen}
-				on:input={handleOpen}
-				on:keydown={handleKeyDown}
-				class={$$props.class}
-				{placeholder}
-			/>
-			<slot name="clear" clear={handleClear} canClear={search.length}>
-				<CloseButton
-					on:click={handleClear}
-					class={`absolute right-0 -translate-y-1/2 top-1/2 
-                    hover:text-red-500 hover:bg-transparent focus:ring-transparent focus:bg-transparent
-                    ${search.length > 0 ? 'visible' : 'invisible'}`}
-				/>
-			</slot>
-		</div>
-	{/if}
+		</slot>
+	</div>
 
 	<ul
 		bind:this={listRef}
