@@ -163,27 +163,42 @@
 </script>
 
 <div class="w-11/12">
-	<div class="ml-3 mb-4 flex flex-col sm:flex-row gap-4 h-full sm:h-10">
-		<div class="flex flex-row gap-3 w-full h-10">
-			<Input
-				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
-				placeholder="From Year"
-				type="number"
-				max={toYear}
-				bind:value={fromYear}
+	<div class="ml-3 mb-4 flex flex-col sm:flex-row gap-4 h-full">
+		<div class="flex flex-col lg:flex-row gap-3 w-full">
+			<div
+				class="w-full flex flex-row gap-2 items-center border-b-2 pb-2 border-b-violet-500 focus-within:border-b-orange-500"
 			>
-				<CalendarMonthSolid slot="left" class="w-4 h-4 text-violet-500" />
-			</Input>
-			<Input
-				class="text-md focus:ring-indigo-500 focus:border-indigo-500"
-				placeholder="To Year"
-				type="number"
-				min={fromYear}
-				max={now.year()}
-				bind:value={toYear}
+				<div class="flex flex-row items-center gap-2">
+					<CalendarMonthSolid class="w-4 h-4 mx-2 text-violet-500" />
+					<div class="text-violet-500 whitespace-nowrap min-w-[80px]">From Year</div>
+				</div>
+
+				<input
+					class="w-full text-md text-white bg-transparent border-none focus:ring-0 text-right"
+					placeholder="From Year"
+					type="number"
+					max={toYear}
+					bind:value={fromYear}
+				/>
+			</div>
+
+			<div
+				class="w-full flex flex-row gap-2 items-center border-b-2 pb-2 border-b-violet-500 focus-within:border-b-orange-500"
 			>
-				<CalendarMonthSolid slot="left" class="w-4 h-4 text-orange-500" />
-			</Input>
+				<div class="flex flex-row items-center gap-2">
+					<CalendarMonthSolid class="w-4 h-4 mx-2 text-orange-500" />
+					<div class="text-orange-500 whitespace-nowrap min-w-[80px]">To Year</div>
+				</div>
+
+				<input
+					class="w-full text-md text-white bg-transparent border-none focus:ring-0 text-right"
+					placeholder="To Year"
+					type="number"
+					min={fromYear}
+					max={now.year()}
+					bind:value={toYear}
+				/>
+			</div>
 		</div>
 	</div>
 
@@ -194,9 +209,19 @@
 			bind:selected={selectedGenres}
 			on:added={handleAdd}
 			on:removed={handleRemove}
+			listClass="backdrop-blur-md border-violet-500"
+			class=" gap-2 bg-transparent focus-within:border-b-orange-500 text-white border-b-2 pb-2 border-b-violet-500"
 		>
 			<div slot="icon" class="mx-2">
 				<ListSolid class="text-orange-500 !outline-none" />
+			</div>
+
+			<div
+				let:item
+				slot="option"
+				class={`py-2 pl-4 w-full h-full text-left bg-transparent text-white hover:bg-violet-400`}
+			>
+				{item.label}
 			</div>
 		</TagInput>
 	</div>
@@ -205,3 +230,10 @@
 		<canvas bind:this={chartCanvas} />
 	</div>
 </div>
+
+<style>
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		margin-left: 20px;
+	}
+</style>

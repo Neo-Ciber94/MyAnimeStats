@@ -8,6 +8,9 @@
 	export let placeholder: string | undefined = undefined;
 	export let closeOnClickOutside = true;
 
+	// classess
+	export let listClass: string = '';
+
 	const dispatch = createEventDispatcher<{
 		added: AutocompleteItem<T>;
 		removed: AutocompleteItem<T>;
@@ -105,7 +108,7 @@
 		on:blur={() => {
 			hasFocus = false;
 		}}
-		class="w-full bg-white rounded-md flex-wrap flex flex-row items-center gap-1 px-1"
+		class={twMerge('tags-container bg-white', $$props.class)}
 	>
 		<slot name="icon" />
 
@@ -142,19 +145,19 @@
 			on:focus={handleOpen}
 			on:input={handleOpen}
 			on:keydown={handleKeyDown}
-			class={twMerge(
-				$$props.class,
-				`h-10 ${hasFocus ? 'w-auto' : 'w-0'} flex-grow outline-none bg-transparent`
-			)}
+			class={`${hasFocus ? 'w-auto' : 'w-0'} h-10 flex-grow outline-none bg-transparent`}
 			placeholder={tags.length === 0 ? placeholder : undefined}
 		/>
 	</div>
 
 	<ul
 		bind:this={listRef}
-		class={`z-10 mt-2 border border-gray-300/50 overflow-x-hidden overflow-y-auto absolute w-full rounded-md max-h-52 ${
-			open ? 'visible' : 'invisible'
-		}`}
+		class={twMerge(
+			`z-10 mt-2 border border-gray-300/50 overflow-x-hidden overflow-y-auto absolute w-full rounded-md max-h-52 ${
+				open ? 'visible' : 'invisible'
+			}`,
+			listClass
+		)}
 	>
 		{#each currentItems as item, index}
 			<li bind:this={elementRefs[index]}>
@@ -169,3 +172,13 @@
 		{/each}
 	</ul>
 </div>
+
+<style>
+	.tags-container {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+</style>

@@ -5,6 +5,7 @@
         "ngClass",
         "contentClass",
         "defaultClass",
-        "activeClass"
+        "activeClass",
+        "listClass"
     ]
 }
