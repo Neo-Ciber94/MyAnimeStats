@@ -23,6 +23,7 @@
 	let listRef: HTMLUListElement;
 	let elementRefs: HTMLElement[] = [];
 	let hasFocus = false;
+	let activeIndex = -1;
 
 	$: currentItems = items
 		.filter((item) => !selected.includes(item.value))
@@ -94,6 +95,44 @@
 		if (event.key === 'Escape') {
 			open = false;
 		}
+
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			const isDown = event.key === 'ArrowDown';
+
+			if (isDown) {
+				activeIndex += 1;
+			} else {
+				activeIndex -= 1;
+			}
+
+			if (activeIndex < 0) {
+				activeIndex = currentItems.length - 1;
+			} else if (activeIndex >= currentItems.length) {
+				activeIndex = 0;
+			}
+
+			const ref = elementRefs[activeIndex];
+
+			if (ref) {
+				const offsetTop = ref.offsetTop;
+				listRef.scrollTo({ top: offsetTop });
+			}
+		}
+
+		if (event.key === 'Enter' && activeIndex >= 0) {
+			const item = currentItems[activeIndex];
+			if (item) {
+				handleSelect(item);
+			}
+		}
+
+		if (event.key === 'Backspace' && tags.length > 0) {
+			const lastTag = tags[tags.length - 1];
+			const lastItemIndex = selected.findIndex((x) => x === lastTag);
+			if (lastItemIndex >= 0) {
+				removeTag(lastItemIndex);
+			}
+		}
 	}
 </script>
 
@@ -145,6 +184,9 @@
 			on:focus={handleOpen}
 			on:input={handleOpen}
 			on:keydown={handleKeyDown}
+			on:blur={() => {
+				activeIndex = -1;
+			}}
 			class={`${hasFocus ? 'w-auto' : 'w-0'} h-10 flex-grow outline-none bg-transparent`}
 			placeholder={tags.length === 0 ? placeholder : undefined}
 		/>
@@ -162,8 +204,12 @@
 		{#each currentItems as item, index}
 			<li bind:this={elementRefs[index]}>
 				<button on:click={() => handleSelect(item)} class="h-full w-full" tabIndex={0}>
-					<slot name="option" {item} {index}>
-						<div class={`py-2 pl-4 w-full h-full text-left bg-white hover:bg-violet-400`}>
+					<slot name="option" {item} {index} active={activeIndex === index}>
+						<div
+							class={`py-2 pl-4 w-full h-full text-left bg-white hover:bg-violet-400 ${
+								activeIndex === index ? 'bg-violet-600' : ''
+							}`}
+						>
 							{item.label}
 						</div>
 					</slot>

@@ -117,12 +117,14 @@
 				datasets
 			},
 			options: {
+				responsive: true,
 				plugins: {
 					legend: {
+						display: true,
 						labels: {
 							color: 'white',
 							font: {
-								size: 14,
+								size: 15,
 								weight: 'bold'
 							}
 						}
@@ -218,15 +220,18 @@
 
 			<div
 				let:item
+				let:active
 				slot="option"
-				class={`py-2 pl-4 w-full h-full text-left bg-transparent text-white hover:bg-violet-400`}
+				class={`py-2 pl-4 w-full h-full text-left bg-transparent text-white hover:bg-violet-500 ${
+					active ? 'bg-violet-600' : ''
+				}`}
 			>
 				{item.label}
 			</div>
 		</TagInput>
 	</div>
 
-	<div class="flex flex-row justify-center mx-auto min-h-screen">
+	<div class="flex flex-row justify-center mx-auto min-h-screen relative w-full">
 		<canvas bind:this={chartCanvas} />
 	</div>
 </div>
