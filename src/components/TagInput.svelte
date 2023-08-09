@@ -219,12 +219,12 @@
 	</ul>
 </div>
 
-<style>
+<style lang="postcss">
 	.tags-container {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: center;
+		@apply w-full flex flex-row flex-wrap items-center;
+	}
+
+	ul::-webkit-scrollbar {
+		@apply w-4 ;
 	}
 </style>
