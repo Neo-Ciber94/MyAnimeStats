@@ -4,6 +4,7 @@
 	import { ChartSolid } from 'flowbite-svelte-icons';
 	import type { ActionData, PageServerData } from './$types';
 	import { Button } from 'flowbite-svelte';
+	import CalculateStatsButton from '$components/CalculateStatsButton.svelte';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -13,22 +14,22 @@
 	<StatSidebar />
 
 	{#if data?.stats}
-		<StatTabs stats={data.stats} animeList={data.animeList} />
+		<div class="flex flex-col w-full">
+			<StatTabs stats={data.stats} animeList={data.animeList} />
+			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
+				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
+			</div>
+		</div>
 	{:else if form?.stats}
-		<StatTabs stats={form.stats} animeList={data.animeList || []} />
+		<div class="flex flex-col w-full">
+			<StatTabs stats={form.stats} animeList={data.animeList || []} />
+			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
+				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
+			</div>
+		</div>
 	{:else}
-		<div class="w-full flex flex-row justify-center mt-[10%] h-fit">
-			<form method="POST" action="?/calculate">
-				<Button
-					type="submit"
-					size="lg"
-					color="purple"
-					class="text-xl flex flex-row items-center gap-3"
-				>
-					<ChartSolid class="w-5 h-5 text-white" />
-					<span>Calculate Stats</span>
-				</Button>
-			</form>
+		<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
+			<CalculateStatsButton>Calculate Stats</CalculateStatsButton>
 		</div>
 	{/if}
 </div>

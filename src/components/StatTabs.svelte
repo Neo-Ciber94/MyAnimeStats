@@ -10,11 +10,11 @@
 	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
 	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
-	import type { AnimeNode } from '$lib/myanimelist/common/types';
+	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 
 	export let stats: CalculatedStats;
-	export let animeList: AnimeNode[];
+	export let animeList: AnimeNodeWithStatus[];
 </script>
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { AnimeNode } from '$lib/myanimelist/common/types';
+	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import { Tabs, TabItem } from 'flowbite-svelte';
 
-	export let animeList: AnimeNode[];
+	export let animeList: AnimeNodeWithStatus[];
 </script>
 
 <Tabs style="pill">

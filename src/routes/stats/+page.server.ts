@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies } from "@sveltejs/kit";
-import type { AnimeNode } from "$lib/myanimelist/common/types";
+import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { Auth } from "$lib/myanimelist/auth/server";
 import { db } from "$lib/db";
@@ -69,7 +69,7 @@ async function calculateUserStats(cookies: Cookies) {
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
     // Calculate stats
-    const byGenre = new Map<string, AnimeNode[]>();
+    const byGenre = new Map<string, AnimeNodeWithStatus[]>();
 
     for (const anime of animeList) {
         const genres = anime.node.genres || [];
@@ -90,7 +90,7 @@ async function calculateUserStats(cookies: Cookies) {
 }
 
 async function getMyAnimeList(cookies: Cookies) {
-    let animeList = await db.get("anime") as AnimeNode[] | undefined;
+    let animeList = await db.get("anime") as AnimeNodeWithStatus[] | undefined;
 
     if (animeList == null) {
         animeList = await fetchMyAnimeList(cookies);
@@ -101,7 +101,7 @@ async function getMyAnimeList(cookies: Cookies) {
 }
 
 async function fetchMyAnimeList(cookies: Cookies) {
-    const anime: AnimeNode[] = [];
+    const anime: AnimeNodeWithStatus[] = [];
     const refreshToken = cookies.get(AUTH_SESSION_COOKIE);
 
     if (refreshToken == null) {
@@ -117,17 +117,6 @@ async function fetchMyAnimeList(cookies: Cookies) {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        // const url = new URL("https://api.myanimelist.net/v2/users/@me/animelist");
-        // url.searchParams.set("fields", "genres,start_season,studios,my_list_status,end_date");
-        // url.searchParams.set("limit", limit.toString());
-        // url.searchParams.set("offset", offset.toString());
-
-        // const res = await fetch(url, {
-        //     headers: {
-        //         Authorization: `Bearer ${accessToken}`
-        //     }
-        // });
-
         try {
             const res = await malClient.getUserAnimeList("@me", {
                 limit,
