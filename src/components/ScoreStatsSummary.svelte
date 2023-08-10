@@ -17,12 +17,6 @@
 </script>
 
 <section>
-	<div class="flex flex-row">
-		<h1 class="leading-[2em] text-white font-bold text-2xl border-b-2 border-b-violet-500">
-			My Scores
-		</h1>
-	</div>
-
 	<div
 		class="text-white mt-4 grid grid-cols-1 xs:grid-cols-2 gap-2 text-lg sm:text-2xl
 		shadow-md border-2 border-violet-900 p-4 rounded-lg"
