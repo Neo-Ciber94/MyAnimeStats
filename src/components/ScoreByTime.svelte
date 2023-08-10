@@ -33,6 +33,7 @@
 						label: 'Score over time',
 						data: scores,
 						borderColor: '#ff8000',
+                        showLine: true,
                         tension: 1
 					}
 				]
