@@ -59,6 +59,6 @@
 	});
 </script>
 
-<div class="w-[95%] flex flex-row justify-center mx-auto">
+<div class="w-11/12 flex flex-row justify-center mx-auto min-h-screen">
 	<canvas bind:this={chartCanvas} />
 </div>

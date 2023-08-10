@@ -32,6 +32,7 @@
 
 	const labels = dataset.map((x) => x.genre);
 	const scores = dataset.map((x) => x.averageScore);
+    const minWidth = dataset.length * 4;
 
 	onMount(() => {
 		Chart.register(...registerables);
@@ -104,6 +105,6 @@
 	});
 </script>
 
-<div class="w-11/12 flex flex-row justify-center mx-auto min-h-[300vh]">
+<div class="w-11/12 flex flex-row justify-center mx-auto" style="min-height: {minWidth}vh;">
 	<canvas bind:this={chartCanvas} />
 </div>

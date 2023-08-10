@@ -35,6 +35,7 @@
 
 	const labels = dataset.map((x) => x.studioAndAnimeCount);
 	const scores = dataset.map((x) => x.averageScore);
+    const minWidth = dataset.length * 4;
 
 	onMount(() => {
 		Chart.register(...registerables);
