@@ -14,19 +14,9 @@
 	<StatSidebar />
 
 	{#if data?.stats}
-		<div class="flex flex-col w-full">
-			<StatTabs stats={data.stats} animeList={data.animeList} />
-			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
-				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
-			</div>
-		</div>
+		<StatTabs stats={data.stats} animeList={data.animeList} />
 	{:else if form?.stats}
-		<div class="flex flex-col w-full">
-			<StatTabs stats={form.stats} animeList={data.animeList || []} />
-			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
-				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
-			</div>
-		</div>
+		<StatTabs stats={form.stats} animeList={data.animeList || []} />
 	{:else}
 		<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
 			<CalculateStatsButton>Calculate Stats</CalculateStatsButton>

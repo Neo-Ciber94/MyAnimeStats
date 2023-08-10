@@ -121,7 +121,7 @@ async function fetchMyAnimeList(cookies: Cookies) {
             const res = await malClient.getUserAnimeList("@me", {
                 limit,
                 offset,
-                fields: ["genres", "start_season", "studios", "my_list_status", "end_date"]
+                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", "list_status"]
             });
 
             const data = res.data;

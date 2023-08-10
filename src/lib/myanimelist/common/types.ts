@@ -86,7 +86,7 @@ export type AnimeNodeWithRanking = AnimeNode & {
 }
 
 export type AnimeNodeWithStatus = AnimeNode & {
-    status: MyListStatus
+    list_status: MyListStatus
 }
 
 export type AnimeApiResponse<T extends AnimeNode = AnimeNode> = {

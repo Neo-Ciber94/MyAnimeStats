@@ -12,6 +12,7 @@
 	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
+	import CalculateStatsButton from './CalculateStatsButton.svelte';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
@@ -19,10 +20,12 @@
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
 	<Tabs
+		divider={true}
 		style="underline"
 		activeClass="text-indigo-500"
-		contentClass="bg-transparent w-full pt-10"
-		defaultClass="text-indigo-500 mt-5 flex flex-row justify-around w-full flex-wrap"
+		contentClass="bg-transparent w-full pt-5"
+		defaultClass="text-indigo-500 mt-5 flex flex-row justify-around w-full 
+		flex-wrap border-b border-b-violet-500"
 	>
 		<TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
@@ -35,6 +38,10 @@
 			</div>
 
 			<MyStatsSection {stats} />
+
+			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
+				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
+			</div>
 		</TabItem>
 		<TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
