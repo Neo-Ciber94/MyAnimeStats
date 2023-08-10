@@ -20,8 +20,6 @@
 		return `${d.format('MMMM')} - ${d.year()}`;
 	});
 
-	console.log({ scores });
-
 	onMount(() => {
 		Chart.register(...registerables);
 		new Chart(chartCanvas, {
@@ -33,18 +31,18 @@
 						label: 'Score over time',
 						data: scores,
 						borderColor: '#ff8000',
-                        showLine: true,
-                        tension: 1
+						showLine: true,
+						tension: 1
 					}
 				]
 			},
 			options: {
 				responsive: true,
 				datasets: {
-                    line: {
-                        borderWidth: 1
-                    }
-                },
+					line: {
+						borderWidth: 1
+					}
+				},
 				plugins: {
 					legend: {
 						display: true,
