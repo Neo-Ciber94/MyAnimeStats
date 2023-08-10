@@ -4,6 +4,7 @@
 	import ScoreStatsSummary from './ScoreStatsSummary.svelte';
 	import ScoreByTime from './ScoreByTime.svelte';
 	import ScoreByGenre from './ScoreByGenre.svelte';
+	import ScoreByAnimeStudio from './ScoreByAnimeStudio.svelte';
 
 	export let animeList: AnimeNodeWithStatus[];
 </script>
@@ -29,9 +30,6 @@
 
 	<TabItem inactiveClasses="text-orange-500 py-3 px-4 hover:bg-white rounded-md hover:text-black">
 		<span slot="title">By Studio</span>
-		<p class="text-sm text-gray-500 dark:text-gray-400">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-			labore et dolore magna aliqua.
-		</p>
+		<ScoreByAnimeStudio {animeList} />
 	</TabItem>
 </Tabs>
