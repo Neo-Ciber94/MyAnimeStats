@@ -81,7 +81,7 @@
 					legend: false,
 					title: {
 						display: true,
-						text: 'Watch By Genre',
+						text: 'Watched By Genre',
 						color: 'white',
 						font: {
 							size: 20

@@ -11,6 +11,7 @@
 	import type { CalculatedStats } from '$lib/types';
 	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
 	import type { AnimeNode } from '$lib/myanimelist/common/types';
+	import StatScores from './StatScores.svelte';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNode[];
@@ -29,7 +30,7 @@
 			open
 		>
 			<div slot="title" class="flex items-center gap-2">
-				<UserSolid class="h-4 w-4" />
+				<UserSolid class="h-4 w-4 !outline-none" />
 				<span>Me</span>
 			</div>
 
@@ -40,9 +41,10 @@
 			activeClasses="border-b-2 p-4 border-indigo-500"
 		>
 			<div slot="title" class="flex items-center gap-2">
-				<ChartPieSolid class="h-4 w-4" />
+				<ChartPieSolid class="h-4 w-4 !outline-none" />
 				Genres
 			</div>
+
 			<AnimeByGenreGraph {stats} />
 		</TabItem>
 
@@ -51,8 +53,16 @@
 			activeClasses="border-b-2 p-4 border-indigo-500"
 		>
 			<div slot="title" class="flex items-center gap-2">
-				<ChartLineUpSolid class="h-4 w-4" />
+				<ChartLineUpSolid class="h-4 w-4 !outline-none" />
 				<span>Behaviour</span>
+			</div>
+
+			<div class="flex flex-row justify-center">
+				<h1
+					class="text-white font-bold text-2xl leading-[1.7em] mb-10 border-b-2 border-b-violet-500"
+				>
+					Anime watched by season
+				</h1>
 			</div>
 			<AnimeWatchedByYear {animeList} />
 		</TabItem>
@@ -62,13 +72,19 @@
 			activeClasses="border-b-2 p-4 border-indigo-500"
 		>
 			<div slot="title" class="flex items-center gap-2">
-				<CheckCircleSolid class="h-4 w-4" />
+				<CheckCircleSolid class="h-4 w-4 !outline-none" />
 				<span>Score</span>
 			</div>
-			<p class="text-sm text-gray-500 dark:text-gray-400">
-				<b>Settings:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-				incididunt ut labore et dolore magna aliqua.
-			</p>
+
+			<div class="flex flex-row justify-center">
+				<h1
+					class="text-white font-bold text-2xl leading-[1.7em] mb-10 border-b-2 border-b-violet-500"
+				>
+					Anime Scored
+				</h1>
+			</div>
+
+			<StatScores {animeList} />
 		</TabItem>
 	</Tabs>
 </div>
