@@ -1,10 +1,14 @@
 import { MyAnimeListHandler } from "$lib/myanimelist/svelte/handle";
-import type { Handle } from "@sveltejs/kit";
+import { redirect, type Handle } from "@sveltejs/kit";
 
 const myAnimeListHandler = MyAnimeListHandler();
 
 export const handle = (async ({ event, resolve }) => {
     const pathname = event.url.pathname;
+
+    if (pathname === "/") {
+        throw redirect(302, '/stats');
+    }
 
     if (pathname.startsWith("/api/myanimelist")) {
         return myAnimeListHandler(event);
