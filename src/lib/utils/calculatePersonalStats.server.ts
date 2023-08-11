@@ -43,11 +43,11 @@ function calculateStrength(animeList: AnimeNodeWithStatus[]) {
     const genreAnimeCount = Enumerable.from(STRENGTH_GENRES).sum(x => x.Count);
     const watchPercentage = watchedCount / genreAnimeCount;
 
-    // There are over 9000 anime for strength, so if the use watched at least 400, we add 0.81 to the total
-    const watchFactor = Math.max(1, watchPercentage + (watchedCount > 400 ? 0.81 : 0));
+    // There are over 9000 anime for strength
+    const watchFactor = Math.min(1, watchPercentage + (watchedCount > 100 ? 0.5 : 0));
     const result = (((averageScore / 10) * max) + (watchFactor * max)) / (2 * max);
 
-    const value = Math.floor(result);
+    const value = Math.floor(result * max);
     return { value, max }
 }
 
@@ -75,11 +75,11 @@ function calculateCharisma(animeList: AnimeNodeWithStatus[]) {
     const genreAnimeCount = Enumerable.from(CHARISMA_GENRES).sum(x => x.Count);
     const watchPercentage = watchedCount / genreAnimeCount;
 
-    // There are over 13,000 anime for charisma, so if the use watched at least 300, we add 0.6 to the total
-    const watchFactor = Math.max(1, watchPercentage + (watchedCount > 300 ? 0.65 : 0));
-    const result = (((averageScore / 10) * max) + (watchFactor * max)) / (2 * max);
+    // There are over 13,000 anime for charisma
+    const watchFactor = Math.min(1, watchPercentage + (watchedCount > 30 ? 0.45 : 0));
+    const result = (((averageScore / 10) * max) + (watchFactor * max)) / (2 * max)
 
-    const value = Math.floor(result);
+    const value = Math.floor(result * max);
     return { value, max }
 }
 
@@ -111,16 +111,16 @@ function calculateIntelligence(animeList: AnimeNodeWithStatus[]) {
     const genreAnimeCount = Enumerable.from(INTELLIGENCE_GENRES).sum(x => x.Count);
     const watchPercentage = watchedCount / genreAnimeCount;
 
-    // There are over 11,000 anime for charisma, so if the use watched at least 350, we add 0.7 to the total
-    const watchFactor = Math.max(1, watchPercentage + (watchedCount > 350 ? 0.7 : 0));
+    // There are over 11,000 anime for charisma
+    const watchFactor = Math.min(1, watchPercentage + (watchedCount > 60 ? 0.35 : 0));
     const result = (((averageScore / 10) * max) + (watchFactor * max)) / (2 * max);
 
-    const value = Math.floor(result);
+    const value = Math.floor(result * max);
     return { value, max }
 }
 
 function calculateVitality(animeList: AnimeNodeWithStatus[]) {
-    const max = PERSONAL_STATS.MAX_INTELLIGENCE;
+    const max = PERSONAL_STATS.MAX_VITALITY;
 
     const VITALITY_GENRES = [
         ANIME_GENRES.Sports,
@@ -146,12 +146,12 @@ function calculateVitality(animeList: AnimeNodeWithStatus[]) {
     const watchPercentage = watchedCount / genreAnimeCount;
 
     // If watched over 500 anime add a bonus
-    const bonus = animeList.length > 500 ? 100: 0;
+    const bonus = animeList.length > 500 ? 50 : 0;
 
-    // There are over 6000 anime for charisma, so if the use watched at least 350, we add 0.85 to the total
-    const watchFactor = Math.max(1, watchPercentage + (watchedCount > 200 ? 0.85 : 0));
-    const result = Math.max(max, bonus + ((((averageScore / 10) * max) + (watchFactor * max)) / (2 * max)));
+    // There are over 6000 anime for charisma
+    const watchFactor = Math.min(1, watchPercentage + (watchedCount > 50 ? 0.42 : 0));
+    const result = (((averageScore / 10) * max) + (watchFactor * max)) / (2 * max);
+    const value = Math.floor(Math.min(max, ((result * max) + bonus)));
 
-    const value = Math.floor(result);
     return { value, max }
 }

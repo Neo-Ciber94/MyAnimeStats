@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Tabs, TabItem } from 'flowbite-svelte';
+	import { Tabs, TabItem, Spinner } from 'flowbite-svelte';
+	import session from '$stores/sessionStore';
 	import MyStatsSection from '$components/MyStatsSection.svelte';
 	import {
 		UserSolid,
@@ -13,6 +14,7 @@
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
+	import UserBadges from './UserBadges.svelte';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
@@ -39,7 +41,28 @@
 
 			<MyStatsSection {stats} />
 
-			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
+			{#if $session.loading}
+				<div class="w-full p-7 flex flex-row justify-center">
+					<Spinner bg="transparent" />
+				</div>
+			{:else if $session.user}
+				<div class="mt-10 px-2 xl:px-16">
+					<h1 class="text-xl mb-3">
+						<span class="text-violet-500">{$session.user.name}</span>
+						<span class="text-white">badges</span>
+					</h1>
+
+					<div class="my-4 w-full h-[1px] rounded-lg bg-violet-700" />
+
+					<div class="mt-2">
+						<UserBadges {animeList} user={$session.user} />
+					</div>
+				</div>
+			{/if}
+
+			<div
+				class="w-10/12 mx-auto flex flex-row justify-center mt-[10%] h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
+			>
 				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
 			</div>
 		</TabItem>

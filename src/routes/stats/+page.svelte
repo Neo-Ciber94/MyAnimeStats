@@ -1,9 +1,7 @@
 <script lang="ts">
 	import StatSidebar from '$components/StatSidebar.svelte';
 	import StatTabs from '$components/StatTabs.svelte';
-	import { ChartSolid } from 'flowbite-svelte-icons';
 	import type { ActionData, PageServerData } from './$types';
-	import { Button } from 'flowbite-svelte';
 	import CalculateStatsButton from '$components/CalculateStatsButton.svelte';
 
 	export let data: PageServerData;
