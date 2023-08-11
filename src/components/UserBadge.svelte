@@ -4,7 +4,7 @@
 	import DOMPurify from 'dompurify';
 
 	export let badge: AnimeBadge;
-	export let size = 25;
+	export let size = 20;
 
 	function getStyles() {
 		const styles: string[] = [];
@@ -23,7 +23,7 @@
 <div
 	id={badge.id}
 	style={getStyles()}
-	class="px-4 py-2 shadow-sm rounded-lg text-xs min-w-[80px] gap-2
+	class="px-4 py-3 shadow-sm rounded-lg text-xs min-w-[80px] gap-2
         cursor-pointer flex flex-row items-center justify-center flex-nowrap"
 >
 	{#if badge.icon}

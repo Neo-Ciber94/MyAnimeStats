@@ -15,9 +15,21 @@
 	import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
 	import UserBadges from './UserBadgeList.svelte';
+	import { derived } from 'svelte/store';
+	import BADGES from '@/lib/badges';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
+
+	const userBadges = derived(session, (session) => {
+		const user = session.user;
+		const badges = user == null ? [] : BADGES.filter((b) => b.canHaveBadge(user, animeList));
+		return {
+			loading: session.loading,
+			user,
+			badges
+		};
+	});
 </script>
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
@@ -41,21 +53,21 @@
 
 			<MyStatsSection {stats} />
 
-			{#if $session.loading}
+			{#if $userBadges.loading}
 				<div class="w-full p-7 flex flex-row justify-center">
 					<Spinner bg="transparent" />
 				</div>
-			{:else if $session.user}
+			{:else if $userBadges.badges && $userBadges.user}
 				<div class="mt-10 px-2 xl:px-16">
 					<h1 class="text-xl mb-3">
-						<span class="text-violet-500">{$session.user.name}</span>
+						<span class="text-violet-500">{$userBadges.user.name}</span>
 						<span class="text-white">badges</span>
 					</h1>
 
 					<div class="my-4 w-full h-[1px] rounded-lg bg-violet-700" />
 
 					<div class="mt-2">
-						<UserBadges {animeList} user={$session.user} />
+						<UserBadges badges={$userBadges.badges} />
 					</div>
 				</div>
 			{/if}

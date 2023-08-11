@@ -1,11 +1,11 @@
 import type { RenderBadgeIcon } from "./AnimeBadge"
 
 /**
- * Renders as emoji in html.
- * @param emojiText The emoji text.
+ * Renders as text as html.
+ * @param text The emoji text.
  */
-export function badgeEmoji(emojiText: string): RenderBadgeIcon {
+export function badgeEmoji(text: string): RenderBadgeIcon {
     return (size) => {
-        return /*html*/ `<span style="${size}">${emojiText}</span>`
+        return /*html*/ `<span style="font-size: ${size}px">${text}</span>`
     }
 }
