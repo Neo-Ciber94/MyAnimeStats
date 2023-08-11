@@ -4,6 +4,7 @@
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import Enumerable from 'linq';
 	import dayjs from 'dayjs';
+	import Color from 'color';
 
 	export let animeList: AnimeNodeWithStatus[];
 
@@ -30,6 +31,7 @@
 					{
 						label: 'Score over time',
 						data: scores,
+						backgroundColor: Color('#ff8000').fade(0.8).rgb().toString(),
 						borderColor: '#ff8000',
 						showLine: true,
 						tension: 1
@@ -49,7 +51,8 @@
 						labels: {
 							color: 'white',
 							font: {
-								size: 15
+								weight: 'bold',
+								size: 20
 							}
 						}
 					}
