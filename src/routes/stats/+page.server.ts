@@ -9,7 +9,6 @@ import { AUTH_SESSION_COOKIE } from "$lib/myanimelist/svelte/handle";
 import { calculatePersonalStats } from "@/lib/utils/calculatePersonalStats.server";
 
 export const load = (async ({ cookies }) => {
-
     try {
         const data = await db.get("stats");
         const animeList = await getMyAnimeList(cookies);
@@ -30,14 +29,6 @@ export const load = (async ({ cookies }) => {
 export const actions = {
     async calculate({ cookies }) {
         try {
-            const data = await db.get('stats');
-            const result = calculatedStatsSchema.safeParse(data);
-            const animeList = await getMyAnimeList(cookies);
-
-            if (result.success === true) {
-                return { stats: result.data, animeList }
-            }
-
             const calculatedResults = await calculateUserStats(cookies);
             const stats = calculatedStatsSchema.parse(calculatedResults.stats);
             await db.put("stats", stats);
@@ -86,8 +77,6 @@ async function calculateUserStats(cookies: Cookies) {
     for (const [genre, totalAnime] of byGenre.entries()) {
         stats.animeByGenre[genre] = totalAnime.length;
     }
-
-    console.log(stats);
 
     return { stats, animeList };
 }
