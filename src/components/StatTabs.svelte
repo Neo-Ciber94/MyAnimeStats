@@ -14,7 +14,7 @@
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
-	import UserBadges from './UserBadges.svelte';
+	import UserBadges from './UserBadgeList.svelte';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
