@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
+	import { hash, numberToColor } from '$lib/utils/helpers';
 	import { Chart, registerables } from 'chart.js';
+	import Color from 'color';
 	import Enumerable from 'linq';
 	import { onMount } from 'svelte';
 
@@ -32,10 +34,14 @@
 
 	const labels = dataset.map((x) => x.genre);
 	const scores = dataset.map((x) => x.averageScore);
-    const minWidth = dataset.length * 4;
+	const minWidth = dataset.length * 4;
 
 	onMount(() => {
 		Chart.register(...registerables);
+
+		const colors = labels.map((c) => Color(numberToColor(hash(c)))).map((c) => c.rotate(30));
+		const bgColors = colors.map((c) => c.fade(0.7).rgb().toString());
+		const borderColors = colors.map((c) => c.lighten(0.4).saturate(0.9).rgb().toString());
 
 		new Chart(chartCanvas, {
 			type: 'bar',
@@ -44,24 +50,8 @@
 				datasets: [
 					{
 						data: scores,
-						backgroundColor: [
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(255, 159, 64, 0.2)',
-							'rgba(255, 205, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(54, 162, 235, 0.2)',
-							'rgba(153, 102, 255, 0.2)',
-							'rgba(201, 203, 207, 0.2)'
-						],
-						borderColor: [
-							'rgb(255, 99, 132)',
-							'rgb(255, 159, 64)',
-							'rgb(255, 205, 86)',
-							'rgb(75, 192, 192)',
-							'rgb(54, 162, 235)',
-							'rgb(153, 102, 255)',
-							'rgb(201, 203, 207)'
-						],
+						backgroundColor: bgColors,
+						borderColor: borderColors,
 						borderWidth: 1,
 						barThickness: 20,
 						categoryPercentage: 1,
