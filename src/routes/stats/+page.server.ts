@@ -6,6 +6,7 @@ import { Auth } from "$lib/myanimelist/auth/server";
 import { db } from "$lib/db";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { AUTH_SESSION_COOKIE } from "$lib/myanimelist/svelte/handle";
+import { calculatePersonalStats } from "@/lib/utils/calculatePersonalStats.server";
 
 export const load = (async ({ cookies }) => {
 
@@ -52,10 +53,10 @@ export const actions = {
 async function calculateUserStats(cookies: Cookies) {
     const stats: CalculatedStats = {
         personal: {
-            strength: 80,
-            charisma: 80,
-            intelligence: 80,
-            vitality: 80
+            strength: 0,
+            charisma: 0,
+            intelligence: 0,
+            vitality: 0
         },
         animeByGenre: {},
         scoreByGenre: {},
@@ -69,6 +70,8 @@ async function calculateUserStats(cookies: Cookies) {
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
     // Calculate stats
+    stats.personal = calculatePersonalStats(animeList);
+    
     const byGenre = new Map<string, AnimeNodeWithStatus[]>();
 
     for (const anime of animeList) {

@@ -20,3 +20,13 @@ export const PASTEL_COLORS = [
     'rgb(204, 255, 204)', // Light Green
     'rgb(255, 204, 204)' // Light Pink
 ];
+
+/**
+ * Constants for personal stats.
+ */
+export const PERSONAL_STATS = {
+    MAX_STRENGTH: 120,
+    MAX_CHARISMA: 120,
+    MAX_INTELLIGENCE: 120,
+    MAX_VITALITY: 400
+} as const;
