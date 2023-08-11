@@ -14,7 +14,7 @@
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
-	import UserBadges from './UserBadgeList.svelte';
+	import UserBadgeList from './UserBadgeList.svelte';
 	import { derived } from 'svelte/store';
 	import BADGES from '@/lib/badges';
 
@@ -67,7 +67,7 @@
 					<div class="my-4 w-full h-[1px] rounded-lg bg-violet-700" />
 
 					<div class="mt-2">
-						<UserBadges badges={$userBadges.badges} />
+						<UserBadgeList badges={$userBadges.badges} />
 					</div>
 				</div>
 			{/if}

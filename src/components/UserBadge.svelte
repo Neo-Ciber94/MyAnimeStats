@@ -32,6 +32,6 @@
 
 	{badge.name}
 </div>
-<Tooltip class="bg-black text-white text-xs p-3" triggeredBy={`#${badge.id}`}>
+<Tooltip class="bg-black text-white text-sm p-3" triggeredBy={`#${badge.id}`}>
 	{badge.description}
 </Tooltip>
