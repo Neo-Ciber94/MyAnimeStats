@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
-	import { ChartSolid, CheckSolid } from 'flowbite-svelte-icons';
+	import { ChevronRight } from 'flowbite-svelte';
+	import { ChartSolid, CheckSolid, ChevronDoubleRightOutline } from 'flowbite-svelte-icons';
 	import Enumerable from 'linq';
 
 	export let animeList: AnimeNodeWithStatus[];
@@ -14,6 +15,15 @@
 	let selectedBestAnimeIndex = -1;
 
 	$: selectedAnime = bestScored[selectedBestAnimeIndex];
+
+	function getTypicalScore() {
+		const mostLikelyScore = Enumerable.from(animeList)
+			.groupBy((c) => c.list_status.score)
+			.orderByDescending((c) => c.count())
+			.toArray();
+
+		return mostLikelyScore[0]?.key() ?? 0;
+	}
 </script>
 
 <section>
@@ -29,6 +39,22 @@
 			<span
 				class="bg-violet-600 text-white py-2 px-6 cursor-pointer shadow-lg text-center rounded-md"
 				>{averageScore.toFixed(2)}</span
+			>
+		</div>
+	</div>
+
+	<div
+		class="text-white mt-4 grid grid-cols-1 xs:grid-cols-2 gap-2 text-lg sm:text-2xl
+	shadow-md border-2 border-violet-900 p-4 rounded-lg"
+	>
+		<div class="flex flex-row gap-3 items-center">
+			<ChevronDoubleRightOutline class="h-6 w-6 text-orange-500" />
+			<span class="text-orange-500">Typical Score</span>
+		</div>
+		<div>
+			<span
+				class="bg-violet-600 text-white py-2 px-6 cursor-pointer shadow-lg text-center rounded-md"
+				>{getTypicalScore().toFixed(2)}</span
 			>
 		</div>
 	</div>
