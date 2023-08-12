@@ -544,7 +544,7 @@ const genresBadges = [
         id: "that_is_so_deep_badge",
         name: "That is so deep",
         description: "Watched 40 or more Seinen anime",
-        icon: badgeIconText("🕔"),
+        icon: badgeIconText("👤"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
