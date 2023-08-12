@@ -11,19 +11,29 @@ export type RenderBadgeIcon = (size: number) => string;
  */
 export type AnimeBadgeStyles = {
     /**
-     * The styles to apply to the border.
+     * Sets the badge `border`.
      */
     border?: string;
 
     /**
-     * The text color.
+     * Sets the badge `border-image` property.
+     */
+    borderImage?: string;
+
+    /**
+     * Sets the badge `border-image-slice` property.
+     */
+    borderImageSlice?: number;
+
+    /**
+     * Sets the badge `color` property.
      * 
      * @default white
      */
     color?: string;
 
     /**
-     * The background color.
+     * Sets the badge `background` property.
      * 
      * @default white
      */
@@ -63,9 +73,9 @@ export interface AnimeBadge {
 
     /**
      * Check if the badge can be shown if the condition is meet.
-     * @param user The user.
      * @param animeList The user anime list. 
+     * @param user The user.
      * @returns `true` if can show the badge for the user.
      */
-    canHaveBadge: (user: User, animeList: AnimeNodeWithStatus[]) => boolean;
+    canHaveBadge: (animeList: AnimeNodeWithStatus[], user: User) => boolean;
 }
