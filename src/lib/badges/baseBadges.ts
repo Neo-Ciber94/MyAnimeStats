@@ -1,0 +1,161 @@
+import Enumerable from "linq";
+import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import type { AnimeBadge } from "./AnimeBadge";
+import { badgeEmoji as badgeIconText } from "./utils";
+import jotaroSvg from "./svg/jotaro.svg";
+import narutoSvg from "./svg/naruto.svg";
+import vinlandSagaThorfinn from "./svg/vinlandSagaThorfinn.svg";
+import onePieceWhitebeardFlag from "./base64/onePieceWhitebeardFlag";
+
+const defaultBadges = [
+    {
+        id: "casual_enjoyer_badge",
+        name: "Casual Enjoyer",
+        description: "Watched over 10 anime",
+        icon: badgeIconText("🍥"),
+        canHaveBadge: (animeList) => animeList.length >= 10
+    },
+    {
+        id: "otaku_badge",
+        name: "Otaku",
+        description: "Watched over 100 anime",
+        styles: {
+            border: "2px solid #0c001f"
+        },
+        icon: badgeIconText("🍙"),
+        canHaveBadge: (animeList) => animeList.length >= 100
+    },
+    {
+        id: "weeb_badge",
+        name: "Weeb",
+        description: "Watched over 500 anime",
+        styles: {
+            border: "2px solid #a80000"
+        },
+        icon: badgeIconText("🍚"),
+        canHaveBadge: (animeList) => animeList.length >= 500
+    },
+    {
+        id: "lgtb_badge",
+        name: "LGBT",
+        description: "Watched 10 boys love and girls love anime",
+        icon: badgeIconText("🏳️‍🌈"),
+        styles: {
+            border: "2px solid transparent",
+            borderImageSlice: 1,
+            borderImage: "linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%)",
+        },
+        canHaveBadge(animeList) {
+            const boysLoveCount = Enumerable.from(animeList)
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
+                .count();
+
+            const girlLoveCount = Enumerable.from(animeList)
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
+                .count();
+
+            return boysLoveCount >= 10 && girlLoveCount >= 10;
+        }
+    },
+    {
+        id: "protagonist_badge",
+        name: "Protagonist",
+        description: "Watched over 50 shounen anime",
+        styles: {
+            border: "2px solid #00a2ff",
+            background: "linear-gradient(231deg, rgba(0,1,70,1) 34%, rgba(0,0,0,1) 100%)",
+            color: "white"
+        },
+        icon: narutoSvg,
+        canHaveBadge(animeList) {
+            return Enumerable.from(animeList)
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Shounen.ID))
+                .count() >= 50
+        }
+    },
+    {
+        id: "jojo_fan_badge",
+        name: "Yare Yare Daze",
+        description: "Watched over 5 parts JoJo's Bizarre Adventure",
+        styles: {
+            border: "2px solid #696969"
+        },
+        icon: size => jotaroSvg(size + 8),
+        canHaveBadge(animeList) {
+            const jojoBizarreAdventureIds = [
+                14719, // JoJo no Kimyou na Bouken (TV)
+                20899, // JoJo no Kimyou na Bouken Part 3: Stardust Crusaders
+                26055, // JoJo no Kimyou na Bouken Part 3: Stardust Crusaders 2nd Season
+                31933, // JoJo no Kimyou na Bouken Part 4: Diamond wa Kudakenai
+                37991, // JoJo no Kimyou na Bouken Part 5: Ougon no Kaze
+                48661, // JoJo no Kimyou na Bouken Part 6: Stone Ocean
+                51367, // JoJo no Kimyou na Bouken Part 6: Stone Ocean Part 2
+            ] as const;
+
+            return jojoBizarreAdventureIds.every(animeId => {
+                return animeList.some(({ node, list_status }) => node.id === animeId && list_status.status === 'completed');
+            })
+        }
+    },
+    {
+        id: "genre_master_badge",
+        name: "Genre Master",
+        description: "Watched anime from 20 different genres",
+        icon: badgeIconText("アニメ"),
+        styles: {
+            border: "2px solid transparent",
+            borderImage: "linear-gradient(231deg, rgba(0,0,0,1) 34%, rgba(255,255,255,1) 100%)",
+            borderImageSlice: 1,
+        },
+        canHaveBadge: (animeList) => {
+            const uniqueGenres = new Set();
+            animeList.forEach(anime => {
+                anime.node.genres.forEach(genre => uniqueGenres.add(genre.name));
+            });
+            return uniqueGenres.size >= 20;
+        }
+    },
+    {
+        id: "vinland_saga_badge",
+        name: "You had no enemies",
+        description: "Completed Vinland Saga season 1 and 2",
+        icon: size => vinlandSagaThorfinn(size + 5),
+        styles: {
+            border: "2px solid orange",
+            background: "linear-gradient(125deg, rgba(73,13,0,1) 34%, rgba(226,56,0,1) 100%)"
+        },
+        canHaveBadge(animeList) {
+            const vinlandSagaIds = [
+                37521, // Vinland Saga
+                49387, // Vinland Saga Season 2
+            ] as const;
+
+            return vinlandSagaIds.every(animeId => {
+                return animeList.some(({ node, list_status }) => node.id === animeId && list_status.status === 'completed');
+            })
+        }
+    },
+    {
+        id: "one_piece_is_real_badge",
+        name: "The One Piece is Real!",
+        description: "Watched over 485 or more episodes of One Piece",
+        styles: {
+            background: "linear-gradient(205deg, rgba(108,0,0,1) 47%, rgba(255,255,255,1) 100%)",
+            border: "2px solid white"
+        },
+        icon: onePieceWhitebeardFlag,
+        canHaveBadge(animeList) {
+            const onePiceAnimeId = 21; // https://myanimelist.net/anime/21/One_Piece
+            const onePieceAnime = animeList.find(anime => anime.node.id === onePiceAnimeId);
+
+            if (!onePieceAnime) {
+                return false;
+            }
+
+            return onePieceAnime.list_status.num_episodes_watched >= 485;
+        }
+    },
+] as AnimeBadge[]
+
+export default defaultBadges;
+
