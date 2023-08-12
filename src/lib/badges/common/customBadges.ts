@@ -6,6 +6,7 @@ import jotaroSvg from "../icons/jotaro";
 import narutoSvg from "../icons/naruto";
 import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
 import onePieceWhitebeardFlag from "../icons/onePieceWhitebeardFlag";
+import fujoshi from "../icons/fujoshi";
 
 const customBadges = [
     {
@@ -45,6 +46,22 @@ const customBadges = [
             return Enumerable.from(animeList)
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Shounen.ID))
                 .count() >= 50
+        }
+    },
+    {
+        id: "fujoshi_badge",
+        name: "Fujoshi",
+        description: "Watched 20 or more Boys Love anime",
+        icon: fujoshi,
+        styles: {
+            px: 10,
+            background: "linear-gradient(252deg, rgba(255,253,192,1) 0%, rgba(0,0,0,1) 28%)",
+            border: "2px solid rgba(255,253,192,1)"
+        },
+        canHaveBadge(animeList) {
+            return Enumerable.from(animeList)
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
+                .count() >= 20
         }
     },
     {
