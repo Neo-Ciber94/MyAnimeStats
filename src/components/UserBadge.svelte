@@ -8,30 +8,33 @@
 
 	function getStyles() {
 		const styles: string[] = [];
+		const py = 12;
+		const px = 16 + (badge.styles?.px ?? 0);
 
-		styles.push(`color: ${badge.styles?.color ?? 'white'};`);
-		styles.push(`background: ${badge.styles?.background ?? 'black'};`);
+		styles.push(`color: ${badge.styles?.color ?? 'white'}`);
+		styles.push(`background: ${badge.styles?.background ?? 'black'}`);
+		styles.push(`padding: ${py}px ${px}px`);
 
 		if (badge.styles?.border) {
-			styles.push(`border: ${badge.styles.border};`);
+			styles.push(`border: ${badge.styles.border}`);
 		}
 
 		if (badge.styles?.borderImage) {
-			styles.push(`border-image: ${badge.styles.borderImage};`);
+			styles.push(`border-image: ${badge.styles.borderImage}`);
 		}
 
 		if (badge.styles?.borderImageSlice) {
-			styles.push(`border-image-slice: ${badge.styles.borderImageSlice};`);
+			styles.push(`border-image-slice: ${badge.styles.borderImageSlice}`);
 		}
 
-		return styles.join('');
+		return styles.join(';');
 	}
 </script>
 
 <div
 	id={badge.id}
 	style={getStyles()}
-	class="px-4 py-3 shadow-sm rounded-lg text-xs min-w-[80px] gap-2 whitespace-nowrap
+	class="shadow-sm rounded-lg text-xs min-w-[80px] gap-2 whitespace-nowrap
         cursor-pointer flex flex-row items-center justify-center flex-nowrap h-12 overflow-hidden"
 >
 	{#if badge.icon}

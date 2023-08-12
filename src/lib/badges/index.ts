@@ -1,10 +1,10 @@
 import type { AnimeBadge } from "./AnimeBadge";
 import genresBadges from "./genresBadges";
-import defaultBadges from "./baseBadges";
+import customBadges from "./customBadges";
 
 const badges = Object.freeze([
-    ...defaultBadges,
-    ...genresBadges
+    ...genresBadges,
+    ...customBadges,
 ] as AnimeBadge[]);
 
 export default badges;

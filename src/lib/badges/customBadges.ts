@@ -1,46 +1,20 @@
 import Enumerable from "linq";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import type { AnimeBadge } from "./AnimeBadge";
-import { badgeEmoji as badgeIconText } from "./utils";
+import { badgeIconText } from "./utils";
 import jotaroSvg from "./svg/jotaro.svg";
 import narutoSvg from "./svg/naruto.svg";
 import vinlandSagaThorfinn from "./svg/vinlandSagaThorfinn.svg";
 import onePieceWhitebeardFlag from "./base64/onePieceWhitebeardFlag";
 
-const defaultBadges = [
-    {
-        id: "casual_enjoyer_badge",
-        name: "Casual Enjoyer",
-        description: "Watched over 10 anime",
-        icon: badgeIconText("🍥"),
-        canHaveBadge: (animeList) => animeList.length >= 10
-    },
-    {
-        id: "otaku_badge",
-        name: "Otaku",
-        description: "Watched over 100 anime",
-        styles: {
-            border: "2px solid #0c001f"
-        },
-        icon: badgeIconText("🍙"),
-        canHaveBadge: (animeList) => animeList.length >= 100
-    },
-    {
-        id: "weeb_badge",
-        name: "Weeb",
-        description: "Watched over 500 anime",
-        styles: {
-            border: "2px solid #a80000"
-        },
-        icon: badgeIconText("🍚"),
-        canHaveBadge: (animeList) => animeList.length >= 500
-    },
+const customBadges = [
     {
         id: "lgtb_badge",
         name: "LGBT",
         description: "Watched 10 boys love and girls love anime",
         icon: badgeIconText("🏳️‍🌈"),
         styles: {
+            px: 10,
             border: "2px solid transparent",
             borderImageSlice: 1,
             borderImage: "linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%)",
@@ -157,5 +131,5 @@ const defaultBadges = [
     },
 ] as AnimeBadge[]
 
-export default defaultBadges;
+export default customBadges;
 

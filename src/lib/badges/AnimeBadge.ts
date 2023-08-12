@@ -38,6 +38,11 @@ export type AnimeBadgeStyles = {
      * @default white
      */
     background?: string;
+
+    /**
+     * Padding to add in the `x` position.
+     */
+    px?: number;
 }
 
 /**
