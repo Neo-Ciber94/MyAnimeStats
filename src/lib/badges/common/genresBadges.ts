@@ -115,7 +115,7 @@ const genresBadges = [
     },
     {
         id: "good_taste_badge",
-        name: /*html*/`<b>Good Taste</b>`,
+        name: /*html*/`<b class="text-amber-900">Good Taste</b>`,
         description: "Watched 20 or more award winning anime",
         icon: badgeIconText("🪙"),
         styles: {

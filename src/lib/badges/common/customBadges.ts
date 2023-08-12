@@ -34,7 +34,7 @@ const customBadges = [
     {
         id: "protagonist_badge",
         name: "Protagonist",
-        description: "Watched over 50 shounen anime",
+        description: "Watched over 50 Shounen anime",
         styles: {
             border: "2px solid #00a2ff",
             background: "linear-gradient(231deg, rgba(0,1,70,1) 34%, rgba(0,0,0,1) 100%)",
