@@ -8,6 +8,8 @@ import bluePanties from "../icons/bluePanties";
 import peachEmoji from "../icons/peachEmoji";
 import samuraiHelmet from "../icons/samuraiHelmet";
 import kameHameHa from "../icons/kameHameHa";
+import militaryHelmet from "../icons/militaryHelmet";
+import lightStick from "../icons/lightStick";
 
 const genresBadges = [
     {
@@ -261,8 +263,8 @@ const genresBadges = [
         description: "Watched 69 or more Hentai anime",
         icon: peachEmoji,
         styles: {
-          background: "linear-gradient(142deg, rgba(255,249,237,1) 0%, rgba(255,220,205,1) 59%)",
-          color: "#ff4646"
+            background: "linear-gradient(142deg, rgba(255,249,237,1) 0%, rgba(255,220,205,1) 59%)",
+            color: "#ff4646"
         },
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
@@ -476,6 +478,210 @@ const genresBadges = [
                 .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.SliceofLife.ID))
                 .count() >= 100
+        }
+    },
+    {
+        id: "that_felt_paranormal_badge",
+        name: "That felt paranormal",
+        description: "Watched 30 or more Supernatural anime",
+        icon: badgeIconText("🔮"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Supernatural.ID))
+                .count() >= 30
+        }
+    },
+    {
+        id: "yes_sir_badge",
+        name: "Yes Sir",
+        description: "Watched 20 or more Military anime",
+        icon: militaryHelmet,
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Military.ID))
+                .count() >= 20
+        }
+    },
+    {
+        id: "close_to_solve_the_case_badge",
+        name: "Close to solve the case",
+        description: "Watched 20 or more Detective anime",
+        icon: badgeIconText("🔎"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Detective.ID))
+                .count() >= 20
+        }
+    },
+    {
+        id: "get_out_my_head_badge",
+        name: "Get out my head",
+        description: "Watched 30 or more Psychological anime",
+        icon: badgeIconText("⛓️"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Psychological.ID))
+                .count() >= 30
+        }
+    },
+    {
+        id: "too_intrigued_badge",
+        name: "Too Intrigued",
+        description: "Watched 20 or more Suspense anime",
+        icon: badgeIconText("🕔"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Suspense.ID))
+                .count() >= 20
+        }
+    },
+    {
+        id: "that_is_so_deep_badge",
+        name: "That is so deep",
+        description: "Watched 40 or more Seinen anime",
+        icon: badgeIconText("🕔"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Seinen.ID))
+                .count() >= 40
+        }
+    },
+    {
+        id: "i_am_an_adult_now_badge",
+        name: "I'm an adult now",
+        description: "Watched 20 or more Josei anime",
+        icon: badgeIconText("⌛"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Josei.ID))
+                .count() >= 20
+        }
+    },
+    {
+        id: "oishii_badge",
+        name: "Oishii",
+        description: "Watched 10 or more Gourmet anime",
+        icon: badgeIconText("🍜"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Gourmet.ID))
+                .count() >= 10
+        }
+    },
+    {
+        id: "furry_badge",
+        name: "Furry?",
+        description: "Watched 30 or more Anthropomorphic anime",
+        icon: badgeIconText("🐺"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Anthropomorphic.ID))
+                .count() >= 30
+        }
+    },
+    {
+        id: "where_all_that_blood_come_from_badge",
+        name: "Where all that blood come from?",
+        description: "Watched 15 or more Gore anime",
+        icon: badgeIconText("🩸"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Gore.ID))
+                .count() >= 15
+        }
+    },
+    {
+        id: "idol_fan_badge",
+        name: "Idol Fan",
+        description: "Watched 30 or more Idol anime",
+        icon: lightStick,
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.IdolsMale.ID || genre.id === ANIME_GENRES.IdolsFemale.ID))
+                .count() >= 30
+        }
+    },
+    {
+        id: "is_this_a_kids_show_right_badge",
+        name: "It's this a kids show, right?",
+        description: "Watched 25 or more Mahou Shoujo anime",
+        icon: badgeIconText("💗"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.MahouShoujo.ID))
+                .count() >= 25
+        }
+    },
+    {
+        id: "eh_actually_badge",
+        name: "Eh, actually...",
+        description: "Watched 30 or more Otaku Culture anime",
+        icon: badgeIconText("🏯"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.OtakuCulture.ID))
+                .count() >= 30
+        }
+    },
+    {
+        id: "kawaii_badge",
+        name: "Kawaii",
+        description: "Watched 10 or more Pets anime",
+        icon: badgeIconText("🐼"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Pets.ID))
+                .count() >= 10
+        }
+    },
+    {
+        id: "there_are_so_handsome_badge",
+        name: "They are so handsome!",
+        description: "Watched 10 or more Reverse Harem anime",
+        icon: badgeIconText("🫦"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.ReverseHarem.ID))
+                .count() >= 10
+        }
+    },
+    {
+        id: "my_hp_is_so_low_badge",
+        name: "My HP is so low",
+        description: "Watched 20 or more Reverse VideoGame anime",
+        icon: badgeIconText("🕹️"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.VideoGame.ID))
+                .count() >= 20
+        }
+    },
+    {
+        id: "are_you_john_titor_badge",
+        name: "Are you John Titor?",
+        description: "Watched 20 or more Time Travel anime",
+        icon: badgeIconText("🕰️"),
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.TimeTravel.ID))
+                .count() >= 20
         }
     },
     {
