@@ -1,11 +1,11 @@
 import Enumerable from "linq";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
-import type { AnimeBadge } from "./AnimeBadge";
-import { badgeIconText } from "./utils";
-import jotaroSvg from "./svg/jotaro.svg";
-import narutoSvg from "./svg/naruto.svg";
-import vinlandSagaThorfinn from "./svg/vinlandSagaThorfinn.svg";
-import onePieceWhitebeardFlag from "./base64/onePieceWhitebeardFlag";
+import type { AnimeBadge } from "../AnimeBadge";
+import { badgeIconText } from "../utils";
+import jotaroSvg from "../icons/jotaro";
+import narutoSvg from "../icons/naruto";
+import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
+import onePieceWhitebeardFlag from "../icons/onePieceWhitebeardFlag";
 
 const customBadges = [
     {

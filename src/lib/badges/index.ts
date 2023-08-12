@@ -1,6 +1,6 @@
 import type { AnimeBadge } from "./AnimeBadge";
-import genresBadges from "./genresBadges";
-import customBadges from "./customBadges";
+import genresBadges from "./common/genresBadges";
+import customBadges from "./common/customBadges";
 
 const badges = Object.freeze([
     ...genresBadges,

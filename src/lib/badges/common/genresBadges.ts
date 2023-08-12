@@ -1,6 +1,6 @@
 import Enumerable from "linq";
-import type { AnimeBadge } from "./AnimeBadge";
-import { badgeIconText } from "./utils";
+import type { AnimeBadge } from "../AnimeBadge";
+import { badgeIconText } from "../utils";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 
 const genresBadges = [
