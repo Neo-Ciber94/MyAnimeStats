@@ -7,6 +7,8 @@ import narutoSvg from "../icons/naruto";
 import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
 import onePieceWhitebeardFlag from "../icons/onePieceWhitebeardFlag";
 import fujoshi from "../icons/fujoshi";
+import lesbianIcon from "../icons/lesbianIcon";
+import onePieceFlag from "../icons/onePieceFlag";
 
 const customBadges = [
     {
@@ -58,13 +60,31 @@ const customBadges = [
         icon: fujoshi,
         styles: {
             px: 10,
-            background: "linear-gradient(252deg, rgba(255,253,192,1) 0%, rgba(0,0,0,1) 28%)",
-            border: "2px solid rgba(255,253,192,1)"
+            background: "linear-gradient(90deg, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%)",
+            border: "2px solid white",
+            color: "black"
         },
         canHaveBadge(animeList) {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
+                .count() >= 20
+        }
+    },
+    {
+        id: "does_she_love_her_badge",
+        name: "Does she love her?",
+        description: "Watched 20 or more Girls Love anime",
+        icon: lesbianIcon,
+        styles: {
+            border: "2px solid #ff8ce4",
+            background: "#f4dcfc",
+            color: "black",
+        },
+        canHaveBadge(animeList) {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
                 .count() >= 20
         }
     },
@@ -88,9 +108,9 @@ const customBadges = [
             ] as const;
 
             return jojoBizarreAdventureIds
-            .every(animeId => {
-                return animeList.some(({ node, list_status }) => node.id === animeId && list_status.status === 'completed');
-            })
+                .every(animeId => {
+                    return animeList.some(({ node, list_status }) => node.id === animeId && list_status.status === 'completed');
+                })
         }
     },
     {
@@ -149,6 +169,26 @@ const customBadges = [
             }
 
             return onePieceAnime.list_status.num_episodes_watched >= 485;
+        }
+    },
+    {
+        id: "pirate_king_badge",
+        name: "The Pirate King",
+        description: "Watched over 1000 or more episodes of One Piece",
+        styles: {
+            background: "#910007",
+            border: "2px solid #fffea6"
+        },
+        icon: onePieceFlag,
+        canHaveBadge(animeList) {
+            const onePiceAnimeId = 21; // https://myanimelist.net/anime/21/One_Piece
+            const onePieceAnime = animeList.find(anime => anime.node.id === onePiceAnimeId);
+
+            if (!onePieceAnime) {
+                return false;
+            }
+
+            return onePieceAnime.list_status.num_episodes_watched >= 1000;
         }
     },
     {

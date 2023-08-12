@@ -8,7 +8,7 @@ const badges = Object.freeze([
     ...customBadges,
 ] as AnimeBadge[]);
 
-// Ensure the badge id are unique
+// Ensure the badges ids are unique
 if (dev) {
     const keys = new Set<string>();
     for (const badge of badges) {
