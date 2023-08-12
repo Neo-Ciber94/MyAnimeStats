@@ -41,8 +41,8 @@
 		{@html DOMPurify.sanitize(badge.icon(size))}
 	{/if}
 
-	{badge.name}
+	<span class="font-semibold">{badge.name}</span>
 </div>
-<Tooltip class="bg-black text-white text-sm p-3" triggeredBy={`#${badge.id}`}>
+<Tooltip class="bg-gray-950 border border-gray-200 text-white text-sm p-3" triggeredBy={`#${badge.id}`}>
 	{badge.description}
 </Tooltip>
