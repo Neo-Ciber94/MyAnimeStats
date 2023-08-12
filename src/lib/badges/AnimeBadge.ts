@@ -57,7 +57,7 @@ export interface AnimeBadge {
     /**
      * Name of the badge.
      */
-    name: string;
+    name: string | ((user: User) => string)
 
     /**
      * A description to show for the badge.

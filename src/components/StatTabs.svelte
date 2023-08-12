@@ -68,7 +68,7 @@
 					<div class="my-4 w-full h-[1px] rounded-lg bg-violet-700" />
 
 					<div class="mt-2">
-						<UserBadgeList badges={$userBadges.badges} />
+						<UserBadgeList user={$userBadges.user} badges={$userBadges.badges} />
 					</div>
 				</div>
 			{/if}

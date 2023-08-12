@@ -11,7 +11,7 @@ const customBadges = [
     {
         id: "lgtb_badge",
         name: "LGBT",
-        description: "Watched 10 boys love and girls love anime",
+        description: "Watched 10 boys love and 10 girls love anime",
         icon: badgeIconText("🏳️‍🌈"),
         styles: {
             px: 10,
@@ -129,6 +129,21 @@ const customBadges = [
             return onePieceAnime.list_status.num_episodes_watched >= 485;
         }
     },
+    {
+        id: "watashi_wa_desu_badge",
+        name: (user) => /*html*/`<span>Watashi wa <b class="text-violet-500">${user.name}</b> desu</span>`,
+        description: "Watched over 6000 episodes of anime",
+        icon: badgeIconText("私は", "text-amber-400"),
+        styles: {
+            background: "radial-gradient(circle, rgba(15,0,19,1) 45%, rgba(66,0,92,1) 100%)",
+            border: "2px solid #7b42f5"
+        },
+        canHaveBadge(animeList) {
+            return Enumerable.from(animeList)
+                .select(({ list_status }) => list_status.num_episodes_watched)
+                .sum() > 6000
+        }
+    }
 ] as AnimeBadge[]
 
 export default customBadges;

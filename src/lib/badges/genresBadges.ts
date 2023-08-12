@@ -28,7 +28,7 @@ const genresBadges = [
         styles: {
             border: "2px solid #a80000"
         },
-        icon: badgeIconText("🍚"),
+        icon: badgeIconText("🍣"),
         canHaveBadge: (animeList) => animeList.length >= 500
     },
     {
@@ -115,7 +115,7 @@ const genresBadges = [
     },
     {
         id: "good_taste_badge",
-        name: "Good Taste",
+        name: /*html*/`<b>Good Taste</b>`,
         description: "Watched 20 or more award winning anime",
         icon: badgeIconText("🪙"),
         styles: {
