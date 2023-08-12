@@ -1,7 +1,9 @@
 import Enumerable from "linq";
 import type { AnimeBadge } from "../AnimeBadge";
-import { badgeIconText } from "../utils";
+import { badgeIconText, hadWatchedAnime } from "../utils";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import redRaceVehicle from "../icons/redRaceVehicle";
+import holyHalo from "../icons/holyHalo";
 
 const genresBadges = [
     {
@@ -9,7 +11,7 @@ const genresBadges = [
         name: "Casual Enjoyer",
         description: "Watched over 10 anime",
         icon: badgeIconText("🍥"),
-        canHaveBadge: (animeList) => animeList.length >= 10
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 10,
     },
     {
         id: "otaku_badge",
@@ -19,7 +21,7 @@ const genresBadges = [
             border: "2px solid #3e0070",
         },
         icon: badgeIconText("🍙"),
-        canHaveBadge: (animeList) => animeList.length >= 100
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 100,
     },
     {
         id: "weeb_badge",
@@ -29,7 +31,19 @@ const genresBadges = [
             border: "2px solid #a80000"
         },
         icon: badgeIconText("🍣"),
-        canHaveBadge: (animeList) => animeList.length >= 500
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 500,
+    },
+    {
+        id: "god_and_anime_badge",
+        name: /*html*/`<span class="font-semibold">I have the power of god and anime</span>`,
+        description: "Watched over 3000 anime",
+        icon: holyHalo,
+        styles: {
+            background: "linear-gradient(142deg, rgba(255,255,255,1) 0%, rgba(255,250,192,1) 59%)",
+            border: "2px solid #fcf05a",
+            color: "#9c3100"
+        },
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 3000,
     },
     {
         id: "it_is_funny_badge",
@@ -38,6 +52,7 @@ const genresBadges = [
         icon: badgeIconText("😂"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Comedy.ID))
                 .count() >= 10
         }
@@ -49,6 +64,7 @@ const genresBadges = [
         icon: badgeIconText("💥"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Action.ID))
                 .count() >= 10
         }
@@ -60,6 +76,7 @@ const genresBadges = [
         icon: badgeIconText("🗺️"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Adventure.ID))
                 .count() >= 10
         }
@@ -71,6 +88,7 @@ const genresBadges = [
         icon: badgeIconText("❤️"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Romance.ID))
                 .count() >= 10
         }
@@ -85,6 +103,7 @@ const genresBadges = [
         icon: badgeIconText("💋"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Romance.ID))
                 .count() >= 50
         }
@@ -96,6 +115,7 @@ const genresBadges = [
         icon: badgeIconText("🗡️"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Fantasy.ID))
                 .count() >= 10
         }
@@ -107,10 +127,40 @@ const genresBadges = [
         icon: badgeIconText("🚛"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => {
                     return genre.id === ANIME_GENRES.Isekai.ID || genre.id === ANIME_GENRES.Reincarnation.ID
                 }))
                 .count() >= 10
+        }
+    },
+    {
+        id: "why_is_he_so_op_badge",
+        name: "Why is he so OP?",
+        description: "Watched 50 or more Isekai or Reincarnation anime",
+        icon: badgeIconText("⚔️"),
+        styles: {
+            border: "2px solid #00c7f9"
+        },
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => {
+                    return genre.id === ANIME_GENRES.Isekai.ID || genre.id === ANIME_GENRES.Reincarnation.ID
+                }))
+                .count() >= 50
+        }
+    },
+    {
+        id: "deja_vu_badge",
+        name: "I've been in this place before",
+        description: "Watched 10 or more Racing anime",
+        icon: redRaceVehicle,
+        canHaveBadge: (animeList) => {
+            return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
+                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Racing.ID))
+                .count() >= 50
         }
     },
     {
@@ -125,6 +175,7 @@ const genresBadges = [
         },
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.AwardWinning.ID))
                 .count() >= 20
         }

@@ -1,7 +1,7 @@
 import Enumerable from "linq";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import type { AnimeBadge } from "../AnimeBadge";
-import { badgeIconText } from "../utils";
+import { badgeIconText, hadWatchedAnime } from "../utils";
 import jotaroSvg from "../icons/jotaro";
 import narutoSvg from "../icons/naruto";
 import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
@@ -22,10 +22,12 @@ const customBadges = [
         },
         canHaveBadge(animeList) {
             const boysLoveCount = Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
                 .count();
 
             const girlLoveCount = Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
                 .count();
 
@@ -44,6 +46,7 @@ const customBadges = [
         icon: narutoSvg,
         canHaveBadge(animeList) {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Shounen.ID))
                 .count() >= 50
         }
@@ -60,6 +63,7 @@ const customBadges = [
         },
         canHaveBadge(animeList) {
             return Enumerable.from(animeList)
+                .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
                 .count() >= 20
         }
@@ -83,7 +87,8 @@ const customBadges = [
                 51367, // JoJo no Kimyou na Bouken Part 6: Stone Ocean Part 2
             ] as const;
 
-            return jojoBizarreAdventureIds.every(animeId => {
+            return jojoBizarreAdventureIds
+            .every(animeId => {
                 return animeList.some(({ node, list_status }) => node.id === animeId && list_status.status === 'completed');
             })
         }
@@ -160,7 +165,7 @@ const customBadges = [
                 .select(({ list_status }) => list_status.num_episodes_watched)
                 .sum() > 6000
         }
-    }
+    },
 ] as AnimeBadge[]
 
 export default customBadges;
