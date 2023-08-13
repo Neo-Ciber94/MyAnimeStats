@@ -2,10 +2,9 @@ import { error, redirect, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
 import { getApiUrl } from "../common/getApiUrl";
 import { MALClient } from "../api";
+import { AUTH_CSRF_COOKIE, AUTH_SESSION_COOKIE, generateJwt, getServerSession } from "./auth";
 
 export const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
-export const AUTH_SESSION_COOKIE = 'myanimestats.session';
-export const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
 export const DEFAULT_SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days;
 
 const ALLOWED_FORWARD_HEADERS = [
@@ -108,7 +107,15 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             const tokens = await Auth.getToken({ code, redirectTo: `${originUrl}/callback` });
             console.log({ tokens });
 
-            event.cookies.set(AUTH_SESSION_COOKIE, tokens.refresh_token, {
+            const userId = Auth.getUserIdFromToken(tokens.access_token);
+
+            if (userId == null) {
+                throw error(401, "User id not found");
+            }
+
+            const sessionToken = await generateJwt(userId, tokens.refresh_token);
+
+            event.cookies.set(AUTH_SESSION_COOKIE, sessionToken, {
                 path: "/",
                 maxAge: sessionDurationSeconds,
                 httpOnly: true,
@@ -118,11 +125,11 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             throw redirect(307, '/');
         }
         case '/token': {
-            const { accessToken, expiresAt } = await getAuthToken(event);
+            const { accessToken, expiresAt } = await getMyAnimeListAuthToken(event);
             return Response.json({ accessToken, expiresAt })
         }
         case '/session': {
-            const { accessToken, expiresAt } = await getAuthToken(event);
+            const { accessToken, expiresAt } = await getMyAnimeListAuthToken(event);
             const includeStatistics = event.url.searchParams.get('include_anime_statistics') === "true";
 
             const malClient = new MALClient({ accessToken });
@@ -143,13 +150,20 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
     }
 }
 
-async function getAuthToken(event: RequestEvent) {
-    const refreshToken = event.cookies.get(AUTH_SESSION_COOKIE);
+async function getMyAnimeListAuthToken(event: RequestEvent) {
+    const token = event.cookies.get(AUTH_SESSION_COOKIE);
 
-    if (refreshToken == null) {
+    if (token == null) {
         throw error(401);
     }
 
+    const authenticated = await getServerSession(event.cookies);
+
+    if (authenticated == null) {
+        throw error(401);
+    }
+
+    const { refreshToken, userId } = authenticated;
     const { access_token: accessToken, expires_in } = await Auth.refreshToken({ refreshToken });
 
     // OAuth2 expires_in is in seconds
@@ -160,7 +174,7 @@ async function getAuthToken(event: RequestEvent) {
     // will expire before the actual expiration date.
     const expiresAt = new Date(accessTokenExpiresMs + Date.now());
 
-    return { accessToken, expiresAt }
+    return { accessToken, expiresAt, userId }
 }
 
 async function proxyRequestToMyAnimeListAPI(apiUrl: string, event: RequestEvent) {
@@ -175,7 +189,7 @@ async function proxyRequestToMyAnimeListAPI(apiUrl: string, event: RequestEvent)
     const path = event.url.pathname.slice(apiUrl.length);
     const search = event.url.search;
     const myAnimeListApiUrl = `${MY_ANIME_LIST_API_URL}${path}${search}`
-    
+
     // 🍥 GET: https://api.example.com/users
     console.log(`🍥 ${event.request.method}: ${myAnimeListApiUrl}`)
 
@@ -218,3 +232,4 @@ function startsWithPathSegment(pathname: string, other: string) {
 
     return true;
 }
+

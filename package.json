@@ -52,6 +52,7 @@
 		"flowbite": "^1.7.0",
 		"flowbite-svelte": "^0.40.1",
 		"fs-extra": "^11.1.1",
+		"jose": "^4.14.4",
 		"linq": "^4.0.1",
 		"lmdb": "^2.8.4",
 		"tailwind-merge": "^1.14.0",

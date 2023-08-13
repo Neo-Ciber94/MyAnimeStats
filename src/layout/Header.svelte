@@ -6,15 +6,20 @@
 </script>
 
 <header>
-	<div class="flex flex-row flex-wrap gap-2 justify-between shadow-lg px-5 sm:px-20 py-8 bg-gray-950">
+	<div
+		class="flex flex-row flex-wrap gap-2 justify-between shadow-lg px-5 sm:px-20 py-8 bg-gray-950"
+	>
 		<Logo />
 
 		<div class="flex flex-row items-center ml-2 sm:ml-10 gap-5">
-			<a
-				href="/stats"
-				class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"
-				>Stats</a
-			>
+			{#if $session.user}
+				<a
+					href="/stats"
+					class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"
+					>Stats</a
+				>
+			{/if}
+
 			<a
 				href="/anime"
 				class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"

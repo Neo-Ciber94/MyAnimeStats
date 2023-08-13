@@ -1,15 +1,22 @@
 import type { Actions, PageServerLoad } from "./$types";
-import { error, type Cookies } from "@sveltejs/kit";
+import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { Auth } from "$lib/myanimelist/auth/server";
 import { db } from "$lib/db";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
-import { AUTH_SESSION_COOKIE } from "$lib/myanimelist/svelte/handle";
 import { calculatePersonalStats } from "@/lib/utils/calculatePersonalStats.server";
+import { AUTH_SESSION_COOKIE, getServerSession } from "@/lib/myanimelist/svelte/auth";
 
 export const load = (async ({ cookies }) => {
+    const session = await getServerSession(cookies);
+
+    if (session == null) {
+        throw redirect(301, "/");
+    }
+
     try {
+
         const data = await db.get("stats");
         const animeList = await getMyAnimeList(cookies);
         const result = calculatedStatsSchema.safeParse(data);
@@ -62,7 +69,7 @@ async function calculateUserStats(cookies: Cookies) {
 
     // Calculate stats
     stats.personal = calculatePersonalStats(animeList);
-    
+
     const byGenre = new Map<string, AnimeNodeWithStatus[]>();
 
     for (const anime of animeList) {

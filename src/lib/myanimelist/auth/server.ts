@@ -1,6 +1,7 @@
 import { MY_ANIME_LIST_CLIENT_ID, MY_ANIME_LIST_CLIENT_SECRET } from '$env/static/private';
 import crypto from 'node:crypto';
 import { z } from 'zod';
+import jose from 'jose';
 
 const MY_ANIME_LIST_OAUTH2_URL = "https://myanimelist.net/v1/oauth2";
 const CODE_VERIFIER = createCodeVerifier();
@@ -136,6 +137,22 @@ export namespace Auth {
 
         const json = await res.json();
         return responseSchema.parse(json);
+    }
+
+    /**
+     * Decode the token and returns the user id.
+     * @param token The jwt access token returned by MyAnimeList.
+     * @returns The user id in the jwt claims.
+     */
+    export function getUserIdFromToken(token: string): number | null {
+        const claims = jose.decodeJwt(token);
+
+        if (claims.sub == null) {
+            return null;
+        }
+
+        const userId = Number(claims.sub);
+        return Number.isNaN(userId) ? null : userId;
     }
 }
 
