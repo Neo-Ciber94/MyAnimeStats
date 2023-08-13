@@ -1,9 +1,8 @@
 <script>
 	import { Button } from 'flowbite-svelte';
+	import { HeartSolid } from 'flowbite-svelte-icons';
 
-	function handleConnect() {
-		
-	}
+	function handleConnect() {}
 </script>
 
 <div class="p-4 container mx-auto">
@@ -57,6 +56,10 @@
 	<div class="bg-violet-500 h-1 rounded-lg w-8/12 mt-14 mb-8 mx-auto" />
 
 	<section class="px-10 py-4 text-center">
-		<Button color="purple" size="lg" class="px-20 text-white text-2xl">Connect</Button>
+		<Button color="purple" size="lg" class="px-20 text-white text-2xl" on:click={handleConnect}>
+			Connect
+
+			<HeartSolid class="ml-3 w-5 h-5" />
+		</Button>
 	</section>
 </div>

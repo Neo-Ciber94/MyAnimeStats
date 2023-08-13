@@ -1,7 +1,6 @@
 <script>
 	import '../app.css';
-	import Footer from '../layout/Footer.svelte';
-	import Header from '../layout/Header.svelte';
+	import Layout from '@/layout/Layout.svelte';
 	import SessionProvider from '../provider/SessionProvider.svelte';
 </script>
 
@@ -20,11 +19,7 @@
 </svelte:head>
 
 <SessionProvider>
-	<div class="flex flex-col justify-between min-h-screen">
-		<Header />
-		<div class="flex-grow">
-			<slot />
-		</div>
-		<Footer />
-	</div>
+	<Layout>
+		<slot />
+	</Layout>
 </SessionProvider>
