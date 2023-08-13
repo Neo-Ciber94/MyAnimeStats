@@ -39,7 +39,7 @@ const customBadges = [
     {
         id: "protagonist_badge",
         name: "Protagonist",
-        description: "Watched over 50 Shounen anime",
+        description: "Watched over 100 Shounen anime",
         styles: {
             border: "2px solid #00a2ff",
             background: "linear-gradient(231deg, rgba(0,1,70,1) 34%, rgba(0,0,0,1) 100%)",
@@ -50,7 +50,7 @@ const customBadges = [
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Shounen.ID))
-                .count() >= 50
+                .count() >= 100
         }
     },
     {
@@ -116,7 +116,7 @@ const customBadges = [
     {
         id: "genre_master_badge",
         name: "Genre Master",
-        description: "Watched anime from 20 different genres",
+        description: "Watched anime from 50 different genres",
         icon: badgeIconText("アニメ"),
         styles: {
             border: "2px solid transparent",
@@ -128,7 +128,7 @@ const customBadges = [
             animeList.forEach(anime => {
                 anime.node.genres.forEach(genre => uniqueGenres.add(genre.name));
             });
-            return uniqueGenres.size >= 20;
+            return uniqueGenres.size >= 50;
         }
     },
     {

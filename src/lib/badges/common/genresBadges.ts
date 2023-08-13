@@ -15,41 +15,41 @@ const genresBadges = [
     {
         id: "casual_enjoyer_badge",
         name: "Casual Enjoyer",
-        description: "Watched over 10 anime",
+        description: "Watched over 30 anime",
         icon: badgeIconText("🍥"),
-        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 10,
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 30,
     },
     {
         id: "otaku_badge",
         name: "Otaku",
-        description: "Watched over 100 anime",
+        description: "Watched over 300 anime",
         styles: {
             border: "2px solid #3e0070",
         },
         icon: badgeIconText("🍙"),
-        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 100,
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 300,
     },
     {
         id: "weeb_badge",
         name: "Weeb",
-        description: "Watched over 500 anime",
+        description: "Watched over 1000 anime",
         styles: {
             border: "2px solid #a80000"
         },
         icon: badgeIconText("🍣"),
-        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 500,
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 1000,
     },
     {
         id: "god_and_anime_badge",
         name: /*html*/`<span class="font-semibold">I have the power of god and anime</span>`,
-        description: "Watched over 3000 anime",
+        description: "Watched over 4000 anime",
         icon: holyHalo,
         styles: {
             background: "linear-gradient(142deg, rgba(255,255,255,1) 0%, rgba(255,250,192,1) 59%)",
             border: "2px solid #fcf05a",
             color: "#9c3100"
         },
-        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 3000,
+        canHaveBadge: (animeList) => animeList.filter(hadWatchedAnime).length >= 4000,
     },
     {
         id: "it_is_funny_badge",
@@ -687,7 +687,7 @@ const genresBadges = [
     {
         id: "good_taste_badge",
         name: /*html*/`<b class="text-amber-900">Good Taste</b>`,
-        description: "Watched 20 or more award winning anime",
+        description: "Watched 30 or more award winning anime",
         icon: badgeIconText("🪙"),
         styles: {
             border: "2px solid #d69200",
@@ -698,7 +698,7 @@ const genresBadges = [
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
                 .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.AwardWinning.ID))
-                .count() >= 20
+                .count() >= 30
         }
     },
 ] as AnimeBadge[]

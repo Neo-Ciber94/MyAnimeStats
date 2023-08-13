@@ -10,6 +10,8 @@ const badges = Object.freeze([
 
 // Ensure the badges ids are unique
 if (dev) {
+    console.log(`🥇 ${badges.length} badges found`);
+
     const keys = new Set<string>();
     for (const badge of badges) {
         if (keys.has(badge.id)) {
