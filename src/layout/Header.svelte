@@ -7,7 +7,7 @@
 
 <header>
 	<div
-		class="flex flex-row flex-wrap gap-2 justify-between shadow-lg px-5 sm:px-20 py-8 bg-gray-950"
+		class="h-28 flex flex-row flex-wrap gap-2 justify-between shadow-lg px-5 sm:px-20 py-8 bg-gray-950"
 	>
 		<Logo />
 
