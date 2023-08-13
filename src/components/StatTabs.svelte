@@ -23,8 +23,8 @@
 
 	const userBadges = derived(session, (session) => {
 		const user = session.user;
-		//const badges = user == null ? [] : BADGES.filter((b) => b.canHaveBadge(animeList, user));
-		const badges = BADGES.slice();
+		const badges = user == null ? [] : BADGES.filter((b) => b.canHaveBadge(animeList, user));
+		
 		return {
 			loading: session.loading,
 			user,
