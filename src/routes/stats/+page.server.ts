@@ -12,7 +12,7 @@ export const load = (async ({ cookies }) => {
     const session = await getServerSession(cookies);
 
     if (session == null) {
-        throw redirect(301, "/");
+        throw redirect(307, "/");
     }
 
     try {
