@@ -1,5 +1,5 @@
 <script lang="ts">
-	import session from '$stores/sessionStore';
+	import session from '$stores/session';
 	import { Spinner } from 'flowbite-svelte';
 	import StatIndicator from '$components/StatIndicator.svelte';
 

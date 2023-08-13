@@ -1,8 +1,21 @@
 <script>
+	import { goto } from '$app/navigation';
+	import session from '$stores/session';
+	import { signIn } from '@/lib/myanimelist/auth/client';
 	import { Button } from 'flowbite-svelte';
 	import { HeartSolid } from 'flowbite-svelte-icons';
 
-	function handleConnect() {}
+	const handleConnect = () => {
+		if ($session.loading) {
+			return;
+		}
+
+		if (!$session.user) {
+			signIn();
+		} else {
+			goto('/stats');
+		}
+	};
 </script>
 
 <div class="p-4 container mx-auto">
