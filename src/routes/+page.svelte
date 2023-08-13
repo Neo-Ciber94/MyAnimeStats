@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
+	import SampleBarGraph from '$components/SampleBarGraph.svelte';
 	import session from '$stores/session';
 	import { signIn } from '@/lib/myanimelist/auth/client';
 	import { Button } from 'flowbite-svelte';
@@ -18,34 +19,47 @@
 	};
 </script>
 
-<div class="p-4 container mx-auto">
-	<!-- <section class="flex flex-row gap-4 my-4 px-32">
-		<div class="basis-1/3">
-			<img
-				alt="Mirai in Phone"
-				width="600"
-				height="600"
-				class="w-full h-full aspect-square object-cover shadow-md rounded-md overflow-hidden"
-				src="/images/mirai_in_phone.jpg"
-			/>
-		</div>
+<div class="relative p-4 container mx-auto">
+	<!-- <div class="flex flex-col lg:flex-row items-center mt-10 gap-10 px-44">
+		<SampleBarGraph class="w-[45%]  justify-end"/>
 
-		<div class="text-white text-7xl basis-2/3">
-			<div class="flex flex-col gap-4">
-				<span>Want to analyze your <b>MyAnimeList</b> stats? </span>
-				<span>Just for fun</span>
+		<section
+			class="w-[55%] flex flex-col justify-center pb-4 text-3xl lg:text-[4vw] leading-[1.3em] text-white mt-10 text-center md:text-left"
+		>
+			<div>
+				<span>Want to analyze your</span>
+				<b
+					class="font-extrabold text-transparent bg-clip-text
+				bg-gradient-to-r from-purple-500 via-purple-600 to-purple-500"
+				>
+					MyAnimeList
+				</b>
+				<span>stats?</span>
 			</div>
-		</div>
-	</section> -->
+			<div>
+				<span
+					class="font-extrabold text-transparent bg-clip-text
+			bg-gradient-to-r from-pink-700 from-10% to-pink-500">Why?</span
+				>
+				<span>
+					<span>Just for</span>
+					<span
+						class="font-extrabold text-transparent bg-clip-text
+				bg-gradient-to-r from-orange-500 via-orange-500 to-orange-600">FUN</span
+					>
+				</span>
+			</div>
+		</section>
+	</div> -->
 
 	<section
-		class="flex flex-col justify-center pt-20 pb-4 px-20 gap-4 text-6xl text-white items-center"
+		class="flex flex-col justify-center pb-4 text-3xl lg:text-[4vw] leading-[1.3em] text-white mt-10 text-center"
 	>
 		<div>
 			<span>Want to analyze your</span>
 			<b
 				class="font-extrabold text-transparent bg-clip-text
-				bg-gradient-to-r from-purple-500 via-purple-600 to-purple-500"
+		bg-gradient-to-r from-purple-500 via-purple-600 to-purple-500"
 			>
 				MyAnimeList
 			</b>
@@ -54,13 +68,13 @@
 		<div>
 			<span
 				class="font-extrabold text-transparent bg-clip-text
-			bg-gradient-to-r from-pink-700 from-10% to-pink-500">Why?</span
+	bg-gradient-to-r from-pink-700 from-10% to-pink-500">Why?</span
 			>
 			<span>
 				<span>Just for</span>
 				<span
 					class="font-extrabold text-transparent bg-clip-text
-				bg-gradient-to-r from-orange-500 via-orange-500 to-orange-600">FUN</span
+		bg-gradient-to-r from-orange-500 via-orange-500 to-orange-600">FUN</span
 				>
 			</span>
 		</div>
