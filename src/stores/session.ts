@@ -1,3 +1,4 @@
+import { dev } from "$app/environment";
 import { getSession } from "$lib/myanimelist/auth/client";
 import type { User } from "$lib/myanimelist/common/user";
 import { get, writable } from "svelte/store";
@@ -18,13 +19,17 @@ const sessionStore = writable<SessionState>({
 
 async function initialize() {
     if (initialized === true) {
-        throw new Error("use store initialization was already called");
+        if (dev) {
+            console.error("session was already initialized");
+        }
+
+        return;
     }
 
     initialized = true;
 
     sessionStore.set({ loading: true, accessToken: null, user: null });
-    
+
     try {
         const session = await getSession();
 
@@ -32,10 +37,13 @@ async function initialize() {
             return sessionStore.set({ loading: false, accessToken: null, user: null });
         }
 
+        if (dev) {
+            console.log("🍥 User session loaded: ", JSON.stringify(session, null, 2));
+        }
+
         // Currently the expiration of the access token is 31 days, which is really long,
         // so we don't have reason to refresh it, each time the user log in a new token will be created.
         const { accessToken, user } = session;
-        console.log("🍥 User session loaded: ", JSON.stringify(session, null, 2));
         sessionStore.set({ user, accessToken, loading: false })
     }
     catch (err) {
