@@ -18,20 +18,38 @@
 
 	const animeSeason = getCurrentAnimeSeason();
 
-	onMount(() => {
+	function renderSwiper() {
 		swiper = new Swiper(swiperElement, {
 			speed: 500,
 			loop: true,
-			spaceBetween: 5,
-			slidesPerView: 5,
 			centeredSlides: true,
+			slidesPerView: 1,
+			spaceBetween: 10,
 			initialSlide: 2,
-			modules: [Autoplay],
+			//modules: [Autoplay],
 			autoplay: {
 				delay: 2500,
 				disableOnInteraction: false
+			},
+			breakpoints: {
+				320: {
+					slidesPerView: 2
+				},
+				540: {
+					slidesPerView: 3
+				},
+				768: {
+					slidesPerView: 4
+				},
+				1280: {
+					slidesPerView: 5
+				}
 			}
 		});
+	}
+
+	onMount(() => {
+		renderSwiper();
 	});
 
 	function handleSlideNext() {
@@ -59,7 +77,7 @@
 	};
 </script>
 
-<div class="relative p-4 container mx-auto">
+<div class="relative p-4 md:container mx-auto">
 	<!-- <div class="flex flex-col lg:flex-row items-center mt-10 gap-10 px-44">
 		<SampleBarGraph class="w-[45%]  justify-end"/>
 
@@ -150,18 +168,25 @@
 			<div class={`swiper-wrapper ${swiper == null ? 'invisible' : 'visible'}`}>
 				<!-- Slides -->
 				{#each data.animeList as anime}
-					<div class="swiper-slide overflow-hidden relative border border-gray-500/20 rounded-sm">
-						<div class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent" />
-						<img
-							width={400}
-							height={400}
-							class="object-cover w-[300px] h-[220px] lg:w-[400px] lg:h-[400px]"
-							alt={anime.node.title}
-							src={anime.node.main_picture.large}
-						/>
-						<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1">
-							{anime.node.title}
-						</span>
+					<div class="swiper-slide">
+						<div
+							class="overflow-hidden relative border border-gray-500/20 rounded-sm
+							w-[140px] h-[250px] sm:w-[160px] lg:w-[220px] lg:h-[380px] mx-auto"
+						>
+							<div
+								class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent"
+							/>
+							<img
+								class="object-cover w-[140px] sm:w-[160px] h-[250px] lg:w-[220px] lg:h-[380px]"
+								alt={anime.node.title}
+								src={anime.node.main_picture.large}
+							/>
+							<span
+								class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1"
+							>
+								{anime.node.title}
+							</span>
+						</div>
 					</div>
 				{/each}
 			</div>
