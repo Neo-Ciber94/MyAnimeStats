@@ -10,6 +10,7 @@
 	import Swiper from 'swiper';
 	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
 	import { capitalize } from '@/lib/utils/helpers';
+	import { Autoplay } from 'swiper/modules';
 
 	export let data: PageServerData;
 	let swiperElement: HTMLDivElement;
@@ -19,10 +20,13 @@
 
 	onMount(() => {
 		swiper = new Swiper(swiperElement, {
+			speed: 500,
 			loop: true,
 			spaceBetween: 5,
 			slidesPerView: 5,
 			centeredSlides: true,
+			initialSlide: 2,
+			modules: [Autoplay],
 			autoplay: {
 				delay: 2500,
 				disableOnInteraction: false
@@ -54,10 +58,6 @@
 		}
 	};
 </script>
-
-<svelte:head>
-	<script defer src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-element-bundle.min.js"></script>
-</svelte:head>
 
 <div class="relative p-4 container mx-auto">
 	<!-- <div class="flex flex-col lg:flex-row items-center mt-10 gap-10 px-44">
@@ -142,43 +142,47 @@
 		</h1>
 
 		<!-- Slider main container -->
-		<div class="swiper group" bind:this={swiperElement}>
+		<div
+			class={`swiper group ${swiper == null ? 'bg-indigo-400/20 animate-pulse rounded-lg' : ''}`}
+			bind:this={swiperElement}
+		>
 			<!-- Additional required wrapper -->
-			<div class="swiper-wrapper">
+			<div class={`swiper-wrapper ${swiper == null ? 'invisible' : 'visible'}`}>
 				<!-- Slides -->
 				{#each data.animeList as anime}
 					<div class="swiper-slide overflow-hidden relative border border-gray-500/20 rounded-sm">
 						<div class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent" />
 						<img
-							class="object-cover w-[220px] h-[220px] lg:w-[400px] lg:h-[400px]"
+							width={400}
+							height={400}
+							class="object-cover w-[300px] h-[220px] lg:w-[400px] lg:h-[400px]"
 							alt={anime.node.title}
-							src={anime.node.main_picture.medium}
+							src={anime.node.main_picture.large}
 						/>
-						<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin">
+						<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1">
 							{anime.node.title}
 						</span>
 					</div>
 				{/each}
 			</div>
 
-			<div
+			<button
 				class="absolute h-full top-0 left-0 w-8 bg-black/70 z-30
-					group-hover:opacity-100 opacity-0 transition duration-500
-					flex flex-row justify-center items-center"
+				group-hover:opacity-100 opacity-0 transition duration-500
+				flex flex-row justify-center items-center"
+				on:click={handleSlidePrev}
 			>
-				<button on:click={handleSlidePrev}>
-					<ChevronLeft class="w-6 h-6 text-white" />
-				</button>
-			</div>
-			<div
+				<ChevronLeft class="w-6 h-6 text-white" />
+			</button>
+
+			<button
 				class="absolute h-full top-0 right-0 w-8 bg-black/70 z-30
-					group-hover:opacity-100 opacity-0 transition duration-500
-					flex flex-row justify-center items-center"
+				group-hover:opacity-100 opacity-0 transition duration-500
+				flex flex-row justify-center items-center"
+				on:click={handleSlideNext}
 			>
-				<button on:click={handleSlideNext}>
-					<ChevronRight class="w-6 h-6 text-white" />
-				</button>
-			</div>
+				<ChevronRight class="w-6 h-6 text-white" />
+			</button>
 		</div>
 	</section>
 </div>
