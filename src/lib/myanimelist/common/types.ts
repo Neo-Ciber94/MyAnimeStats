@@ -46,6 +46,11 @@ export type MyListStatus = {
     updated_at: string
 }
 
+export type AnimeBroadcast = {
+    day_of_the_week: string;
+    start_time?: string;
+}
+
 export type AnimeNode = {
     node: {
         id: number;
@@ -74,6 +79,7 @@ export type AnimeNode = {
             season: AnimeSeason
         },
         studios: AnimeStudio[],
+        broadcast?: AnimeBroadcast;
         my_list_status?: MyListStatus
     };
 };

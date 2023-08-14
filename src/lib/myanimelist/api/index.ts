@@ -12,7 +12,8 @@ export interface GetAnimeListOptions {
     q?: string;
     limit?: number,
     offset?: number;
-    fields?: string[]
+    fields?: string[];
+    nsfw?: boolean;
 }
 
 export interface GetAnimeRankingOptions {
@@ -20,7 +21,10 @@ export interface GetAnimeRankingOptions {
     limit?: number;
     offset?: number;
     fields?: string[]
+    nsfw?: boolean;
 }
+
+type SeasonalAnimeFields = (keyof AnimeNode['node']) | (string & Empty);
 
 export interface GetSeasonalAnimeOptions {
     year: number,
@@ -28,13 +32,15 @@ export interface GetSeasonalAnimeOptions {
     sort?: 'anime_score' | 'anime_num_list_users',
     limit?: number;
     offset?: number;
-    fields?: string[]
+    fields?: SeasonalAnimeFields[];
+    nsfw?: boolean;
 }
 
 export interface GetSuggestedAnimeOptions {
     limit?: number;
     offset?: number;
     fields?: string[];
+    nsfw?: boolean;
 }
 
 export interface UpdateMyAnimeListStatusOptions {
@@ -54,6 +60,7 @@ export interface GetUserAnimeListOptions {
     fields?: string[];
     limit?: number;
     offset?: number;
+    nsfw?: boolean;
 }
 
 interface MALClientConfig {
@@ -83,7 +90,7 @@ export class MalHttpError extends Error {
 export class MALClient {
     #config: MALClientConfig;
 
-    constructor(config: MALClientConfig) {
+    constructor(config: MALClientConfig = {}) {
         if (config.accessToken == null && config.clientId == null) {
             throw new Error("access token or client id are required");
         }
