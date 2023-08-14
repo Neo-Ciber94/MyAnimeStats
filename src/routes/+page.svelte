@@ -18,7 +18,7 @@
 
 	const animeSeason = getCurrentAnimeSeason();
 
-	function renderSwiper() {
+	onMount(() => {
 		swiper = new Swiper(swiperElement, {
 			speed: 500,
 			loop: true,
@@ -46,10 +46,6 @@
 				}
 			}
 		});
-	}
-
-	onMount(() => {
-		renderSwiper();
 	});
 
 	function handleSlideNext() {
