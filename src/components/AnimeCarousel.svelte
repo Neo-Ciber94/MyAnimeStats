@@ -37,6 +37,8 @@
 			swiper.slidePrev();
 		}
 	}
+
+	function handleClick(anime: AnimeNode) {}
 </script>
 
 <div class={`swiper group h-[300px]`} bind:this={swiperElement}>
@@ -53,8 +55,9 @@
 		<!-- Slides -->
 		{#each animeList as anime}
 			<div class="swiper-slide !w-[200px] !h-[300px] cursor-pointer">
-				<div
-					class="overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
+				<a
+					href={`/anime/${anime.node.id}`}
+					class="block overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
 				>
 					<!-- Bottom gradient -->
 					<div
@@ -71,10 +74,12 @@
 					/>
 
 					<!-- Title -->
-					<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1 z-40">
+					<span
+						class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1 z-40"
+					>
 						{anime.node.title}
 					</span>
-				</div>
+				</a>
 			</div>
 		{/each}
 	</div>

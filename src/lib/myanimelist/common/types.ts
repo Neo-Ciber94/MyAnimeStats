@@ -18,6 +18,39 @@ export type RankingType = 'all'
     | 'bypopularity'
     | 'favorite';
 
+export type SourceType =
+    | 'other'
+    | 'original'
+    | 'manga'
+    | '4_koma_manga'
+    | 'web_manga'
+    | 'digital_manga'
+    | 'novel'
+    | 'light_novel'
+    | 'visual_novel'
+    | 'game'
+    | 'card_game'
+    | 'book'
+    | 'picture_book'
+    | 'radio'
+    | 'music';
+
+type AnimeRelationType =
+    | 'sequel'
+    | 'prequel'
+    | 'alternative_setting'
+    | 'alternative_version'
+    | 'side_story'
+    | 'parent_story'
+    | 'summary'
+    | 'full_story';
+
+export interface RelatedAnime {
+    node: AnimeNode['node'],
+    relation_type: AnimeRelationType;
+    relation_type_formatted: string;
+}
+
 export type AnimeStudio = {
     id: number,
     name: string;
@@ -78,9 +111,31 @@ export type AnimeNode = {
             year: number,
             season: AnimeSeason
         },
+        average_episode_duration?: number,
         studios: AnimeStudio[],
         broadcast?: AnimeBroadcast;
         my_list_status?: MyListStatus
+        background?: string;
+        source?: SourceType;
+        related_anime?: RelatedAnime;
+        pictures?: {
+            large?: string
+            medium: string
+        }[],
+        recommendations?: {
+            node: AnimeNode['node'],
+            num_recommendations: number
+        }
+        statistics?: {
+            num_list_users: number;
+            status: {
+                watching: number,
+                completed: number,
+                on_hold: number,
+                dropped: number,
+                plan_to_watch: number
+            }
+        }
     };
 };
 

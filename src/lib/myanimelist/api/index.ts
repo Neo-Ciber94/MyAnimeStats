@@ -4,15 +4,17 @@ import type { User } from "../common/user";
 
 type Empty = Record<string, never>
 
+type AnimeFields = (keyof AnimeNode['node']) | (string & Empty);
+
 export interface GetMyUserInfoOptions {
-    fields?: string[];
+    fields?: AnimeFields[];
 }
 
 export interface GetAnimeListOptions {
     q?: string;
     limit?: number,
     offset?: number;
-    fields?: string[];
+    fields?: AnimeFields[];
     nsfw?: boolean;
 }
 
@@ -20,11 +22,10 @@ export interface GetAnimeRankingOptions {
     ranking_type: RankingType,
     limit?: number;
     offset?: number;
-    fields?: string[]
+    fields?: AnimeFields[]
     nsfw?: boolean;
 }
 
-type AnimeFields = (keyof AnimeNode['node']) | (string & Empty);
 
 export interface GetSeasonalAnimeOptions {
     year: number,
@@ -57,7 +58,7 @@ export interface UpdateMyAnimeListStatusOptions {
 export interface GetUserAnimeListOptions {
     status?: WatchStatus,
     sort?: 'list_score' | 'list_updated_at' | 'anime_title' | 'anime_start_date' | 'anime_id',
-    fields?: string[];
+    fields?: AnimeFields[];
     limit?: number;
     offset?: number;
     nsfw?: boolean;
@@ -142,7 +143,8 @@ export class MALClient {
             headers.Authorization = `Bearer ${accessToken}`;
         }
 
-        if (clientId) {
+        // We ignore the client id if we had the access token
+        if (clientId && accessToken == null) {
             headers["X-MAL-CLIENT-ID"] = clientId;
         }
 
@@ -183,7 +185,7 @@ export class MALClient {
         return result;
     }
 
-    async getAnimeDetails(animeId: number, options: { fields?: string[] }) {
+    async getAnimeDetails(animeId: number, options: { fields?: AnimeFields[] }) {
         const { fields = [] } = options;
 
         const result = await this.sendRequest<AnimeNode['node']>({
