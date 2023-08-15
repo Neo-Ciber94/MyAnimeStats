@@ -1,14 +1,18 @@
 <script lang="ts">
+	import AnimatedNumber from '$components/AnimatedNumber.svelte';
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
 </script>
 
-<div class="px-20 pt-10 container mx-auto mb-10">
+<div class="px-4 sm:px-20 pt-10 lg:container mx-auto mb-10">
 	<!-- <pre class="text-white">{JSON.stringify(data, null, 2)}</pre> -->
 
 	<section>
-		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+		<h1
+			class="text-xl md:text-3xl text-white mb-4 border-b-4 border-b-orange-500
+			 !leading-[1.3em] sm:!leading-[2em] text-center lg:text-left"
+		>
 			{data.title}
 		</h1>
 	</section>
@@ -18,18 +22,62 @@
 			<img
 				src={data.main_picture.large}
 				alt={data.title}
-				class="w-full mx-auto md:w-auto h-[200px] md:h-[400px] object-cover md:object-contain"
+				class="w-full mx-auto md:w-auto h-[300px] md:h-[400px] object-contain"
 			/>
 		</div>
 
 		<div class="w-full md:w-2/3">
 			<div class="pb-5">
 				<h3 class="text-orange-500 text-2xl mb-2">General</h3>
-				<div class="p-4 bg-gray-950 rounded-lg">
-					<div
-						class="bg-violet-500 w-12 h-12 rounded-full flex flex-row justify-center items-center text-white"
-					>
-						{data.mean}
+				<div
+					class="p-4 bg-gray-950 rounded-lg flex flex-row items-center flex-wrap justify-between"
+				>
+					<div class="flex flex-row p-4 text-white items-center gap-4">
+						<div
+							class="text-lg md:text-2xl font-bold h-full px-2 py-2 md:px-4 md:py-3 rounded-lg
+							min-w-[80px] md:min-w-[100px] text-center
+							bg-gradient-to-br from-pink-500 to-pink-600 font-mono"
+						>
+							<AnimatedNumber value={data.mean} decimalPlaces={2} />
+						</div>
+						<div class="flex flex-col gap-1">
+							<span class="text-sm md:text-2xl">Score</span>
+							<span class="text-xs">{`${data.num_scoring_users} users`}</span>
+						</div>
+					</div>
+
+					<div class="flex flex-row p-4 text-white items-center gap-2">
+						<div
+							class="text-lg md:text-2xl font-bold h-full px-2 py-2 md:px-4 md:py-3 rounded-lg
+							min-w-[80px] md:min-w-[100px] text-center
+							bg-gradient-to-br from-orange-500 to-orange-600 font-mono"
+						>
+							{#if data.rank}
+								#<AnimatedNumber value={data.rank} />
+							{:else}
+								N/A
+							{/if}
+						</div>
+						<div class="flex flex-col gap-1">
+							<span class="text-sm md:text-2xl">Rank</span>
+						</div>
+					</div>
+
+					<div class="flex flex-row p-4 text-white items-center gap-2">
+						<div
+							class="text-lg md:text-2xl font-bold h-full px-2 py-2 md:px-4 md:py-3 rounded-lg
+							min-w-[80px] md:min-w-[100px] text-center
+							bg-gradient-to-br from-violet-500 to-violet-600 font-mono"
+						>
+							{#if data.popularity}
+								#<AnimatedNumber value={data.popularity} />
+							{:else}
+								N/A
+							{/if}
+						</div>
+						<div class="flex flex-col gap-1">
+							<span class="text-sm md:text-2xl">Popularity</span>
+						</div>
 					</div>
 				</div>
 			</div>
