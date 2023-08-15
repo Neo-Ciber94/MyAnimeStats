@@ -1,64 +1,16 @@
 <script lang="ts">
-	import 'swiper/css/bundle';
 	import { goto } from '$app/navigation';
 	import session from '$stores/session';
 	import { signIn } from '@/lib/myanimelist/auth/client';
-	import { Button, ChevronLeft, ChevronRight } from 'flowbite-svelte';
+	import { Button } from 'flowbite-svelte';
 	import { HeartSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';
-	import { onMount } from 'svelte';
-	import Swiper from 'swiper';
 	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
 	import { capitalize } from '@/lib/utils/helpers';
-	import { Autoplay } from 'swiper/modules';
+	import AnimeCarousel from '$components/AnimeCarousel.svelte';
 
 	export let data: PageServerData;
-	let swiperElement: HTMLDivElement;
-	let swiper: Swiper;
-
 	const animeSeason = getCurrentAnimeSeason();
-
-	onMount(() => {
-		swiper = new Swiper(swiperElement, {
-			speed: 500,
-			loop: true,
-			centeredSlides: true,
-			slidesPerView: 1,
-			spaceBetween: 10,
-			initialSlide: 2,
-			//modules: [Autoplay],
-			autoplay: {
-				delay: 2500,
-				disableOnInteraction: false
-			},
-			breakpoints: {
-				320: {
-					slidesPerView: 2
-				},
-				540: {
-					slidesPerView: 3
-				},
-				768: {
-					slidesPerView: 4
-				},
-				1280: {
-					slidesPerView: 5
-				}
-			}
-		});
-	});
-
-	function handleSlideNext() {
-		if (swiper) {
-			swiper.slideNext();
-		}
-	}
-
-	function handleSlidePrev() {
-		if (swiper) {
-			swiper.slidePrev();
-		}
-	}
 
 	const handleConnect = () => {
 		if ($session.loading) {
@@ -73,7 +25,7 @@
 	};
 </script>
 
-<div class="relative p-4 md:container mx-auto">
+<div class="relative p-4 lg:container mx-auto">
 	<!-- <div class="flex flex-col lg:flex-row items-center mt-10 gap-10 px-44">
 		<SampleBarGraph class="w-[45%]  justify-end"/>
 
@@ -155,55 +107,6 @@
 			{`${capitalize(animeSeason.season)} ${animeSeason.year} anime`}
 		</h1>
 
-		<!-- Slider main container -->
-		<div
-			class={`swiper group ${swiper == null ? 'bg-indigo-400/20 animate-pulse rounded-lg' : ''}`}
-			bind:this={swiperElement}
-		>
-			<!-- Additional required wrapper -->
-			<div class={`swiper-wrapper ${swiper == null ? 'invisible' : 'visible'}`}>
-				<!-- Slides -->
-				{#each data.animeList as anime}
-					<div class="swiper-slide">
-						<div
-							class="overflow-hidden relative border border-gray-500/20 rounded-sm
-							w-[140px] h-[250px] sm:w-[160px] lg:w-[220px] lg:h-[380px] mx-auto"
-						>
-							<div
-								class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent"
-							/>
-							<img
-								class="object-cover w-[140px] sm:w-[160px] h-[250px] lg:w-[220px] lg:h-[380px]"
-								alt={anime.node.title}
-								src={anime.node.main_picture.large}
-							/>
-							<span
-								class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1"
-							>
-								{anime.node.title}
-							</span>
-						</div>
-					</div>
-				{/each}
-			</div>
-
-			<button
-				class="absolute h-full top-0 left-0 w-8 bg-black/70 z-30
-				group-hover:opacity-100 opacity-0 transition duration-500
-				flex flex-row justify-center items-center"
-				on:click={handleSlidePrev}
-			>
-				<ChevronLeft class="w-6 h-6 text-white" />
-			</button>
-
-			<button
-				class="absolute h-full top-0 right-0 w-8 bg-black/70 z-30
-				group-hover:opacity-100 opacity-0 transition duration-500
-				flex flex-row justify-center items-center"
-				on:click={handleSlideNext}
-			>
-				<ChevronRight class="w-6 h-6 text-white" />
-			</button>
-		</div>
+		<AnimeCarousel animeList={data.animeList} />
 	</section>
 </div>
