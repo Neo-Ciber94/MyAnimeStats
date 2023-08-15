@@ -7,6 +7,8 @@
 	import type { AnimeNode } from '@/lib/myanimelist/common/types';
 
 	export let animeList: AnimeNode[];
+	export let initialSlide = 1;
+	
 	let swiperElement: HTMLDivElement;
 	let swiper: Swiper;
 
@@ -17,7 +19,7 @@
 			centeredSlides: true,
 			slidesPerView: 'auto',
 			spaceBetween: 10,
-			initialSlide: 2,
+			initialSlide,
 			modules: [Autoplay],
 			autoplay: {
 				delay: 2500,
@@ -57,8 +59,14 @@
 			<div class="swiper-slide !w-[200px] !h-[300px] cursor-pointer">
 				<a
 					href={`/anime/${anime.node.id}`}
-					class="block overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
+					class="group/image block overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
 				>
+					<!-- Hover gradient -->
+					<!-- <div
+						class="opacity-0  group-hover/image:opacity-100 transition duration-300
+						w-full h-full absolute bg-gradient-to-r from-70% from-black mix-blend-hue to-transparent z-10"
+					/> -->
+
 					<!-- Bottom gradient -->
 					<div
 						class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent z-30"
