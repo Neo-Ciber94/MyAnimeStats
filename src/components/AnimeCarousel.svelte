@@ -39,10 +39,10 @@
 	}
 </script>
 
-<div class={`swiper group`} bind:this={swiperElement}>
+<div class={`swiper group h-[260px]`} bind:this={swiperElement}>
 	{#if swiper == null}
 		<div class="flex flex-row space-x-[10px]">
-			{#each Array.from(Array(10).keys()) as idx}
+			{#each Array.from(Array(10).keys()) as _}
 				<div
 					class="flex-shrink-0 rounded-sm w-[200px] h-[260px] lg:w-[240px] lg:h-[360px] bg-indigo-400/20 animate-pulse"
 				/>
