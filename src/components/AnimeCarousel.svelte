@@ -58,7 +58,7 @@
 				<div
 					class="overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
 				>
-					<!-- Title gradient -->
+					<!-- Bottom gradient -->
 					<div class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent" />
 
 					<!-- Image -->
@@ -69,6 +69,8 @@
 						alt={anime.node.title}
 						src={anime.node.main_picture.large}
 					/>
+
+                    <!-- Title -->
 					<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1">
 						{anime.node.title}
 					</span>
