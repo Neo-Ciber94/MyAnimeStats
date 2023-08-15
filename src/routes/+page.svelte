@@ -119,4 +119,12 @@
 			<AnimeCarousel animeList={data.suggestedAnimeList} />
 		</section>
 	{/if}
+
+	<section class="px-10 py-4">
+		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+			{`Most popular anime`}
+		</h1>
+
+		<AnimeCarousel animeList={data.mostPopularAnimeList} />
+	</section>
 </div>

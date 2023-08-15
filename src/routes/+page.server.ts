@@ -7,13 +7,16 @@ import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { getServerSession } from "@/lib/myanimelist/svelte/auth";
 import { shuffleArray } from "@/lib/utils/helpers";
 
+const ANIME_LIMIT = 50;
+
 export const load: PageServerLoad = async (event) => {
     const authenticated = await getServerSession(event.cookies);
     const accessToken = authenticated?.accessToken;
 
-    const suggestedAnimeList = await getSuggestedAnimeList({ limit: 100, accessToken });
-    const seasonalAnimeList = await getCurrentSeasonAnimeList({ limit: 100 });
-    return { seasonalAnimeList, suggestedAnimeList }
+    const suggestedAnimeList = await getSuggestedAnimeList({ limit: ANIME_LIMIT, accessToken });
+    const seasonalAnimeList = await getCurrentSeasonAnimeList({ limit: ANIME_LIMIT });
+    const mostPopularAnimeList = await getMostPopularAnimeList({ limit: ANIME_LIMIT });
+    return { seasonalAnimeList, suggestedAnimeList, mostPopularAnimeList }
 };
 
 async function getCurrentSeasonAnimeList({ limit }: { limit: number }) {
@@ -59,4 +62,16 @@ async function getSuggestedAnimeList({ limit, accessToken }: { limit: number, ac
 
     const data = shuffleArray(suggestions.data);
     return data;
-}    
+}
+
+async function getMostPopularAnimeList({ limit }: { limit: number }) {
+    const malClient = new MALClient({ clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID });
+
+    const result = await malClient.getAnimeRanking({
+        limit,
+        ranking_type: 'tv',
+    });
+
+    const data = result.data;
+    return data;
+}
