@@ -25,3 +25,19 @@ export function numberToColor(value: number): string {
 export function getArray<T>(value: T | T[]): T[] {
     return Array.isArray(value) ? value : [value];
 }
+
+export function swapArray<T>(array: T[], fromIndex: number, toIndex: number): T[] {
+    const temp = array[fromIndex];
+    array[fromIndex] = array[toIndex];
+    array[toIndex] = temp;
+    return array;
+}
+
+export function shuffleArray<T>(array: T[]): T[] {
+    for (let i = 0; i < array.length; i++) {
+        const randomIndex = Math.floor(Math.random() * array.length);
+        swapArray(array, i, randomIndex);
+    }
+
+    return array;
+}

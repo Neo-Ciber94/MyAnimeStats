@@ -109,4 +109,14 @@
 
 		<AnimeCarousel animeList={data.seasonalAnimeList} />
 	</section>
+
+	{#if data.suggestedAnimeList}
+		<section class="px-10 py-4">
+			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+				{`Your anime recommendations`}
+			</h1>
+
+			<AnimeCarousel animeList={data.suggestedAnimeList} />
+		</section>
+	{/if}
 </div>

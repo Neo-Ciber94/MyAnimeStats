@@ -5,6 +5,7 @@ import type { Cookies } from '@sveltejs/kit';
 
 export const AUTH_SESSION_COOKIE = 'myanimestats.session';
 export const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
+export const AUTH_ACCESS_TOKEN_COOKIE = 'myanimestats.access_token';
 
 const MY_ANIME_STATS_AUDIENCE = "myanimestats";
 const MY_ANIME_STATS_ISSUER = "myanimestats";
@@ -12,6 +13,7 @@ const MY_ANIME_STATS_ISSUER = "myanimestats";
 export type AuthenticatedUser = {
     userId: number;
     refreshToken: string;
+    accessToken: string;
 }
 
 function getSecretKey() {
@@ -47,14 +49,21 @@ export async function generateJwt(userId: number, refreshToken: string): Promise
 export async function getServerSession(cookies: Cookies): Promise<AuthenticatedUser | null> {
     const key = getSecretKey();
 
-    const jwt = cookies.get(AUTH_SESSION_COOKIE);
+    const sessionToken = cookies.get(AUTH_SESSION_COOKIE);
+    const accessToken = cookies.get(AUTH_ACCESS_TOKEN_COOKIE);
 
-    if (jwt == null) {
+    if (sessionToken == null) {
+        console.warn("session token is null");
+        return null;
+    }
+
+    if (accessToken == null) {
+        console.warn("access token is null");
         return null;
     }
 
     try {
-        const result = await jose.jwtVerify(jwt, key, {
+        const result = await jose.jwtVerify(sessionToken, key, {
             audience: MY_ANIME_STATS_AUDIENCE,
             issuer: MY_ANIME_STATS_ISSUER
         });
@@ -72,7 +81,7 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
             return null;
         }
 
-        return { refreshToken, userId }
+        return { refreshToken, userId, accessToken }
     }
     catch (err) {
         console.error(err);

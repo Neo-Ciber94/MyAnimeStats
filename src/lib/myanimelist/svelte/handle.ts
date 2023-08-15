@@ -2,7 +2,7 @@ import { error, redirect, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
 import { getApiUrl } from "../common/getApiUrl";
 import { MALClient } from "../api";
-import { AUTH_CSRF_COOKIE, AUTH_SESSION_COOKIE, generateJwt, getServerSession } from "./auth";
+import { AUTH_ACCESS_TOKEN_COOKIE, AUTH_CSRF_COOKIE, AUTH_SESSION_COOKIE, generateJwt, getServerSession } from "./auth";
 
 export const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
 export const DEFAULT_SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days;
@@ -72,8 +72,8 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
     switch (action) {
         case '/sign-in': {
             const redirectTo = `${originUrl}/callback`;
-            console.log({ redirectTo });
             const { url, state } = Auth.getAuthenticationUrl({ redirectTo });
+
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
                 path: "/",
                 httpOnly: true,
@@ -85,6 +85,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
         case '/sign-out': {
             event.cookies.delete(AUTH_SESSION_COOKIE, { path: "/" })
             event.cookies.delete(AUTH_CSRF_COOKIE, { path: "/" });
+            event.cookies.delete(AUTH_ACCESS_TOKEN_COOKIE, { path: "/" });
             throw redirect(307, '/');
         }
         case '/callback': {
@@ -103,9 +104,9 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 throw error(401, "Invalid auth state");
             }
 
-            console.log({ url: url.toString(), code, state });
+            // console.log({ url: url.toString(), code, state });
             const tokens = await Auth.getToken({ code, redirectTo: `${originUrl}/callback` });
-            console.log({ tokens });
+            // console.log({ tokens });
 
             const userId = Auth.getUserIdFromToken(tokens.access_token);
 
@@ -118,6 +119,15 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             event.cookies.set(AUTH_SESSION_COOKIE, sessionToken, {
                 path: "/",
                 maxAge: sessionDurationSeconds,
+                httpOnly: true,
+                sameSite: 'strict'
+            });
+
+            const { access_token: accessToken, expires_in } = await Auth.refreshToken({ refreshToken: tokens.refresh_token });
+
+            event.cookies.set(AUTH_ACCESS_TOKEN_COOKIE, accessToken, {
+                path: "/",
+                maxAge: expires_in,
                 httpOnly: true,
                 sameSite: 'strict'
             });
@@ -135,6 +145,13 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             const malClient = new MALClient({ accessToken });
             const user = await malClient.getMyUserInfo({
                 fields: includeStatistics ? ['anime_statistics'] : []
+            });
+
+            event.cookies.set(AUTH_ACCESS_TOKEN_COOKIE, accessToken, {
+                path: "/",
+                maxAge: sessionDurationSeconds,
+                httpOnly: true,
+                sameSite: 'strict'
             });
 
             return Response.json({

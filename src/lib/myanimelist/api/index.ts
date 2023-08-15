@@ -24,7 +24,7 @@ export interface GetAnimeRankingOptions {
     nsfw?: boolean;
 }
 
-type SeasonalAnimeFields = (keyof AnimeNode['node']) | (string & Empty);
+type AnimeFields = (keyof AnimeNode['node']) | (string & Empty);
 
 export interface GetSeasonalAnimeOptions {
     year: number,
@@ -32,14 +32,14 @@ export interface GetSeasonalAnimeOptions {
     sort?: 'anime_score' | 'anime_num_list_users',
     limit?: number;
     offset?: number;
-    fields?: SeasonalAnimeFields[];
+    fields?: AnimeFields[];
     nsfw?: boolean;
 }
 
 export interface GetSuggestedAnimeOptions {
     limit?: number;
     offset?: number;
-    fields?: string[];
+    fields?: AnimeFields[];
     nsfw?: boolean;
 }
 
