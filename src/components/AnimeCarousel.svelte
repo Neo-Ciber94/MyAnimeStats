@@ -18,7 +18,7 @@
 			slidesPerView: 'auto',
 			spaceBetween: 10,
 			initialSlide: 2,
-			//modules: [Autoplay],
+			modules: [Autoplay],
 			autoplay: {
 				delay: 2500,
 				disableOnInteraction: false
@@ -39,13 +39,11 @@
 	}
 </script>
 
-<div class={`swiper group h-[260px]`} bind:this={swiperElement}>
+<div class={`swiper group h-[300px]`} bind:this={swiperElement}>
 	{#if swiper == null}
 		<div class="flex flex-row space-x-[10px]">
 			{#each Array.from(Array(10).keys()) as _}
-				<div
-					class="flex-shrink-0 rounded-sm w-[200px] h-[260px] lg:w-[240px] lg:h-[360px] bg-indigo-400/20 animate-pulse"
-				/>
+				<div class="flex-shrink-0 rounded-sm w-[200px] h-[300px] bg-indigo-400/20 animate-pulse" />
 			{/each}
 		</div>
 	{/if}
@@ -54,7 +52,7 @@
 	<div class={`swiper-wrapper ${swiper == null ? 'invisible' : 'visible'}`}>
 		<!-- Slides -->
 		{#each animeList as anime}
-			<div class="swiper-slide !w-[200px] !h-[260px] !lg:w-[240px] !lg:h-[360px]">
+			<div class="swiper-slide !w-[200px] !h-[300px]">
 				<div
 					class="overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
 				>
@@ -70,7 +68,7 @@
 						src={anime.node.main_picture.large}
 					/>
 
-                    <!-- Title -->
+					<!-- Title -->
 					<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1">
 						{anime.node.title}
 					</span>

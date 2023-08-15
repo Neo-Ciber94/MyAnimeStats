@@ -107,6 +107,6 @@
 			{`${capitalize(animeSeason.season)} ${animeSeason.year} anime`}
 		</h1>
 
-		<AnimeCarousel animeList={data.animeList} />
+		<AnimeCarousel animeList={data.seasonalAnimeList} />
 	</section>
 </div>

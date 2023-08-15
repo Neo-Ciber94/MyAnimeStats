@@ -6,6 +6,11 @@ import { invariant } from "@/lib/utils/invariant";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 
 export const load: PageServerLoad = async () => {
+    const seasonalAnimeList = await getCurrentSeasonAnimeList(100);
+    return { seasonalAnimeList }
+};
+
+async function getCurrentSeasonAnimeList(limit: number) {
     const malClient = new MALClient({
         clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
     });
@@ -14,7 +19,7 @@ export const load: PageServerLoad = async () => {
     const result = await malClient.getSeasonalAnime({
         season,
         year,
-        limit: 100,
+        limit,
         fields: ['start_season', 'status', 'start_date', 'genres', 'broadcast'],
         sort: 'anime_num_list_users',
         nsfw: true
@@ -30,6 +35,7 @@ export const load: PageServerLoad = async () => {
             && AVAILABLE_STATUSES.includes(node.status)
             && node.broadcast?.start_time != null
             && !node.genres.some(x => x.id === ANIME_GENRES.Hentai.ID)
-    })
-    return { animeList }
-};
+    });
+
+    return animeList;
+}
