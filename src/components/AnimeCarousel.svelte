@@ -52,12 +52,14 @@
 	<div class={`swiper-wrapper ${swiper == null ? 'invisible' : 'visible'}`}>
 		<!-- Slides -->
 		{#each animeList as anime}
-			<div class="swiper-slide !w-[200px] !h-[300px]">
+			<div class="swiper-slide !w-[200px] !h-[300px] cursor-pointer">
 				<div
 					class="overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
 				>
 					<!-- Bottom gradient -->
-					<div class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent" />
+					<div
+						class="w-full h-full absolute bg-gradient-to-t to-40% from-black to-transparent z-30"
+					/>
 
 					<!-- Image -->
 					<img
@@ -69,7 +71,7 @@
 					/>
 
 					<!-- Title -->
-					<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1">
+					<span class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1 z-40">
 						{anime.node.title}
 					</span>
 				</div>
