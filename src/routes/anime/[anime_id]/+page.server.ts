@@ -14,7 +14,7 @@ export const load: PageServerLoad = async (event) => {
 
     const animeId = Number(event.params.anime_id);
     const result = await malClient.getAnimeDetails(animeId, {
-        fields: ['statistics']
+        fields: ['statistics', 'synopsis', 'genres', 'rank', 'mean', 'num_list_users', 'num_scoring_users']
     });
 
     if (result == null) {
