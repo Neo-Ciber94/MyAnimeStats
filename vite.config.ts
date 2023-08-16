@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
 	plugins: [sveltekit()],
 	ssr: {
-		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons', "tsparticles", "tsparticles-slim", "tsparticles-engine", "svelte-particles"]
+		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons']
 	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']

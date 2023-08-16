@@ -1,9 +1,12 @@
 <script lang="ts">
 	import AnimatedNumber from '$components/AnimatedNumber.svelte';
 	import SeasonAndYearIndicator from '$components/SeasonAndYearIndicator.svelte';
+	import dayjs from 'dayjs';
 	import type { PageServerData } from './$types';
 	import AnimeStatBadge from './AnimeStatBadge.svelte';
 	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
+	import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
 </script>
@@ -94,7 +97,9 @@
 
 			<div class="pb-5">
 				<h3 class="text-orange-500 text-2xl mb-2">Synopsis</h3>
-				<p class="text-white text-sm">{data.synopsis}</p>
+				<p class="text-white text-sm">
+					{`${data.synopsis || 'N/A'}`}
+				</p>
 			</div>
 
 			<div class="pb-5">
@@ -107,6 +112,35 @@
 							{genre.name}
 						</button>
 					{/each}
+				</div>
+			</div>
+
+			<div class="pb-5">
+				<h3 class="text-orange-500 text-2xl mb-2">Calendar</h3>
+				<div class="text-white text-sm">
+					{#if data.status == 'not_yet_aired'}
+						<span>{`Release date `}</span>
+						<span class="text-orange-500">
+							{#if data.start_date}
+								{dayjs(data.start_date).format('LL')}
+							{:else}
+								Unknown
+							{/if}
+						</span>
+					{:else if data.status == 'currently_airing'}
+						<span>{`Airing since `}</span>
+						<span class="text-orange-500">{dayjs(data.start_date).format('LL')}</span>
+					{:else}
+						{#if data.start_date}
+							<span>{`Aired from `}</span>
+							<span class="text-orange-500">{dayjs(data.start_date).format('LL')}</span>
+						{/if}
+
+						{#if data.end_date}
+							<span>{` to `}</span>
+							<span class="text-orange-500">{dayjs(data.end_date).format('LL')}</span>
+						{/if}
+					{/if}
 				</div>
 			</div>
 		</div>

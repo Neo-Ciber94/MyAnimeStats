@@ -113,7 +113,7 @@
 	{#if data.suggestedAnimeList}
 		<section class="px-10 py-4">
 			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
-				{`Your anime recommendations`}
+				{`Anime recommendations`}
 			</h1>
 
 			<AnimeCarousel animeList={data.suggestedAnimeList} />

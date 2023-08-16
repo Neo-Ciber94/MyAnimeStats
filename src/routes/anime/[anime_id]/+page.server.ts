@@ -24,6 +24,8 @@ export const load: PageServerLoad = async (event) => {
             'num_scoring_users',
             'popularity',
             'start_season',
+            'start_date',
+            'end_date',
             'status'
         ]
     });
