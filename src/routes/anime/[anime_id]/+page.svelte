@@ -48,7 +48,7 @@
 
 						<svelte:fragment slot="right">
 							<span class="text-sm md:text-2xl">Score</span>
-							<span class="text-xs text-orange-500">{`${data.num_scoring_users} users`}</span>
+							<span class="text-xs">{`${data.num_scoring_users} users`}</span>
 						</svelte:fragment>
 					</AnimeStatBadge>
 
