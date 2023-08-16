@@ -27,14 +27,14 @@
 
 <style lang="postcss">
 	[data-status='currently_airing'] {
-		@apply bg-lime-500 text-white;
+		@apply bg-lime-400 text-black;
 	}
 
 	[data-status='finished_airing'] {
-		@apply bg-red-500 text-white;
+		@apply bg-red-600 text-white;
 	}
 
 	[data-status='not_yet_aired'] {
-		@apply bg-black text-white;
+		@apply bg-black text-white border-2 border-red-700;
 	}
 </style>

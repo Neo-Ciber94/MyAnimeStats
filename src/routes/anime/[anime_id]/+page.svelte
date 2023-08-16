@@ -12,16 +12,8 @@
 	<!-- <pre class="text-white">{JSON.stringify(data, null, 2)}</pre> -->
 
 	<section>
-		<div
-			class="flex flex-col-reverse sm:flex-row items-center justify-between border-b-4 border-b-orange-500 mb-4"
-		>
-			<h1
-				class="text-xl mb-2 sm:mb-0 md:text-3xl !leading-[1.3em] sm:!leading-[2em] text-white text-center lg:text-left"
-			>
-				{data.title}
-			</h1>
-
-			<div class="my-2 sm:my-0 flex flex-row flex-wrap gap-2">
+		<div class="flex flex-col">
+			<div class="w-full justify-end my-2 sm:my-0 flex flex-row flex-wrap gap-2">
 				{#if data.status}
 					<AnimeStatusBadge status={data.status} />
 				{/if}
@@ -29,6 +21,14 @@
 				{#if data.start_season}
 					<SeasonAndYearIndicator season={data.start_season.season} year={data.start_season.year} />
 				{/if}
+			</div>
+
+			<div class="items-center justify-between border-b-4 border-b-orange-500 mb-4">
+				<h1
+					class="text-xl mb-2 sm:mb-0 md:text-3xl !leading-[1.3em] sm:!leading-[2em] text-white text-center lg:text-left"
+				>
+					{data.title}
+				</h1>
 			</div>
 		</div>
 	</section>
