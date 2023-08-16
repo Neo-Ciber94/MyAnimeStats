@@ -6,8 +6,8 @@
 </script>
 
 <header>
-	<div class="h-28 flex flex-col gap-2 shadow-lg px-10 justify-center bg-gray-950">
-		<div class="flex flex-row flex-wrap justify-between items-center">
+	<div class="h-28 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
+		<div class="flex flex-row flex-wrap justify-between items-center px-10 h-2/3">
 			<Logo />
 			<div class="ml-auto">
 				<div>
@@ -46,19 +46,19 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row items-center gap-5">
+		<div class="flex flex-row items-center text-base gap-5 px-10 bg-violet-800 py-4 h-1/3">
 			<a
 				href="/anime"
-				class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"
-				>Anime</a
-			>
+				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+				>Anime
+			</a>
 
 			{#if $session.user}
 				<a
 					href="/stats"
-					class="text-white text-lg border-b-2 border-b-transparent hover:border-b-violet-500 hover:text-violet-400 transition duration-300"
-					>Stats</a
-				>
+					class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+					>Stats
+				</a>
 			{/if}
 		</div>
 	</div>
