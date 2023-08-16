@@ -21,7 +21,10 @@
 	};
 </script>
 
-<div class="px-4 flex flex-row items-center rounded-lg text-xs font-semibold" data-status={status}>
+<div
+	class="px-4 h-7 flex flex-row items-center rounded-lg text-xs font-semibold"
+	data-status={status}
+>
 	{STATUSES[status].name}
 </div>
 

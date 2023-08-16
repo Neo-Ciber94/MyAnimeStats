@@ -26,6 +26,7 @@ export const load: PageServerLoad = async (event) => {
             'start_season',
             'start_date',
             'end_date',
+            'media_type',
             'status'
         ]
     });

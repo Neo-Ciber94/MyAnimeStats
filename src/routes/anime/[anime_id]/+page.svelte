@@ -6,6 +6,7 @@
 	import AnimeStatBadge from './AnimeStatBadge.svelte';
 	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
 	import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+	import AnimeMediaTypeBadge from './AnimeMediaTypeBadge.svelte';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -16,7 +17,11 @@
 
 	<section>
 		<div class="flex flex-col">
-			<div class="w-full justify-end my-2 sm:my-0 flex flex-row flex-wrap gap-2">
+			<div class="w-full justify-end my-2 sm:my-0 flex flex-row flex-wrap gap-2 items-center">
+				{#if data.media_type}
+					<AnimeMediaTypeBadge mediaType={data.media_type} />
+				{/if}
+
 				{#if data.status}
 					<AnimeStatusBadge status={data.status} />
 				{/if}
