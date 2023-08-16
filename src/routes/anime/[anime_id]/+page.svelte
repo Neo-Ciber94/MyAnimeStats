@@ -2,6 +2,7 @@
 	import AnimatedNumber from '$components/AnimatedNumber.svelte';
 	import SeasonAndYearIndicator from '$components/SeasonAndYearIndicator.svelte';
 	import type { PageServerData } from './$types';
+	import AnimeStatBadge from './AnimeStatBadge.svelte';
 
 	export let data: PageServerData;
 </script>
@@ -42,53 +43,41 @@
 				<div
 					class="p-4 bg-gray-950 rounded-lg flex flex-row items-center flex-wrap justify-between"
 				>
-					<div class="flex flex-row p-4 text-white items-center gap-4">
-						<div
-							class="text-lg md:text-2xl font-bold h-full px-2 py-2 md:px-4 md:py-3 rounded-lg
-							min-w-[80px] md:min-w-[100px] text-center
-							bg-gradient-to-br from-pink-500 to-pink-600 font-mono"
-						>
-							<AnimatedNumber value={data.mean} decimalPlaces={2} />
-						</div>
-						<div class="flex flex-col gap-1">
-							<span class="text-sm md:text-2xl">Score</span>
-							<span class="text-xs">{`${data.num_scoring_users} users`}</span>
-						</div>
-					</div>
+					<AnimeStatBadge class="bg-gradient-to-br from-pink-500 to-pink-600">
+						<AnimatedNumber slot="value" value={data.mean} decimalPlaces={2} />
 
-					<div class="flex flex-row p-4 text-white items-center gap-2">
-						<div
-							class="text-lg md:text-2xl font-bold h-full px-2 py-2 md:px-4 md:py-3 rounded-lg
-							min-w-[80px] md:min-w-[100px] text-center
-							bg-gradient-to-br from-orange-500 to-orange-600 font-mono"
-						>
+						<svelte:fragment slot="right">
+							<span class="text-sm md:text-2xl">Score</span>
+							<span class="text-xs text-orange-500">{`${data.num_scoring_users} users`}</span>
+						</svelte:fragment>
+					</AnimeStatBadge>
+
+					<AnimeStatBadge class="bg-gradient-to-br from-orange-500 to-orange-600">
+						<svelte:fragment slot="value">
 							{#if data.rank}
 								#<AnimatedNumber value={data.rank} />
 							{:else}
 								N/A
 							{/if}
-						</div>
-						<div class="flex flex-col gap-1">
+						</svelte:fragment>
+						<svelte:fragment slot="right">
 							<span class="text-sm md:text-2xl">Rank</span>
-						</div>
-					</div>
+						</svelte:fragment>
+					</AnimeStatBadge>
 
-					<div class="flex flex-row p-4 text-white items-center gap-2">
-						<div
-							class="text-lg md:text-2xl font-bold h-full px-2 py-2 md:px-4 md:py-3 rounded-lg
-							min-w-[80px] md:min-w-[100px] text-center
-							bg-gradient-to-br from-violet-500 to-violet-600 font-mono"
-						>
+					<AnimeStatBadge class="bg-gradient-to-br from-violet-500 to-violet-600">
+						<svelte:fragment slot="value">
 							{#if data.popularity}
 								#<AnimatedNumber value={data.popularity} />
 							{:else}
 								N/A
 							{/if}
-						</div>
-						<div class="flex flex-col gap-1">
+						</svelte:fragment>
+
+						<svelte:fragment slot="right">
 							<span class="text-sm md:text-2xl">Popularity</span>
-						</div>
-					</div>
+						</svelte:fragment>
+					</AnimeStatBadge>
 				</div>
 			</div>
 
