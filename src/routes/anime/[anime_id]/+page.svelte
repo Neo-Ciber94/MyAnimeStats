@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AnimatedNumber from '$components/AnimatedNumber.svelte';
+	import SeasonAndYearIndicator from '$components/SeasonAndYearIndicator.svelte';
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
@@ -9,12 +10,21 @@
 	<!-- <pre class="text-white">{JSON.stringify(data, null, 2)}</pre> -->
 
 	<section>
-		<h1
-			class="text-xl md:text-3xl text-white mb-4 border-b-4 border-b-orange-500
-			 !leading-[1.3em] sm:!leading-[2em] text-center lg:text-left"
+		<div
+			class="flex flex-col-reverse sm:flex-row items-center justify-between border-b-4 border-b-orange-500 mb-4"
 		>
-			{data.title}
-		</h1>
+			<h1
+				class="text-xl mb-2 sm:mb-0 md:text-3xl !leading-[1.3em] sm:!leading-[2em] text-white text-center lg:text-left"
+			>
+				{data.title}
+			</h1>
+
+			{#if data.start_season}
+				<div class="my-2 sm:my-0">
+					<SeasonAndYearIndicator season={data.start_season.season} year={data.start_season.year} />
+				</div>
+			{/if}
+		</div>
 	</section>
 
 	<section class="flex flex-col items-center md:items-start md:flex-row justify-around gap-4">
