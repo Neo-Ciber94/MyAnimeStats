@@ -7,7 +7,7 @@
 	const { season, year } = getCurrentAnimeSeason();
 </script>
 
-<div class="mx-10 text-white text-2xl uppercase font-bold mb-4">
+<div class="mx-10 text-white text-2xl uppercase font-bold mb-4 mt-4">
 	<h1>{season} - {year}</h1>
 </div>
 
