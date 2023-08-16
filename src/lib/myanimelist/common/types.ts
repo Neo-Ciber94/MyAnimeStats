@@ -186,6 +186,31 @@ export function getCurrentAnimeSeason() {
     return { season, year }
 }
 
+export function getNextAnimeSeason() {
+    let { season, year } = getCurrentAnimeSeason();
+
+    if (season === 'winter') {
+        year += 1;
+    }
+
+    switch (season) {
+        case 'winter':
+            season = 'spring';
+            break;
+        case 'spring':
+            season = 'summer';
+            break;
+        case 'summer':
+            season = 'fall';
+            break;
+        case 'fall':
+            season = 'winter';
+            break;
+    }
+
+    return { season, year }
+}
+
 export function seasonToNumber(season: AnimeSeason) {
     switch (season) {
         case 'winter':

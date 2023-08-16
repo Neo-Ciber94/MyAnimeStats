@@ -3,6 +3,7 @@
 	import SeasonAndYearIndicator from '$components/SeasonAndYearIndicator.svelte';
 	import type { PageServerData } from './$types';
 	import AnimeStatBadge from './AnimeStatBadge.svelte';
+	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
 
 	export let data: PageServerData;
 </script>
@@ -20,11 +21,15 @@
 				{data.title}
 			</h1>
 
-			{#if data.start_season}
-				<div class="my-2 sm:my-0">
+			<div class="my-2 sm:my-0 flex flex-row flex-wrap gap-2">
+				{#if data.status}
+					<AnimeStatusBadge status={data.status} />
+				{/if}
+
+				{#if data.start_season}
 					<SeasonAndYearIndicator season={data.start_season.season} year={data.start_season.year} />
-				</div>
-			{/if}
+				{/if}
+			</div>
 		</div>
 	</section>
 
@@ -44,7 +49,13 @@
 					class="p-4 bg-gray-950 rounded-lg flex flex-row items-center flex-wrap justify-between"
 				>
 					<AnimeStatBadge class="bg-gradient-to-br from-pink-500 to-pink-600">
-						<AnimatedNumber slot="left" value={data.mean} decimalPlaces={2} />
+						<svelte:fragment slot="left">
+							{#if data.mean != null && data.mean > 0}
+								<AnimatedNumber value={data.mean} decimalPlaces={2} />
+							{:else}
+								N/A
+							{/if}
+						</svelte:fragment>
 
 						<svelte:fragment slot="right">
 							<span class="text-sm md:text-2xl">Score</span>
@@ -54,7 +65,7 @@
 
 					<AnimeStatBadge class="bg-gradient-to-br from-orange-500 to-orange-600">
 						<svelte:fragment slot="left">
-							{#if data.rank}
+							{#if data.rank != null && data.rank > 0}
 								#<AnimatedNumber value={data.rank} />
 							{:else}
 								N/A
