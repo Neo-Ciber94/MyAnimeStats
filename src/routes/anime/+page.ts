@@ -2,7 +2,6 @@ import { getCurrentAnimeSeason, type AiringStatus } from "$lib/myanimelist/commo
 import type { PageLoad } from "./$types";
 import { MALClient } from "$lib/myanimelist/api";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
-import { invariant } from "@/lib/utils/invariant";
 
 export const load: PageLoad = async ({ fetch }) => {
     const { year, season } = getCurrentAnimeSeason();
@@ -23,7 +22,9 @@ export const load: PageLoad = async ({ fetch }) => {
 
     const AVAILABLE_STATUSES = ['currently_airing', 'finished_airing'] as AiringStatus[];
     const animeList = result.data.filter(({ node }) => {
-        invariant(node.start_season, "start season is not defined");
+        if (!node.start_season) {
+            return false;
+        }
 
         return node.start_season.season === season
             && node.start_season.year === year

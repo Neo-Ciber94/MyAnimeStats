@@ -11,8 +11,10 @@
 	<h1>{season} - {year}</h1>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center mx-10">
-	{#each data.animeList as anime}
-		<AnimeCard {anime} />
-	{/each}
+<div class="w-full">
+	<div class="grid grid-cols-6 flex-wrap gap-2 items-center mx-10">
+		{#each data.animeList as anime}
+			<AnimeCard {anime} />
+		{/each}
+	</div>
 </div>
