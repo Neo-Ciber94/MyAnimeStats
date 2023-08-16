@@ -44,7 +44,7 @@
 					class="p-4 bg-gray-950 rounded-lg flex flex-row items-center flex-wrap justify-between"
 				>
 					<AnimeStatBadge class="bg-gradient-to-br from-pink-500 to-pink-600">
-						<AnimatedNumber slot="value" value={data.mean} decimalPlaces={2} />
+						<AnimatedNumber slot="left" value={data.mean} decimalPlaces={2} />
 
 						<svelte:fragment slot="right">
 							<span class="text-sm md:text-2xl">Score</span>
@@ -53,7 +53,7 @@
 					</AnimeStatBadge>
 
 					<AnimeStatBadge class="bg-gradient-to-br from-orange-500 to-orange-600">
-						<svelte:fragment slot="value">
+						<svelte:fragment slot="left">
 							{#if data.rank}
 								#<AnimatedNumber value={data.rank} />
 							{:else}
@@ -66,7 +66,7 @@
 					</AnimeStatBadge>
 
 					<AnimeStatBadge class="bg-gradient-to-br from-violet-500 to-violet-600">
-						<svelte:fragment slot="value">
+						<svelte:fragment slot="left">
 							{#if data.popularity}
 								#<AnimatedNumber value={data.popularity} />
 							{:else}

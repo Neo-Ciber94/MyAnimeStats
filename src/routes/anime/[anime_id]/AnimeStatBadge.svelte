@@ -11,7 +11,7 @@
 			$$restProps.class
 		)}
 	>
-		<slot name="value" />
+		<slot name="left" />
 	</div>
 	<div class="flex flex-col gap-1">
 		<slot name="right" />
