@@ -120,6 +120,16 @@
 		</section>
 	{/if}
 
+	{#if data.upcomingAnimeList.length > 0}
+		<section class="px-10 py-4">
+			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+				{`Upcoming anime`}
+			</h1>
+
+			<AnimeCarousel animeList={data.upcomingAnimeList} />
+		</section>
+	{/if}
+
 	<section class="px-10 py-4">
 		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
 			{`Most popular anime`}
