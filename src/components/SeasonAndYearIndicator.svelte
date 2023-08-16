@@ -4,9 +4,6 @@
 	import SpringIcon from '$assets/seasons/season-spring.svg';
 	import SummerIcon from '$assets/seasons/season-summer.svg';
 	import FallIcon from '$assets/seasons/season-fall.svg';
-	import Particles from 'svelte-particles';
-	import type { Engine, Container, ISourceOptions as ParticlesConfig } from 'tsparticles-engine';
-	import { loadSlim } from 'tsparticles-slim';
 
 	export let season: AnimeSeason;
 	export let year: number;
@@ -30,56 +27,8 @@
 		}
 	};
 
-	let particleContainer: Container;
-
-	function handleClick() {
-		if (particleContainer) {
-			particleContainer.play();
-			console.log('click');
-		}
-	}
-
-	const defaults = {
-		spread: 360,
-		ticks: 100,
-		gravity: 0,
-		decay: 0.94,
-		startVelocity: 30
-	};
-
-	const particlesConfig: ParticlesConfig = {
-		particles: {
-			...defaults,
-		particleCount: 20,
-		scalar: 2,
-		shapes: ['text'],
-		shapeOptions: {
-			text: {
-				value: ['🦄', '🌈']
-			}
-		}
-		}
-	};
-
-	let particlesInit = async (engine: Engine) => {
-		// you can use main to customize the tsParticles instance adding presets or custom shapes
-		// this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-		// starting from v2 you can add only the features you need reducing the bundle size
-		//await loadFull(engine);
-		await loadSlim(engine);
-	};
+	function handleClick() {}
 </script>
-
-<Particles
-	options={particlesConfig}
-	on:particlesLoaded={(e) => {
-		const particles = e.detail?.particles;
-		if (particles) {
-			particles.play();
-		}
-	}}
-	{particlesInit}
-/>
 
 <button
 	on:click={handleClick}
