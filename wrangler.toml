@@ -1,0 +1,11 @@
+name = "myanimestats"
+main = "src/index.js"
+compatibility_date = "2022-07-12"
+workers_dev = false
+
+[env.staging]
+name = "myanimestats_dev"
+
+kv_namespaces = [
+    { binding = "KV_STORE", preview_id = "d76813f8a1044cd19d9d321c6ee14b32" },
+]

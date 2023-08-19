@@ -3,12 +3,11 @@ import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { Auth } from "$lib/myanimelist/auth/server";
-import { db } from "$lib/db";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "@/lib/utils/calculatePersonalStats.server";
 import { AUTH_SESSION_COOKIE, getServerSession } from "@/lib/myanimelist/svelte/auth";
 
-export const load = (async ({ cookies }) => {
+export const load = (async ({ cookies, platform }) => {
     const session = await getServerSession(cookies);
 
     if (session == null) {
@@ -16,10 +15,9 @@ export const load = (async ({ cookies }) => {
     }
 
     try {
-
-        const data = await db.get("stats");
-        const animeList = await getMyAnimeList(cookies);
-        const result = calculatedStatsSchema.safeParse(data);
+        const data = await platform?.env.KV_STORE.get(`stats/${session.userId}`);
+        const animeList = await getMyAnimeList({ cookies, platform, userId: session.userId });
+        const result = calculatedStatsSchema.safeParse(data == null ? null : JSON.parse(data));
 
         if (result.success === true) {
             return { stats: result.data, animeList }
@@ -34,11 +32,17 @@ export const load = (async ({ cookies }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    async calculate({ cookies }) {
+    async calculate({ cookies, platform }) {
+        const session = await getServerSession(cookies);
+
+        if (session == null) {
+            throw redirect(307, "/");
+        }
+
         try {
-            const calculatedResults = await calculateUserStats(cookies);
+            const calculatedResults = await calculateUserStats({ cookies, platform, userId: session.userId });
             const stats = calculatedStatsSchema.parse(calculatedResults.stats);
-            await db.put("stats", stats);
+            await platform?.env.KV_STORE.put("stats", JSON.stringify(stats));
             return { stats, animeList: calculatedResults.animeList };
         }
         catch (err) {
@@ -48,7 +52,13 @@ export const actions = {
     },
 } satisfies Actions;
 
-async function calculateUserStats(cookies: Cookies) {
+type StatsContext = {
+    cookies: Cookies,
+    userId: number,
+    platform: App.Platform | undefined
+}
+
+async function calculateUserStats(ctx: StatsContext) {
     const stats: CalculatedStats = {
         personal: {
             strength: 0,
@@ -64,7 +74,7 @@ async function calculateUserStats(cookies: Cookies) {
         watchedByYear: {}
     }
 
-    const animeList = await getMyAnimeList(cookies);
+    const animeList = await getMyAnimeList(ctx);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
     // Calculate stats
@@ -88,12 +98,15 @@ async function calculateUserStats(cookies: Cookies) {
     return { stats, animeList };
 }
 
-async function getMyAnimeList(cookies: Cookies) {
-    let animeList = await db.get("anime") as AnimeNodeWithStatus[] | undefined;
+async function getMyAnimeList(ctx: StatsContext) {
+    const { cookies, platform, userId } = ctx;
+    const key = `anime/${userId}`
+    const json = await platform?.env.KV_STORE.get(key);
+    let animeList = json == null ? undefined : JSON.parse(json) as AnimeNodeWithStatus[] | undefined;
 
     if (animeList == null) {
         animeList = await fetchMyAnimeList(cookies);
-        await db.put("anime", animeList);
+        await platform?.env.KV_STORE.put(key, JSON.stringify(animeList));
     }
 
     return animeList;
@@ -120,7 +133,7 @@ async function fetchMyAnimeList(cookies: Cookies) {
             const res = await malClient.getUserAnimeList("@me", {
                 limit,
                 offset,
-                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", "list_status"]
+                fields: ["genres", "start_season", "studios", "my_list_status", "end_date"]
             });
 
             const data = res.data;
