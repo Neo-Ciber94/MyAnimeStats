@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import StatSidebar from '$components/StatSidebar.svelte';
 	import StatTabs from '$components/StatTabs.svelte';
 	import type { ActionData, PageServerData } from './$types';
@@ -20,4 +20,6 @@
 			<CalculateStatsButton>Calculate Stats</CalculateStatsButton>
 		</div>
 	{/if}
-</div>
+</div> -->
+
+<div class="flex flex-col md:flex-row h-full w-full grow"></div>
