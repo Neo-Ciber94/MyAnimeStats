@@ -1,4 +1,4 @@
-import jose from 'jose';
+import * as jose from 'jose';
 import { SECRET_KEY } from "$env/static/private";
 import { DEFAULT_SESSION_DURATION_SECONDS } from "./handle";
 import type { Cookies } from '@sveltejs/kit';

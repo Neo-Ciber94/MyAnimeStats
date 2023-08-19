@@ -1,7 +1,7 @@
 import { MY_ANIME_LIST_CLIENT_ID, MY_ANIME_LIST_CLIENT_SECRET } from '$env/static/private';
 import crypto from 'node:crypto';
 import { z } from 'zod';
-import jose from 'jose';
+import * as jose from 'jose';
 
 const MY_ANIME_LIST_OAUTH2_URL = "https://myanimelist.net/v1/oauth2";
 const CODE_VERIFIER = createCodeVerifier();
