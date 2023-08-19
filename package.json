@@ -33,7 +33,6 @@
 		"postcss": "^8.4.26",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.10.1",
-		"puppeteer": "^20.9.0",
 		"svelte": "^4.0.5",
 		"svelte-check": "^3.4.3",
 		"tailwind-scrollbar": "^3.0.5",
