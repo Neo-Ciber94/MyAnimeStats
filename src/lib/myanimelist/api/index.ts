@@ -6,8 +6,10 @@ type Empty = Record<string, never>
 
 type AnimeFields = (keyof AnimeNode['node']) | (string & Empty);
 
+type UserFields = (keyof User) | (string & Empty);
+
 export interface GetMyUserInfoOptions {
-    fields?: AnimeFields[];
+    fields?: UserFields[];
 }
 
 export interface GetAnimeListOptions {

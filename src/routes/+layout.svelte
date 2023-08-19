@@ -2,6 +2,9 @@
 	import '../app.css';
 	import Layout from '@/layout/Layout.svelte';
 	import SessionProvider from '../provider/SessionProvider.svelte';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+
+	const queryClient = new QueryClient();
 </script>
 
 <svelte:head>
@@ -18,8 +21,10 @@
 	<title>MyAnimeStats</title>
 </svelte:head>
 
-<SessionProvider>
-	<Layout>
-		<slot />
-	</Layout>
-</SessionProvider>
+<QueryClientProvider client={queryClient}>
+	<SessionProvider>
+		<Layout>
+			<slot />
+		</Layout>
+	</SessionProvider>
+</QueryClientProvider>
