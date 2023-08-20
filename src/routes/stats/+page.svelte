@@ -12,9 +12,9 @@
 	<StatSidebar />
 
 	{#if data?.stats}
-		<StatTabs stats={data.stats} animeList={data.animeList} />
+		<!-- <StatTabs stats={data.stats} animeList={data.animeList} /> -->
 	{:else if form?.stats}
-		<StatTabs stats={form.stats} animeList={data.animeList || []} />
+		<!-- <StatTabs stats={form.stats} animeList={data.animeList || []} /> -->
 	{:else}
 		<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
 			<CalculateStatsButton>Calculate Stats</CalculateStatsButton>
