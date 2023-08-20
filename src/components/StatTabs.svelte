@@ -4,15 +4,15 @@
 	import MyStatsSection from '$components/MyStatsSection.svelte';
 	import {
 		UserSolid,
-		ChartPieSolid,
-		CheckCircleSolid,
-		ChartLineUpSolid
+		// ChartPieSolid,
+		// CheckCircleSolid,
+		// ChartLineUpSolid
 	} from 'flowbite-svelte-icons';
-	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
+	//import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
-	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
+	//import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
-	import StatScores from './StatScores.svelte';
+	//import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
 	import UserBadgeList from './UserBadgeList.svelte';
 	import { derived } from 'svelte/store';
@@ -80,7 +80,7 @@
 			</div>
 		</TabItem>
 		
-		<TabItem
+		<!-- <TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
 			activeClasses="border-b-2 p-4 border-indigo-500"
 		>
@@ -129,6 +129,6 @@
 			</div>
 
 			<StatScores {animeList} />
-		</TabItem>
+		</TabItem> -->
 	</Tabs>
 </div>
