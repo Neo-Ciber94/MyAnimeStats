@@ -2846,11 +2846,6 @@ pirates@^4.0.1:
   resolved "https://registry.yarnpkg.com/pirates/-/pirates-4.0.6.tgz#3018ae32ecfcff6c29ba2267cbf21166ac1f36b9"
   integrity sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==
 
-pkce-challenge@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/pkce-challenge/-/pkce-challenge-4.0.1.tgz#44953d58f79195d51a30bc0464f115cf63dac4a2"
-  integrity sha512-WGmtS1stcStsvRwNXix3iR1ujFcDaJR+sEODRa2ZFruT0lM4lhPAFTL5SUpqD5vTJdRlgtuMQhcp1kIEJx4LUw==
-
 pkg-types@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/pkg-types/-/pkg-types-1.0.3.tgz#988b42ab19254c01614d13f4f65a2cfc7880f868"
