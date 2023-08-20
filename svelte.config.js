@@ -24,7 +24,7 @@ const config = {
 			'$components/*': 'src/components/*',
 			'$assets/*': 'src/assets/*',
 			'@/*': 'src/*'
-		}
+		},
 	},
 };
 
