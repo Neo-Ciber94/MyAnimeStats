@@ -166,7 +166,7 @@ export class MALClient {
             throw new MalHttpError(res.status, msg);
         }
 
-        const data = await res.json();
+        const data = await res.json() as T;
         return data;
     }
 
