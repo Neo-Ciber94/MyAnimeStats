@@ -1,11 +1,22 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
+import { nodePolyfills as viteNodePolyfill } from 'vite-plugin-node-polyfills';
 
-const nodePolyfill = { ...rollupNodePolyFill({ crypto: true }), name: 'rollup-plugin-node-polyfills' }
+const nodePolyfill = {
+	...rollupNodePolyFill({
+		crypto: true
+	}), name: 'rollup-plugin-node-polyfills'
+}
 
 export default defineConfig({
-	plugins: [sveltekit(), nodePolyfill],
+	plugins: [
+		sveltekit(),
+		viteNodePolyfill({
+			globals: {
+				global: true
+			}
+		})],
 	ssr: {
 		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons']
 	},
