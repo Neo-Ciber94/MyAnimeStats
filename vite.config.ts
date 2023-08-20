@@ -15,10 +15,5 @@ export default defineConfig({
 	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
-	},
-	build: {
-		commonjsOptions: {
-			exclude: ['node_modules/@puppeteer', 'node_modules/puppeteer']
-		}
 	}
 });
