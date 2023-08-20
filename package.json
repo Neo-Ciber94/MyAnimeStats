@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev --port 5175",
+		"dev": "vite dev",
 		"dev:cf": "npx wrangler pages dev  -- npm run dev",
 		"build": "vite build",
 		"preview": "vite preview",

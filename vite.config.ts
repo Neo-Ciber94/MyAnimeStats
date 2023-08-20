@@ -11,6 +11,9 @@ export default defineConfig({
 	ssr: {
 		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons']
 	},
+	server: {
+		port: 5175
+	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}

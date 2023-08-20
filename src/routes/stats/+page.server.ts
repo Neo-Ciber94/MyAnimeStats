@@ -4,8 +4,8 @@ import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
 import { Auth } from "$lib/myanimelist/auth/server";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
-import { calculatePersonalStats } from "@/lib/utils/calculatePersonalStats.server";
-import { AUTH_SESSION_COOKIE, getServerSession } from "@/lib/myanimelist/svelte/auth";
+import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
+import { AUTH_SESSION_COOKIE, getServerSession } from "$lib/myanimelist/svelte/auth";
 
 export const load = (async ({ cookies, platform }) => {
     const session = await getServerSession(cookies);

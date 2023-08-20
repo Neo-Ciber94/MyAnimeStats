@@ -79,7 +79,8 @@
 				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
 			</div>
 		</TabItem>
-		<TabItem
+		
+		<!-- <TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
 			activeClasses="border-b-2 p-4 border-indigo-500"
 		>
@@ -128,6 +129,6 @@
 			</div>
 
 			<StatScores {animeList} />
-		</TabItem>
+		</TabItem> -->
 	</Tabs>
 </div>
