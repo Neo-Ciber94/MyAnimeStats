@@ -17,7 +17,8 @@ const sessionStore = writable<SessionState>({
     loading: true
 });
 
-async function initialize() {
+
+async function initialize(init?: Omit<SessionState, 'loading'>) {
     if (initialized === true) {
         if (dev) {
             console.error("session was already initialized");
@@ -28,7 +29,15 @@ async function initialize() {
 
     initialized = true;
 
-    sessionStore.set({ loading: true, accessToken: null, user: null });
+    if (init) {
+        return sessionStore.set({
+            loading: false,
+            accessToken: init.accessToken,
+            user: init.user
+        })
+    } else {
+        sessionStore.set({ loading: true, accessToken: null, user: null });
+    }
 
     try {
         const session = await getSession();
@@ -55,11 +64,8 @@ async function initialize() {
 
 export default {
     initialize,
-
     subscribe: sessionStore.subscribe,
-
     get current() {
         return get(sessionStore);
     }
 }
-
