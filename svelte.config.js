@@ -24,14 +24,8 @@ const config = {
 			'$components/*': 'src/components/*',
 			'$assets/*': 'src/assets/*',
 			'@/*': 'src/*'
-		},
-
-		vite: {
-			define: {
-				global: {}
-			}
 		}
-	}
+	},
 };
 
 export default config;
