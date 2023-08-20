@@ -5,7 +5,7 @@ import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 const nodePolyfill = { ...rollupNodePolyFill({ crypto: true }), name: 'rollup-plugin-node-builtins' }
 
 export default defineConfig({
-	plugins: [sveltekit(), nodePolyfill],
+	plugins: [sveltekit()],
 	ssr: {
 		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons']
 	},
