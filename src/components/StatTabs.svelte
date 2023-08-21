@@ -15,22 +15,12 @@
 	import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
 	import UserBadgeList from './UserBadgeList.svelte';
-	//import { derived } from 'svelte/store';
-	import BADGES from '@/lib/badges';
+	import { useUserBadges } from '$stores/userBadges';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
-
-	// const userBadges = derived(session, (session) => {
-	// 	const user = session.user;
-	// 	const badges = user == null ? [] : BADGES.filter((b) => b.canHaveBadge(animeList, user));
-		
-	// 	return {
-	// 		loading: session.loading,
-	// 		user,
-	// 		badges
-	// 	};
-	// });
+	
+	const userBadges = useUserBadges(animeList);
 </script>
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
@@ -54,7 +44,7 @@
 
 			<MyStatsSection {stats} />
 
-			<!-- {#if $userBadges.loading}
+			{#if $userBadges.loading}
 				<div class="w-full p-7 flex flex-row justify-center">
 					<Spinner bg="transparent" />
 				</div>
@@ -71,7 +61,7 @@
 						<UserBadgeList user={$userBadges.user} badges={$userBadges.badges} />
 					</div>
 				</div>
-			{/if} -->
+			{/if}
 
 			<div
 				class="w-10/12 mx-auto flex flex-row justify-center mt-[10%] h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
@@ -79,7 +69,7 @@
 				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
 			</div>
 		</TabItem>
-		
+
 		<TabItem
 			defaultClass="min-w-[100px] flex flex-row justify-center"
 			activeClasses="border-b-2 p-4 border-indigo-500"
