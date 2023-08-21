@@ -42,7 +42,7 @@ export const actions = {
         try {
             const calculatedResults = await calculateUserStats({ cookies, platform, userId: session.userId });
             const stats = calculatedStatsSchema.parse(calculatedResults.stats);
-            await platform?.env.KV_STORE.put("stats", JSON.stringify(stats));
+            await platform?.env.KV_STORE.put(`stats/${session.userId}`, JSON.stringify(stats));
             return { stats, animeList: calculatedResults.animeList };
         }
         catch (err) {
