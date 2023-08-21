@@ -1,16 +1,27 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import type { CalculatedStats } from '$lib/types';
 	import Color from 'color';
 	import { PASTEL_COLORS } from '../common/constants';
+	import type { AnimeNodeWithStatus } from '@/lib/myanimelist/common/types';
 
-	export let stats: CalculatedStats;
+	export let animeList: AnimeNodeWithStatus[];
 	let chartCanvas: HTMLCanvasElement;
-	let animeData: { genre: string; totalWatched: number }[] = [];
+	const animeData: { genre: string; totalWatched: number }[] = [];
 
-	for (const [genre, totalWatched] of Object.entries(stats.animeByGenre)) {
-		animeData.push({ genre, totalWatched });
+	for (const animeNode of animeList) {
+		for (const genre of animeNode.node.genres) {
+			const animeOfGenre = animeData.find((x) => x.genre === genre.name);
+
+			if (animeOfGenre == null) {
+				animeData.push({
+					genre: genre.name,
+					totalWatched: 1
+				});
+			} else {
+				animeOfGenre.totalWatched += 1;
+			}
+		}
 	}
 
 	animeData.sort((a, b) => {

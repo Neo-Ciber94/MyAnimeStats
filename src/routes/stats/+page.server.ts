@@ -19,7 +19,6 @@ export const load = (async ({ cookies, platform }) => {
         const result = calculatedStatsSchema.safeParse(data == null ? null : JSON.parse(data));
 
         if (result.success === true) {
-            console.log({ success: animeList })
             return { stats: result.data, animeList }
         }
 

@@ -78,7 +78,7 @@
 				Genres
 			</div>
 
-			<AnimeByGenreGraph {stats} />
+			<AnimeByGenreGraph {animeList} />
 		</TabItem>
 
 		<TabItem
