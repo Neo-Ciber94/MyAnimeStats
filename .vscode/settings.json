@@ -6,6 +6,7 @@
         "contentClass",
         "defaultClass",
         "activeClass",
-        "listClass"
+        "listClass",
+        "containerClass"
     ]
 }

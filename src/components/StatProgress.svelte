@@ -6,6 +6,7 @@
 	export let max: number;
 	export let value: number;
 	export let delay = 500;
+	export let containerClass: string | undefined = undefined;
 
 	const animatedValue = spring(0);
 
@@ -30,7 +31,7 @@
 
 		<slot name="title" />
 	</div>
-	<div class="w-full bg-gray-200 rounded-full overflow-hidden">
+	<div class={twMerge('w-full bg-gray-200 rounded-full overflow-hidden', containerClass)}>
 		<div
 			class={`${twMerge(
 				'bg-blue-600 font-medium text-blue-100 items-center flex overflow-hidden flex-row justify-center p-0.5 leading-none rounded-full',
