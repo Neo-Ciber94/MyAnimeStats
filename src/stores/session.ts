@@ -14,14 +14,14 @@ export type SessionState = {
 const sessionStore = writable<SessionState>({
     user: null,
     accessToken: null,
-    loading: true
+    loading: false
 });
 
 
 async function initialize(init?: Omit<SessionState, 'loading'>) {
     if (initialized === true) {
         if (dev) {
-            console.error("session was already initialized");
+            console.warn("session was already initialized");
         }
 
         return;

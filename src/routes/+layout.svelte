@@ -1,9 +1,11 @@
-<script>
+<script lang="ts">
 	import '../app.css';
 	import Layout from '@/layout/Layout.svelte';
 	import SessionProvider from '../provider/SessionProvider.svelte';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import type { LayoutServerData } from './$types';
 
+	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
 </script>
 
@@ -22,7 +24,7 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<SessionProvider>
+	<SessionProvider userSession={data.session}>
 		<Layout>
 			<slot />
 		</Layout>
