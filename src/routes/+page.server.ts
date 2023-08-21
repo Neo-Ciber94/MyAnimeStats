@@ -10,9 +10,7 @@ const ANIME_LIMIT = 50;
 
 export const load: PageServerLoad = async (event) => {
     const accessToken = event.locals.authenticatedUser?.accessToken;
-
-    console.log({ accessToken })
-
+    
     const suggestedAnimeList = await getSuggestedAnimeList({ limit: ANIME_LIMIT, accessToken });
     const seasonalAnimeList = await getCurrentSeasonAnimeList({ limit: ANIME_LIMIT });
     const mostPopularAnimeList = await getMostPopularAnimeList({ limit: ANIME_LIMIT });
