@@ -6,16 +6,15 @@ import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
 import { getServerSession } from "$lib/myanimelist/svelte/auth";
 
-export const load = (async ({ cookies, platform }) => {
-    const session = await getServerSession(cookies);
-
-    if (session == null) {
+export const load = (async ({ cookies, platform, locals }) => {
+    if (locals.authenticatedUser == null) {
         throw redirect(307, "/");
     }
-
+    
     try {
-        const data = await platform?.env.KV_STORE.get(`stats/${session.userId}`);
-        const animeList = await getMyAnimeList({ cookies, platform, userId: session.userId });
+        const userId = locals.authenticatedUser.user.id;
+        const data = await platform?.env.KV_STORE.get(`stats/${userId}`);
+        const animeList = await getMyAnimeList({ cookies, platform, userId });
         const result = calculatedStatsSchema.safeParse(data == null ? null : JSON.parse(data));
 
         if (result.success === true) {

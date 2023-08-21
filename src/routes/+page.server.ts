@@ -4,14 +4,14 @@ import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { getCurrentAnimeSeason, type AiringStatus, getNextAnimeSeason } from "@/lib/myanimelist/common/types";
 import { invariant } from "@/lib/utils/invariant";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
-import { getServerSession } from "@/lib/myanimelist/svelte/auth";
 import { shuffleArray } from "@/lib/utils/helpers";
 
 const ANIME_LIMIT = 50;
 
 export const load: PageServerLoad = async (event) => {
-    const authenticated = await getServerSession(event.cookies);
-    const accessToken = authenticated?.accessToken;
+    const accessToken = event.locals.authenticatedUser?.accessToken;
+
+    console.log({ accessToken })
 
     const suggestedAnimeList = await getSuggestedAnimeList({ limit: ANIME_LIMIT, accessToken });
     const seasonalAnimeList = await getCurrentSeasonAnimeList({ limit: ANIME_LIMIT });

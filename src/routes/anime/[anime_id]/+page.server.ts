@@ -1,15 +1,12 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
-import { getServerSession } from "@/lib/myanimelist/svelte/auth";
 import { error } from "@sveltejs/kit";
 
 export const load: PageServerLoad = async (event) => {
-    const authorized = await getServerSession(event.cookies);
-
     const malClient = new MALClient({
         clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID,
-        accessToken: authorized?.accessToken
+        accessToken: event.locals.authenticatedUser?.accessToken
     });
 
     const animeId = Number(event.params.anime_id);
