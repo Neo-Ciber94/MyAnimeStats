@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Tabs, TabItem, Spinner } from 'flowbite-svelte';
-	import session from '$stores/session';
 	import MyStatsSection from '$components/MyStatsSection.svelte';
 	import {
 		UserSolid,
@@ -19,7 +18,7 @@
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
-	
+
 	const userBadges = useUserBadges(animeList);
 </script>
 

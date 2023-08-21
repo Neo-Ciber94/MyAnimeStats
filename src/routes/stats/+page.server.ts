@@ -2,10 +2,9 @@ import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
 import { type CalculatedStats, calculatedStatsSchema } from "$lib/types";
-import { Auth } from "$lib/myanimelist/auth/server";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
-import { AUTH_SESSION_COOKIE, getServerSession } from "$lib/myanimelist/svelte/auth";
+import { getServerSession } from "$lib/myanimelist/svelte/auth";
 
 export const load = (async ({ cookies, platform }) => {
     const session = await getServerSession(cookies);
@@ -20,6 +19,7 @@ export const load = (async ({ cookies, platform }) => {
         const result = calculatedStatsSchema.safeParse(data == null ? null : JSON.parse(data));
 
         if (result.success === true) {
+            console.log({ success: animeList })
             return { stats: result.data, animeList }
         }
 
@@ -65,13 +65,7 @@ async function calculateUserStats(ctx: StatsContext) {
             charisma: 0,
             intelligence: 0,
             vitality: 0
-        },
-        animeByGenre: {},
-        scoreByGenre: {},
-        scoreByYear: {},
-        storeByStudio: {},
-        watchedBySeason: {},
-        watchedByYear: {}
+        }
     }
 
     const animeList = await getMyAnimeList(ctx);
@@ -79,22 +73,6 @@ async function calculateUserStats(ctx: StatsContext) {
 
     // Calculate stats
     stats.personal = calculatePersonalStats(animeList);
-
-    const byGenre = new Map<string, AnimeNodeWithStatus[]>();
-
-    for (const anime of animeList) {
-        const genres = anime.node.genres || [];
-        for (const genre of genres) {
-            const grouping = byGenre.get(genre.name) || [];
-            grouping.push(anime);
-            byGenre.set(genre.name, grouping);
-        }
-    }
-
-    for (const [genre, totalAnime] of byGenre.entries()) {
-        stats.animeByGenre[genre] = totalAnime.length;
-    }
-
     return { stats, animeList };
 }
 
@@ -114,14 +92,13 @@ async function getMyAnimeList(ctx: StatsContext) {
 
 async function fetchMyAnimeList(cookies: Cookies) {
     const anime: AnimeNodeWithStatus[] = [];
-    const refreshToken = cookies.get(AUTH_SESSION_COOKIE);
+    const session = await getServerSession(cookies);
 
-    if (refreshToken == null) {
+    if (session == null) {
         throw error(401, "unable to get session");
     }
 
-    const { access_token: accessToken } = await Auth.refreshToken({ refreshToken });
-
+    const { accessToken } = session;
     const limit = 500;
     let offset = 0;
 
@@ -133,7 +110,7 @@ async function fetchMyAnimeList(cookies: Cookies) {
             const res = await malClient.getUserAnimeList("@me", {
                 limit,
                 offset,
-                fields: ["genres", "start_season", "studios", "my_list_status", "end_date"]
+                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", 'list_status']
             });
 
             const data = res.data;

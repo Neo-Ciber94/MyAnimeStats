@@ -4,8 +4,8 @@ import type { AnimeBadge } from "../AnimeBadge";
 import { badgeIconText, hadWatchedAnime } from "../utils";
 import jotaroSvg from "../icons/jotaro";
 import narutoSvg from "../icons/naruto";
-import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
-import onePieceWhitebeardFlag from "../icons/onePieceWhitebeardFlag";
+// import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
+// import onePieceWhitebeardFlag from "../icons/onePieceWhitebeardFlag";
 import fujoshi from "../icons/fujoshi";
 import lesbianIcon from "../icons/lesbianIcon";
 import onePieceFlag from "../icons/onePieceFlag";
@@ -135,7 +135,10 @@ const customBadges = [
         id: "vinland_saga_badge",
         name: "You had no enemies",
         description: "Completed Vinland Saga season 1 and 2",
-        icon: size => vinlandSagaThorfinn(size + 5),
+        icon: async size => {
+            const { default: vinlandSagaThorfinn } = await import("../icons/vinlandSagaThorfinn");
+            return vinlandSagaThorfinn(size + 5)
+        },
         styles: {
             border: "2px solid orange",
             background: "linear-gradient(125deg, rgba(73,13,0,1) 34%, rgba(226,56,0,1) 100%)"
@@ -159,7 +162,10 @@ const customBadges = [
             background: "linear-gradient(205deg, rgba(108,0,0,1) 47%, rgba(255,255,255,1) 100%)",
             border: "2px solid white"
         },
-        icon: onePieceWhitebeardFlag,
+        icon: async (size) => {
+            const { default: onePieceWhitebeardFlag } = await import("../icons/onePieceWhitebeardFlag");
+            return onePieceWhitebeardFlag(size);
+        },
         canHaveBadge(animeList) {
             const onePiceAnimeId = 21; // https://myanimelist.net/anime/21/One_Piece
             const onePieceAnime = animeList.find(anime => anime.node.id === onePiceAnimeId);

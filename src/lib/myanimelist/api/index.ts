@@ -2,11 +2,12 @@
 import type { AnimeApiResponse, AnimeNode, AnimeRankingApiResponse, AnimeSeason, AnimeStatusApiResponse, RankingType, WatchStatus } from "../common/types";
 import type { User } from "../common/user";
 
-type Empty = Record<string, never>
+// eslint-disable-next-line @typescript-eslint/ban-types
+type Empty = {}
 
-type AnimeFields = (keyof AnimeNode['node']) | (string & Empty);
+type AnimeFields = (keyof AnimeNode['node']) | Empty;
 
-type UserFields = (keyof User) | (string & Empty);
+type UserFields = (keyof User) | Empty;
 
 export interface GetMyUserInfoOptions {
     fields?: UserFields[];

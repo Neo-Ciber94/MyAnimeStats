@@ -4,7 +4,7 @@ import type { User } from "../myanimelist/common/user";
 /**
  * Render the badge icon for the given size.
  */
-export type RenderBadgeIcon = (size: number) => string;
+export type RenderBadgeIcon = (size: number) => string | Promise<string>;
 
 /**
  * Styles to apply to an anime badge.

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AnimeBadge } from '@/lib/badges/AnimeBadge';
-	import { Tooltip } from 'flowbite-svelte';
+	import { Spinner, Tooltip } from 'flowbite-svelte';
 	import DOMPurify from 'dompurify';
 	import type { User } from '@/lib/myanimelist/common/user';
 
@@ -35,6 +35,17 @@
 	function getBadgeName() {
 		return typeof badge.name === 'function' ? badge.name(user) : badge.name;
 	}
+
+	async function getIcon() {
+		if (!badge.icon) {
+			return null;
+		}
+
+		const result = badge.icon(size);
+		return result instanceof Promise ? result : Promise.resolve(result);
+	}
+
+	const badgeIcon = getIcon();
 </script>
 
 <div
@@ -43,9 +54,13 @@
 	class="shadow-sm rounded-lg text-xs min-w-[80px] gap-2 whitespace-nowrap
         cursor-pointer flex flex-row items-center justify-center flex-nowrap h-12 overflow-hidden"
 >
-	{#if badge.icon}
-		{@html DOMPurify.sanitize(badge.icon(size))}
-	{/if}
+	{#await badgeIcon}
+		<Spinner bg="bg-transparent" size={'8'} />
+	{:then icon}
+		{#if icon}
+			{@html DOMPurify.sanitize(icon)}
+		{/if}
+	{/await}
 
 	{@html DOMPurify.sanitize(getBadgeName())}
 </div>
