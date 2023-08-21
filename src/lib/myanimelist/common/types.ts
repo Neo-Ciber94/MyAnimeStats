@@ -8,6 +8,8 @@ export type MediaType = "unknown" | "tv" | "ova" | "movie" | "special" | "ona" |
 
 export type WatchStatus = 'watching' | 'completed' | 'on_hold' | 'dropped' | 'plan_to_watch'
 
+export type Rating = "g" | "pg" | "pg_13" | "r" | "r+" | "rx";
+
 export type RankingType = 'all'
     | 'airing'
     | 'upcoming'
@@ -118,6 +120,7 @@ export type AnimeNode = {
         background?: string;
         source?: SourceType;
         related_anime?: RelatedAnime;
+        rating?: Rating;
         pictures?: {
             large?: string
             medium: string

@@ -7,6 +7,7 @@
 	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
 	import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 	import AnimeMediaTypeBadge from './AnimeMediaTypeBadge.svelte';
+	import { Accordion, AccordionItem, TabItem, Tabs } from 'flowbite-svelte';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -52,7 +53,7 @@
 
 		<div class="w-full md:w-2/3">
 			<div class="pb-5">
-				<h3 class="text-orange-500 text-2xl mb-2">General</h3>
+				<h3 class="text-orange-500 text-2xl mb-2">Stats</h3>
 				<div
 					class="p-4 bg-gray-950 rounded-lg flex flex-row items-center flex-wrap justify-between"
 				>
@@ -153,4 +154,136 @@
 			</div>
 		</div>
 	</section>
+
+	<section class="flex flex-col">
+		<Tabs
+			divider={false}
+			contentClass="bg-transparent py-4"
+			activeClasses="p-4 text-white bg-violet-500 rounded-t-lg"
+			inactiveClasses="p-4 text-violet-300 rounded-t-lg hover:text-white hover:bg-violet-500"
+			defaultClass="text-indigo-500 mt-5 flex flex-row w-full flex-wrap border-b-2 gap-2 border-b-violet-500"
+		>
+			<TabItem open title="General">
+				{#if data.alternative_titles}
+					<h3 class="text-white font-bold text-xl mb-1">Alternative Titles</h3>
+
+					{#if data.alternative_titles.en}
+						<div class="information-grid">
+							<div class="text-orange-500 min-w-[100px]">English</div>
+							<div class="flex flex-col spacing-y-4 text-white">
+								<span>{data.alternative_titles.en}</span>
+							</div>
+						</div>
+					{/if}
+
+					{#if data.alternative_titles.ja}
+						<div class="information-grid">
+							<div class="text-orange-500 min-w-[100px]">Japanese</div>
+							<div class="flex flex-col spacing-y-4 text-white">
+								<span>{data.alternative_titles.ja}</span>
+							</div>
+						</div>
+					{/if}
+
+					{#if data.alternative_titles.synonyms && data.alternative_titles.synonyms.length > 0}
+						<div class="information-grid">
+							<div class="text-orange-500 min-w-[100px]">Synonyms</div>
+							<div class="flex flex-col spacing-y-4 text-white">
+								{#if data.alternative_titles.synonyms}
+									{#each data.alternative_titles.synonyms as synonym}
+										<span>{synonym}</span>
+									{/each}
+								{/if}
+							</div>
+						</div>
+					{/if}
+				{/if}
+
+				<h3 class="text-white text-xl mt-8 mb-1 font-bold">Information</h3>
+				<div class="information-grid">
+					<div class="text-orange-500 min-w-[100px]">Type</div>
+					<div class="flex flex-col spacing-y-4 text-white">
+						<span>{data.media_type}</span>
+					</div>
+				</div>
+
+				<div class="information-grid">
+					<div class="text-orange-500 min-w-[100px]">Episodes</div>
+					<div class="flex flex-col spacing-y-4 text-white">
+						<span>{data.num_episodes || 'Unknown'}</span>
+					</div>
+				</div>
+
+				<div class="information-grid">
+					<div class="text-orange-500 min-w-[100px]">Status</div>
+					<div class="flex flex-col spacing-y-4 text-white">
+						<span>{data.status}</span>
+					</div>
+				</div>
+
+				{#if data.average_episode_duration}
+					<div class="information-grid">
+						<div class="text-orange-500 min-w-[100px]">Duration</div>
+						<div class="flex flex-col spacing-y-4 text-white">
+							<span>{data.average_episode_duration}</span>
+						</div>
+					</div>
+				{/if}
+
+				{#if data.source}
+					<div class="information-grid">
+						<div class="text-orange-500 min-w-[100px]">Source</div>
+						<div class="flex flex-col spacing-y-4 text-white">
+							<span>{data.source}</span>
+						</div>
+					</div>
+				{/if}
+
+				{#if data.studios}
+					<div class="information-grid">
+						<div class="text-orange-500 min-w-[100px]">Studios</div>
+						<div class="flex flex-col spacing-y-4 text-white">
+							{#each data.studios as studio}
+								<span>{studio.name}</span>
+							{/each}
+						</div>
+					</div>
+				{/if}
+
+				{#if data.rating}
+					<div class="information-grid">
+						<div class="text-orange-500 min-w-[100px]">Rating</div>
+						<div class="flex flex-col spacing-y-4 text-white">
+							{data.rating}
+						</div>
+					</div>
+				{/if}
+			</TabItem>
+
+			<TabItem title="Pictures">
+				{#if data.pictures}
+					<div class="flex flex-row flex-wrap gap-4">
+						{#each data.pictures as picture}
+							<img
+								alt={data.title}
+								src={picture.large}
+								class="object-contain w-[300px] h-[500px]"
+							/>
+						{/each}
+					</div>
+				{:else}
+					<div class="w-full text-center text-2xl tex-violet-500/50">No pictures found</div>
+				{/if}
+			</TabItem>
+		</Tabs>
+	</section>
 </div>
+
+<style>
+	.information-grid {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+	}
+</style>

@@ -24,7 +24,13 @@ export const load: PageServerLoad = async (event) => {
             'start_date',
             'end_date',
             'media_type',
-            'status'
+            'status',
+            'alternative_titles',
+            'average_episode_duration',
+            'pictures',
+            'source',
+            'rating',
+            'studios'
         ]
     });
 
