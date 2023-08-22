@@ -12,7 +12,7 @@ export const handle = (async ({ event, resolve }) => {
         try {
             const { accessToken } = session;
             const malClient = new MALClient({ accessToken });
-            const user = await malClient.getMyUserInfo({ fields: [] });
+            const user = await malClient.getMyUserInfo({ fields: ['anime_statistics'] });
             event.locals.authenticatedUser = { user, accessToken };
         }
         catch (err) {
