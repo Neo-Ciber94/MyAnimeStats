@@ -11,6 +11,7 @@
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 	import AnimeCarousel from '$components/AnimeCarousel.svelte';
 	import AnimeInfoRow from './AnimeInfoRow.svelte';
+	import { EyeSlashSolid, EyeSolid } from 'flowbite-svelte-icons';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -22,6 +23,10 @@
 	function getDurationFormatted(durationSeconds: number) {
 		const durationMinutes = Math.ceil(durationSeconds / 60);
 		return `${durationMinutes} min`;
+	}
+
+	function toggleCensor() {
+		showUncensored = !showUncensored;
 	}
 </script>
 
@@ -68,10 +73,26 @@
 			<img
 				src={data.main_picture.large}
 				alt={data.title}
-				class={`w-full mx-auto md:w-auto h-[300px] md:h-[400px] object-contain ${
-					shouldCensor && !showUncensored ? 'blur-lg' : ''
+				class={`w-full mx-auto md:w-auto h-[300px] md:h-[400px] object-contain transition duration-200 ${
+					shouldCensor && !showUncensored ? 'blur-lg' : 'blur-0'
 				}`}
 			/>
+
+			{#if shouldCensor}
+				<button
+					on:click={toggleCensor}
+					class="w-full flex flex-row items-center gap-2 justify-center p-1 mt-4
+				text-xs text-pink-500 opacity-50 hover:opacity-100"
+				>
+					{#if showUncensored}
+						<span class="font-semibold">Hide</span>
+						<EyeSolid size="sm" class="!outline-none" />
+					{:else}
+						<span class="font-semibold">Show</span>
+						<EyeSlashSolid size="sm" class="!outline-none" />
+					{/if}
+				</button>
+			{/if}
 		</div>
 
 		<div class="w-full md:w-2/3">
@@ -264,9 +285,9 @@
 							{#if data.nsfw === 'black'}
 								<span class="text-pink-600">This work is not safe for work</span>
 							{:else if data.nsfw === 'gray'}
-								<span class="text-pink-200">This work may be not safe for work</span>
+								<span class="text-pink-300">This work may be not safe for work</span>
 							{:else if data.nsfw === 'white'}
-								<span class="text-white">This work is safe for work</span>
+								<span class="text-yellow-50">This work is safe for work</span>
 							{/if}
 						</svelte:fragment>
 					</AnimeInfoRow>

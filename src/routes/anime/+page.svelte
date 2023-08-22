@@ -106,7 +106,7 @@
 		</div>
 	{:else}
 		<div
-			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 flex-wrap gap-2 items-center mx-10"
+			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 flex-wrap gap-2 items-center mx-10 mb-4"
 		>
 			{#each $animeQuery.data.data as anime}
 				<AnimeCard {anime} />
