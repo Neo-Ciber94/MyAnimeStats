@@ -10,6 +10,10 @@ export function hash(s: string): number {
     return hash >>> 0; // Ensure a positive 32-bit integer hash value
 }
 
+export function identity<T>(value: T) {
+    return value;
+}
+
 export function numberToColor(value: number): string {
     const red = (value & 0xff0000) >> 16;
     const green = (value & 0x00ff00) >> 8;

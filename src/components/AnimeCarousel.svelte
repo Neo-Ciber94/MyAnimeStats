@@ -1,4 +1,6 @@
-<script lang="ts">
+<script lang="ts" generics="TAnime extends AnimeNode">
+	import type { SwiperModule } from 'swiper/types/shared';
+
 	import 'swiper/css/bundle';
 	import { ChevronLeft, ChevronRight } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -6,13 +8,23 @@
 	import { Autoplay } from 'swiper/modules';
 	import type { AnimeNode } from '@/lib/myanimelist/common/types';
 
-	export let animeList: AnimeNode[];
+	export let animeList: TAnime[];
 	export let initialSlide = 1;
-	
+	export let autoPlay = true;
+	export let mapTitle: (anime: TAnime) => string = (anime) => {
+		return anime.node.title;
+	};
+
 	let swiperElement: HTMLDivElement;
 	let swiper: Swiper;
 
 	onMount(() => {
+		const modules: SwiperModule[] = [];
+
+		if (autoPlay) {
+			modules.push(Autoplay);
+		}
+
 		swiper = new Swiper(swiperElement, {
 			speed: 500,
 			loop: true,
@@ -20,9 +32,11 @@
 			slidesPerView: 'auto',
 			spaceBetween: 10,
 			initialSlide,
-			modules: [Autoplay],
+			modules,
 			autoplay: {
 				delay: 2500,
+				pauseOnMouseEnter: true,
+				
 				disableOnInteraction: false
 			}
 		});
@@ -85,7 +99,7 @@
 					<span
 						class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1 z-40"
 					>
-						{anime.node.title}
+						{mapTitle(anime)}
 					</span>
 				</a>
 			</div>

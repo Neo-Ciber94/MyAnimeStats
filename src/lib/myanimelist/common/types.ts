@@ -37,7 +37,7 @@ export type SourceType =
     | 'radio'
     | 'music';
 
-type AnimeRelationType =
+export type AnimeRelationType =
     | 'sequel'
     | 'prequel'
     | 'alternative_setting'
@@ -86,6 +86,11 @@ export type AnimeBroadcast = {
     start_time?: string;
 }
 
+export type AnimeRecommendation = {
+    node: AnimeNode['node'],
+    num_recommendations: number
+}
+
 export type AnimeNode = {
     node: {
         id: number;
@@ -119,16 +124,14 @@ export type AnimeNode = {
         my_list_status?: MyListStatus
         background?: string;
         source?: SourceType;
-        related_anime?: RelatedAnime;
+        related_anime?: RelatedAnime[];
+        related_manga?: RelatedAnime[];
         rating?: Rating;
         pictures?: {
             large?: string
             medium: string
         }[],
-        recommendations?: {
-            node: AnimeNode['node'],
-            num_recommendations: number
-        }
+        recommendations?: AnimeRecommendation[],
         statistics?: {
             num_list_users: number;
             status: {
@@ -164,7 +167,6 @@ export type AnimeApiResponse<T extends AnimeNode = AnimeNode> = {
 export type AnimeRankingApiResponse = AnimeApiResponse<AnimeNodeWithRanking>;
 
 export type AnimeStatusApiResponse = AnimeApiResponse<AnimeNodeWithStatus>;
-
 
 // https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
 export type AnimeSeason = 'winter' | 'spring' | 'summer' | 'fall';

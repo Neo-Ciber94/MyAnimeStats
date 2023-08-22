@@ -19,6 +19,7 @@ export const load: PageServerLoad = async (event) => {
             'mean',
             'num_list_users',
             'num_scoring_users',
+            'num_episodes',
             'popularity',
             'start_season',
             'start_date',
@@ -30,7 +31,11 @@ export const load: PageServerLoad = async (event) => {
             'pictures',
             'source',
             'rating',
-            'studios'
+            'studios',
+            'nsfw',
+            'related_anime',
+            'related_manga',
+            'recommendations'
         ]
     });
 
