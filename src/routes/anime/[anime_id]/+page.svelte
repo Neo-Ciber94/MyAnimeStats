@@ -7,11 +7,13 @@
 	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
 	import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 	import AnimeMediaTypeBadge from './AnimeMediaTypeBadge.svelte';
-	import { TabItem, Tabs } from 'flowbite-svelte';
+	import { Button, TabItem, Tabs } from 'flowbite-svelte';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 	import AnimeCarousel from '$components/AnimeCarousel.svelte';
 	import AnimeInfoRow from './AnimeInfoRow.svelte';
-	import { EyeSlashSolid, EyeSolid } from 'flowbite-svelte-icons';
+	import { EyeSlashSolid, EyeSolid, StarSolid } from 'flowbite-svelte-icons';
+	import MyAnimeListInput from './MyAnimeListInput.svelte';
+	import session from '$stores/session';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -19,6 +21,7 @@
 	const isNsfw = data.nsfw === 'black' || data.nsfw === 'gray';
 	const shouldCensor = data.nsfw === 'black';
 	let showUncensored = false;
+	let openMyAnimeList = data.my_list_status != null;
 
 	function getDurationFormatted(durationSeconds: number) {
 		const durationMinutes = Math.ceil(durationSeconds / 60);
@@ -27,6 +30,10 @@
 
 	function toggleCensor() {
 		showUncensored = !showUncensored;
+	}
+
+	function addToFavorites() {
+		openMyAnimeList = true;
 	}
 </script>
 
@@ -199,6 +206,33 @@
 		</div>
 	</section>
 
+	{#if $session.user}
+		<section>
+			{#if openMyAnimeList}
+				<div class="bg-black/40 mt-8 mb-4 px-8 pb-8 pt-2 rounded-lg">
+					<h1 class="text-white mb-12 mt-4 text-3xl">My List Status</h1>
+					<MyAnimeListInput
+						animeId={data.id}
+						episodesSeen={data.my_list_status?.num_episodes_watched}
+						numEpisodes={data.num_episodes}
+						myScore={data.my_list_status?.score}
+						status={data.my_list_status?.status}
+					/>
+				</div>
+			{:else}
+				<div class="bg-black/40 mt-8 mb-4 px-8 pb-8 pt-2 rounded-lg">
+					<h1 class="text-white mb-12 mt-4 text-3xl">My List Status</h1>
+					<div class="w-full justify-center">
+						<Button on:click={addToFavorites} class="flex flex-row gap-2 w-full">
+							<StarSolid />
+							<span>Add to favorites</span>
+						</Button>
+					</div>
+				</div>
+			{/if}
+		</section>
+	{/if}
+
 	<section class="flex flex-col">
 		<Tabs
 			divider={false}
@@ -263,7 +297,7 @@
 					</AnimeInfoRow>
 				{/if}
 
-				{#if data.studios}
+				{#if data.studios && data.studios.length > 0}
 					<AnimeInfoRow title="Studios">
 						<svelte:fragment slot="content">
 							{#each data.studios as studio}

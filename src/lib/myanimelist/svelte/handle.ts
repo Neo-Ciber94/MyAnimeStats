@@ -222,7 +222,11 @@ async function proxyRequestToMyAnimeListAPI(apiUrl: string, event: RequestEvent)
         mode: event.request.mode,
         redirect: event.request.redirect,
         referrer: event.request.referrer,
-        referrerPolicy: event.request.referrerPolicy
+        referrerPolicy: event.request.referrerPolicy,
+
+        // @ts-expect-error This property is required to send a body
+        // https://github.com/nodejs/node/issues/46221#issuecomment-1482439958
+        duplex: 'half'
     });
 
     if (!res.ok) {

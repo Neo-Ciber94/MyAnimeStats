@@ -51,6 +51,7 @@ export interface UpdateMyAnimeListStatusOptions {
     status?: WatchStatus;
     is_rewatching?: boolean;
     score?: number;
+    num_watched_episodes: number;
     priority?: number;
     num_times_rewatched?: number;
     rewatch_value?: number;
@@ -118,7 +119,7 @@ export class MALClient {
         const {
             accessToken,
             clientId,
-            fetch: fetchFunction = global.fetch,
+            fetch: fetchFunction = typeof window !== 'undefined' ? window.fetch : global.fetch,
             proxyUrl,
         } = this.#config;
 
@@ -154,7 +155,7 @@ export class MALClient {
         const res = await fetchFunction(url, {
             method,
             headers,
-            body
+            body,
         });
 
         if (returnNullOn404 === true && res.status === 404) {

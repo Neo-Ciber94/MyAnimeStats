@@ -35,7 +35,8 @@ export const load: PageServerLoad = async (event) => {
             'nsfw',
             'related_anime',
             'related_manga',
-            'recommendations'
+            'recommendations',
+            'my_list_status'
         ]
     });
 
