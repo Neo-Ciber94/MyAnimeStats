@@ -1,6 +1,15 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	export let value = '';
-	export let onSearch: (value: string) => void = () => {};
+
+	const dispatch = createEventDispatcher<{
+		search: string;
+	}>();
+
+	function handleSearch(value: string) {
+		dispatch('search', value);
+	}
 </script>
 
 <div class="flex flex-row gap-2">
@@ -8,18 +17,18 @@
 		bind:value
 		required
 		name="q"
-		placeholder="Name..."
+		placeholder="Search anime.."
 		minlength="3"
-		type="search"
-		class="w-full h-12 rounded-lg shadow-lg bg-gray-950 border-2 text-white border-violet-600 px-4 py-2
-	!focus:outline-none focus:border-2 focus:border-pink-600 transition duration-200"
+		type="text"
+		class="w-full h-12 rounded-lg bg-gray-950 text-white outline-none border-none
+		transition duration-200 ring-2 ring-violet-600 focus:ring-pink-600 px-4 py-2"
 		{...$$restProps}
 	/>
 
 	<button
 		type="submit"
 		class="rounded-lg px-8 py-2 text-base text-white bg-pink-600"
-		on:click={() => onSearch(value)}
+		on:click={() => handleSearch(value)}
 	>
 		Search
 	</button>

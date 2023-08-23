@@ -14,13 +14,15 @@
 	import AnimeCard from '../../components/AnimeCard.svelte';
 	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { getResponseError } from '@/lib/utils/getResponseError';
 	import type { AnimeNode } from '@/lib/myanimelist/common/types';
+	import { onClient } from '@/lib/utils/helpers';
 
 	let search: string = '';
 	let timeout: number | undefined;
+	let isInit = false;
 
 	function handleSearch(e: CustomEvent) {
 		const target = e.currentTarget as HTMLInputElement;
@@ -51,34 +53,53 @@
 	});
 
 	onMount(async () => {
+		const { searchParams } = new URL(window.location.href);
+		const q = searchParams.get('q');
+		if (q) {
+			search = q;
+		}
+
+		isInit = true;
 		await $animeQuery.refetch();
 	});
 
+	onDestroy(() => {
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+	});
+
 	$: {
-		// to trigger search
 		const _ = search;
-
-		(function () {
-			if (typeof window === 'undefined') {
-				return;
-			}
-
+		onClient(() => {
 			if (timeout) {
 				clearTimeout(timeout);
 			}
 
 			timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
-		})();
+			console.log('Search');
+		});
+	}
+
+	$: {
+		onClient(() => {
+			if (isInit == false) {
+				return;
+			}
+
+			const newUrl = new URL(window.location.href);
+			newUrl.searchParams.set('q', search);
+			const path = newUrl.toString();
+			window.history.pushState({ path }, '', path);
+		});
 	}
 </script>
 
 <div class="mx-10 my-8">
 	<AnimeSearchBar
 		on:input={handleSearch}
+		on:search={() => $animeQuery.refetch()}
 		bind:value={search}
-		onSearch={() => {
-			$animeQuery.refetch();
-		}}
 	/>
 </div>
 
@@ -109,7 +130,9 @@
 			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 flex-wrap gap-2 items-center mx-10 mb-4"
 		>
 			{#each $animeQuery.data.data as anime}
-				<AnimeCard {anime} />
+				{#key anime.node.id}
+					<AnimeCard {anime} />
+				{/key}
 			{/each}
 		</div>
 	{/if}

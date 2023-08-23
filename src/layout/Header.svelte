@@ -3,13 +3,19 @@
 	import session from '../stores/session';
 	import { Avatar, Button, Dropdown, DropdownItem, Spinner } from 'flowbite-svelte';
 	import { signIn, signOut } from '$lib/myanimelist/auth/client';
+	import HeaderSearchBar from './HeaderSearchBar.svelte';
+	import { page } from '$app/stores';
 </script>
 
 <header>
-	<div class="h-28 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
+	<div class="h-full md:h-28 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
 		<div class="flex flex-row flex-wrap justify-between items-center px-10 h-2/3">
 			<Logo />
-			<div class="ml-auto">
+			<div class="flex flex-row gap-8 items-center">
+				{#if $page.url.pathname !== '/anime'}
+					<HeaderSearchBar class="md:flex hidden" />
+				{/if}
+
 				<div>
 					{#if $session.loading}
 						<Spinner bg="transparent" />
@@ -46,7 +52,11 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row items-center text-base gap-5 px-10 bg-violet-800 py-4 h-1/3">
+		<div class="block md:hidden mb-2">
+			<HeaderSearchBar />
+		</div>
+
+		<div class="flex flex-row items-center text-base gap-5 px-10 bg-violet-800 py-4 h-10">
 			<a
 				href="/anime"
 				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"

@@ -51,3 +51,11 @@ export function shuffleArray<T>(array: T[]): T[] {
 
     return array;
 }
+
+export function onClient<T = void>(f: () => T) {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    return f();
+}
