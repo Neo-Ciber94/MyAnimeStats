@@ -5,7 +5,16 @@
 	import type { AnimeNode, WatchStatus } from '@/lib/myanimelist/common/types';
 	import { numberRange } from '@/lib/utils/helpers';
 	import { Select, Spinner } from 'flowbite-svelte';
-	import { TrashBinSolid } from 'flowbite-svelte-icons';
+	import {
+		BackwardStepSolid,
+		BadgeCheckSolid,
+		BarsSolid,
+		CheckSolid,
+		ChevronRightSolid,
+		EyeSolid,
+		ListSolid,
+		TrashBinSolid
+	} from 'flowbite-svelte-icons';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 
@@ -184,7 +193,12 @@
 
 <div class="flex flex-col gap-1">
 	<div class="flex flex-col gap-1 sm:gap-2">
-		<div class="basis-3/12 text-orange-500">Status</div>
+		<div class="basis-3/12 text-orange-500">
+			<span class="flex flex-row gap-2">
+				<ChevronRightSolid />
+				Status
+			</span>
+		</div>
 		<Select
 			items={watchStatuses}
 			placeholder="Choose the status"
@@ -194,7 +208,12 @@
 	</div>
 
 	<div class="flex flex-col mt-4">
-		<div class="basis-3/12 text-orange-500">Episodes</div>
+		<div class="basis-3/12 text-orange-500">
+			<span class="flex flex-row gap-2">
+				<EyeSolid />
+				Episodes
+			</span>
+		</div>
 
 		<div class="flex flex-col w-full">
 			<div class="flex flex-col xs:flex-row w-full gap-2 items-center">
@@ -242,15 +261,21 @@
 	<div class="flex flex-col mt-4">
 		<div class="basis-3/12 text-orange-500">
 			<div class="flex flex-row gap-2 justify-between mb-2">
-				<span>Score</span>
+				<span class="flex flex-row gap-2">
+					<CheckSolid />
+					Score
+				</span>
 
-				<div
+				<!-- <div
 					data-score={myScore}
-					class=" py-1 px-2 rounded-md text-[12px] transition duration-300
-						shadow-lg min-w-[110px] max-w-fit text-center"
+					class="flex flex-row items-center justify-center rounded-md text-[10px] 
+							transition duration-300 shadow-lg min-w-[110px] max-w-fit"
 				>
 					{scoreText[myScore - 1]}
-				</div>
+				</div> -->
+				<span class="flex flex-row items-center justify-center text-base px-2 w-[110px] text-orange-500">
+					{scoreText[myScore - 1]}
+				</span>
 			</div>
 		</div>
 
