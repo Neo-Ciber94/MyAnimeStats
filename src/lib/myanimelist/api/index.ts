@@ -5,7 +5,7 @@ import type { User } from "../common/user";
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Empty = {}
 
-type AnimeFields = (keyof AnimeNode['node']) | Empty;
+type AnimeFields = (keyof AnimeNode) | Empty;
 
 type UserFields = (keyof User) | Empty;
 
@@ -192,7 +192,7 @@ export class MALClient {
     async getAnimeDetails(animeId: number, options: { fields?: AnimeFields[] }) {
         const { fields = [] } = options;
 
-        const result = await this.sendRequest<AnimeNode['node']>({
+        const result = await this.sendRequest<AnimeNode>({
             method: 'GET',
             resource: `/anime/${animeId}`,
             returnNullOn404: true,
@@ -262,7 +262,7 @@ export class MALClient {
             body.set(key, String(value));
         }
 
-        const result = await this.sendRequest<AnimeNode['node']>({
+        const result = await this.sendRequest<AnimeNode>({
             method: 'PATCH',
             resource: `/anime/${animeId}/my_list_status`,
             returnNullOn404: true,

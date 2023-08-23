@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	export type ApiResponse = {
-		data: AnimeNode[];
+		data: AnimeObject[];
 		next: string;
 	};
 
@@ -17,7 +17,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { getResponseError } from '@/lib/utils/getResponseError';
-	import type { AnimeNode } from '@/lib/myanimelist/common/types';
+	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 	import { onClient } from '@/lib/utils/helpers';
 
 	let search: string = '';

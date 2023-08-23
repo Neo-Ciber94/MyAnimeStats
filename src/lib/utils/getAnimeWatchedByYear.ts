@@ -1,4 +1,4 @@
-import type { AnimeNode } from "$lib/myanimelist/common/types";
+import type { AnimeObject } from "$lib/myanimelist/common/types";
 import { error } from "@sveltejs/kit";
 import dayjs from "dayjs";
 
@@ -8,10 +8,10 @@ interface GetAnimeWatchedByYearOptions {
     genre?: string;
 }
 
-export function getAnimeWatchedByYear(animeList: AnimeNode[], options: GetAnimeWatchedByYearOptions) {
+export function getAnimeWatchedByYear(animeList: AnimeObject[], options: GetAnimeWatchedByYearOptions) {
     const { from, to = new Date().getFullYear(), genre } = options;
 
-    const matchGenre = (anime: AnimeNode) => {
+    const matchGenre = (anime: AnimeObject) => {
         if (!genre) {
             return true;
         }

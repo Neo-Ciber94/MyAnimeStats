@@ -1,11 +1,11 @@
 <script context="module" lang="ts">
-	export type AnimeBySeason = { season: string; year: number; animeList: AnimeNode[] };
+	export type AnimeBySeason = { season: string; year: number; animeList: AnimeObject[] };
 </script>
 
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import { seasonToNumber, type AnimeNode, type AnimeSeason } from '$lib/myanimelist/common/types';
+	import { seasonToNumber, type AnimeObject, type AnimeSeason } from '$lib/myanimelist/common/types';
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
@@ -16,7 +16,7 @@
 	import { CalendarMonthSolid, ListSolid } from 'flowbite-svelte-icons';
 	import TagInput from './TagInput.svelte';
 
-	export let animeList: AnimeNode[];
+	export let animeList: AnimeObject[];
 
 	const now = dayjs();
 	let chartCanvas: HTMLCanvasElement;
@@ -34,7 +34,7 @@
 
 	animeGenres.splice(0, 0, { label: 'All Anime', value: null });
 
-	let filters: { genre?: string | null; watched: AnimeNode[] }[] = [
+	let filters: { genre?: string | null; watched: AnimeObject[] }[] = [
 		{
 			genre: null,
 			watched: []

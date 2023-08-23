@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { AnimeNode } from '$lib/myanimelist/common/types';
+	import type { AnimeObject } from '$lib/myanimelist/common/types';
 	import { Badge } from 'flowbite-svelte';
 	import AiringStatusBadge from './AiringStatusBadge.svelte';
 
-	export let anime: AnimeNode;
+	export let anime: AnimeObject;
 </script>
 
 <a

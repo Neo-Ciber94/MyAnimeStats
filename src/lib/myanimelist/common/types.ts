@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 
+// api specification: https://github.com/SuperMarcus/myanimelist-api-specification/blob/master/README.md
+
 export type Nsfw = 'white' | 'gray' | 'black';
 
 export type AiringStatus = 'finished_airing' | 'currently_airing' | 'not_yet_aired'
@@ -48,7 +50,7 @@ export type AnimeRelationType =
     | 'full_story';
 
 export interface RelatedAnime {
-    node: AnimeNode['node'],
+    node: AnimeNode,
     relation_type: AnimeRelationType;
     relation_type_formatted: string;
 }
@@ -87,76 +89,78 @@ export type AnimeBroadcast = {
 }
 
 export type AnimeRecommendation = {
-    node: AnimeNode['node'],
+    node: AnimeNode,
     num_recommendations: number
 }
 
 export type AnimeNode = {
-    node: {
-        id: number;
-        title: string;
-        main_picture: MainPicture;
-        media_type: MediaType;
-        status: AiringStatus;
-        nsfw?: Nsfw;
-        genres: Genre[];
-        mean: number;
-        alternative_titles?: {
-            synonyms?: string[];
-            en?: string,
-            ja?: string
-        },
-        start_date?: string;
-        end_date?: string;
-        synopsis?: string;
-        rank?: number;
-        popularity?: number;
+    id: number;
+    title: string;
+    main_picture: MainPicture;
+    media_type: MediaType;
+    status: AiringStatus;
+    nsfw?: Nsfw;
+    genres: Genre[];
+    mean: number;
+    alternative_titles?: {
+        synonyms?: string[];
+        en?: string,
+        ja?: string
+    },
+    start_date?: string;
+    end_date?: string;
+    synopsis?: string;
+    rank?: number;
+    popularity?: number;
+    num_list_users: number;
+    num_scoring_users: number;
+    num_episodes: number;
+    start_season?: {
+        year: number,
+        season: AnimeSeason
+    },
+    average_episode_duration?: number,
+    studios: AnimeStudio[],
+    broadcast?: AnimeBroadcast;
+    my_list_status?: MyListStatus
+    background?: string;
+    source?: SourceType;
+    related_anime?: RelatedAnime[];
+    related_manga?: RelatedAnime[];
+    rating?: Rating;
+    pictures?: {
+        large?: string
+        medium: string
+    }[],
+    recommendations?: AnimeRecommendation[],
+    statistics?: {
         num_list_users: number;
-        num_scoring_users: number;
-        num_episodes: number;
-        start_season?: {
-            year: number,
-            season: AnimeSeason
-        },
-        average_episode_duration?: number,
-        studios: AnimeStudio[],
-        broadcast?: AnimeBroadcast;
-        my_list_status?: MyListStatus
-        background?: string;
-        source?: SourceType;
-        related_anime?: RelatedAnime[];
-        related_manga?: RelatedAnime[];
-        rating?: Rating;
-        pictures?: {
-            large?: string
-            medium: string
-        }[],
-        recommendations?: AnimeRecommendation[],
-        statistics?: {
-            num_list_users: number;
-            status: {
-                watching: number,
-                completed: number,
-                on_hold: number,
-                dropped: number,
-                plan_to_watch: number
-            }
+        status: {
+            watching: number,
+            completed: number,
+            on_hold: number,
+            dropped: number,
+            plan_to_watch: number
         }
-    };
+    }
 };
 
-export type AnimeNodeWithRanking = AnimeNode & {
+export type AnimeObject = {
+    node: AnimeNode
+};
+
+export type AnimeNodeWithRanking = AnimeObject & {
     ranking: {
         rank: number,
         previous_rank?: number
     }
 }
 
-export type AnimeNodeWithStatus = AnimeNode & {
+export type AnimeNodeWithStatus = AnimeObject & {
     list_status: MyListStatus
 }
 
-export type AnimeApiResponse<T extends AnimeNode = AnimeNode> = {
+export type AnimeApiResponse<T extends AnimeObject = AnimeObject> = {
     data: T[];
     paging: {
         next?: string;

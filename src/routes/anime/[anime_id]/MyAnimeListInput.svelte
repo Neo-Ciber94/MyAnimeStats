@@ -2,7 +2,7 @@
 	import ConfirmDialog from '$components/ConfirmDialog.svelte';
 	import session from '$stores/session';
 	import { MALClient } from '@/lib/myanimelist/api';
-	import type { AnimeNode, WatchStatus } from '@/lib/myanimelist/common/types';
+	import type { AnimeObject, WatchStatus } from '@/lib/myanimelist/common/types';
 	import { numberRange } from '@/lib/utils/helpers';
 	import { Select, Spinner } from 'flowbite-svelte';
 	import {
@@ -34,7 +34,7 @@
 	];
 
 	export let numEpisodes: number;
-	export let anime: AnimeNode;
+	export let anime: AnimeObject;
 	export let canDelete = true;
 
 	const dispatch = createEventDispatcher<{

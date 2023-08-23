@@ -1,4 +1,4 @@
-<script lang="ts" generics="TAnime extends AnimeNode">
+<script lang="ts" generics="TAnime extends AnimeObject">
 	import type { SwiperModule } from 'swiper/types/shared';
 
 	import 'swiper/css/bundle';
@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import Swiper from 'swiper';
 	import { Autoplay } from 'swiper/modules';
-	import type { AnimeNode } from '@/lib/myanimelist/common/types';
+	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 
 	export let animeList: TAnime[];
 	export let initialSlide = 1;
@@ -54,7 +54,7 @@
 		}
 	}
 
-	function handleClick(anime: AnimeNode) {}
+	function handleClick(anime: AnimeObject) {}
 </script>
 
 <div class={`swiper group h-[300px]`} bind:this={swiperElement}>
