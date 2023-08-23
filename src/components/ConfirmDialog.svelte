@@ -20,12 +20,27 @@
 	}>();
 
 	const handleClose = () => {
-		open = false;
+		setOpen(false);
 	};
+
+	function setOpen(isOpen: boolean) {
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		if (isOpen) {
+			const scrollbarWidth = window.innerWidth - document.body.clientWidth;
+			document.body.style.overflow = 'hidden';
+			document.body.style.marginRight = $isSmallScreen ? '0rem' : `${scrollbarWidth}px`;
+		} else {
+			document.body.style.overflow = '';
+			document.body.style.marginRight = '';
+		}
+	}
 
 	function handleConfirm(event: MouseEvent) {
 		event.stopPropagation();
-		dispatch('confirm', { close: handleClose });
+		dispatch('confirm', { close: () => handleClose() });
 
 		if (closeOnConfirm) {
 			handleClose();
@@ -34,7 +49,7 @@
 
 	function handleCancel(event: MouseEvent) {
 		event.stopPropagation();
-		dispatch('cancel', { close: handleClose });
+		dispatch('cancel', { close: () => handleClose() });
 
 		if (closeOnCancel) {
 			handleClose();
@@ -57,16 +72,7 @@
 	});
 
 	$: {
-		if (typeof window !== 'undefined') {
-			if (open) {
-				const scrollbarWidth = window.innerWidth - document.body.clientWidth;
-				document.body.style.overflow = 'hidden';
-				document.body.style.marginRight = $isSmallScreen ? '0rem' : `${scrollbarWidth}px`;
-			} else {
-				document.body.style.overflow = '';
-				document.body.style.marginRight = '';
-			}
-		}
+		setOpen(open);
 	}
 </script>
 

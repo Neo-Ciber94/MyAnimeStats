@@ -182,8 +182,8 @@
 	</span>
 </ConfirmDialog>
 
-<div class="flex flex-col gap-2">
-	<div class="flex flex-col sm:flex-row gap-1 sm:gap-2 sm:items-center">
+<div class="flex flex-col gap-1">
+	<div class="flex flex-col gap-1 sm:gap-2">
 		<div class="basis-3/12 text-orange-500">Status</div>
 		<Select
 			items={watchStatuses}
@@ -193,11 +193,11 @@
 		/>
 	</div>
 
-	<div class="flex flex-col sm:flex-row gap-1 sm:gap-2 mt-4 sm:mt-0 sm:items-center">
+	<div class="flex flex-col mt-4">
 		<div class="basis-3/12 text-orange-500">Episodes</div>
 
 		<div class="flex flex-col w-full">
-			<div class="flex flex-row w-full gap-2 items-center">
+			<div class="flex flex-col xs:flex-row w-full gap-2 items-center">
 				<div class="w-full flex-flex-col">
 					{#if numEpisodes > 0}
 						<input
@@ -229,7 +229,7 @@
 
 				<input
 					type="number"
-					class="rounded-lg h-8 text-white bg-gray-900 text-md"
+					class="rounded-lg h-8 w-full xs:w-auto text-white bg-gray-900 text-md"
 					step={1}
 					min={1}
 					max={numEpisodes == 0 ? 10_000 : numEpisodes}
@@ -239,11 +239,23 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col gap-1 sm:gap-2 mt-4 sm:mt-4">
-		<div class="basis-3/12 text-orange-500">Score</div>
+	<div class="flex flex-col mt-4">
+		<div class="basis-3/12 text-orange-500">
+			<div class="flex flex-row gap-2 justify-between mb-2">
+				<span>Score</span>
+
+				<div
+					data-score={myScore}
+					class=" py-1 px-2 rounded-md text-[12px] transition duration-300
+						shadow-lg min-w-[110px] max-w-fit text-center"
+				>
+					{scoreText[myScore - 1]}
+				</div>
+			</div>
+		</div>
 
 		<div class="flex flex-col w-full">
-			<div class="flex flex-row w-full items-center gap-2">
+			<div class="flex flex-col xs:flex-row w-full items-center gap-2">
 				<div class="flex flex-col w-full">
 					<input
 						type="range"
@@ -263,27 +275,17 @@
 
 				<input
 					type="number"
-					class="rounded-lg h-8 text-white bg-gray-900 text-md"
+					class="rounded-lg h-8 w-full xs:w-auto text-white bg-gray-900 text-md"
 					step={1}
 					min={1}
 					max={10}
 					bind:value={myScore}
 				/>
 			</div>
-
-			<div class="w-full flex flex-row justify-end mt-2">
-				<div
-					data-score={myScore}
-					class=" py-1 px-2 rounded-lg text-[12px] transition duration-300
-                    shadow-lg min-w-[105px] max-w-fit text-center"
-				>
-					{scoreText[myScore - 1]}
-				</div>
-			</div>
 		</div>
 	</div>
 
-	<div class="w-full flex flex-col-reverse sm:flex-row gap-2 text-center mt-12">
+	<div class="w-full flex flex-col-reverse sm:flex-row gap-2 text-center mt-6">
 		<button
 			disabled={loading || isDeleting}
 			on:click={onSave}
