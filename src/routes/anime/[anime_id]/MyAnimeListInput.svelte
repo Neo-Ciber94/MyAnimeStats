@@ -1,16 +1,15 @@
 <script lang="ts">
+	import ConfirmDialog from '$components/ConfirmDialog.svelte';
 	import session from '$stores/session';
 	import { MALClient } from '@/lib/myanimelist/api';
-	import type { WatchStatus } from '@/lib/myanimelist/common/types';
+	import type { AnimeNode, WatchStatus } from '@/lib/myanimelist/common/types';
+	import { numberRange } from '@/lib/utils/helpers';
 	import { Select, Spinner } from 'flowbite-svelte';
+	import { TrashBinSolid } from 'flowbite-svelte-icons';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import toast from 'svelte-french-toast';
 
-	const watchStatuses = [
-		{ value: 'watching', name: 'Watching' },
-		{ value: 'completed', name: 'Completed' },
-		{ value: 'on_hold', name: 'On Hold' },
-		{ value: 'dropped', name: 'Dropped' },
-		{ value: 'plan_to_watch', name: 'Plan to Watch' }
-	];
+	let watchStatuses: { value: WatchStatus; name: string }[] = [];
 
 	const scoreText = [
 		'Appalling',
@@ -26,23 +25,70 @@
 	];
 
 	export let numEpisodes: number;
-	export let animeId: number;
+	export let anime: AnimeNode;
+	export let canDelete = true;
+
+	const dispatch = createEventDispatcher<{
+		delete: void;
+		save: void;
+	}>();
 
 	// User status
-	export let status: WatchStatus = 'watching';
+	export let status: WatchStatus | undefined = undefined;
 	export let episodesSeen: number = 1;
 	export let myScore: number = 6;
 
 	let loading = false;
 	let isSubmitting = false;
+	let isDeleting = false;
 
-	function* range(max: number) {
-		for (let i = 0; i < max; i++) {
-			yield i;
+	onMount(() => {
+		switch (anime.node.status) {
+			case 'not_yet_aired': {
+				watchStatuses = [
+					{ value: 'on_hold', name: 'On Hold' },
+					{ value: 'plan_to_watch', name: 'Plan to Watch' }
+				];
+
+				if (!status) {
+					status = 'plan_to_watch';
+				}
+
+				break;
+			}
+			case 'currently_airing': {
+				watchStatuses = [
+					{ value: 'watching', name: 'Watching' },
+					{ value: 'on_hold', name: 'On Hold' },
+					{ value: 'dropped', name: 'Dropped' },
+					{ value: 'plan_to_watch', name: 'Plan to Watch' }
+				];
+
+				if (!status) {
+					status = 'watching';
+				}
+
+				break;
+			}
+			case 'finished_airing': {
+				watchStatuses = [
+					{ value: 'watching', name: 'Watching' },
+					{ value: 'completed', name: 'Completed' },
+					{ value: 'on_hold', name: 'On Hold' },
+					{ value: 'dropped', name: 'Dropped' },
+					{ value: 'plan_to_watch', name: 'Plan to Watch' }
+				];
+
+				if (!status) {
+					status = 'watching';
+				}
+
+				break;
+			}
 		}
-	}
+	});
 
-	async function onSubmit() {
+	async function onSave() {
 		if (isSubmitting) {
 			return;
 		}
@@ -57,18 +103,54 @@
 		try {
 			const malClient = new MALClient({
 				accessToken: $session.accessToken,
-				proxyUrl: '/api/myanimelist',
+				proxyUrl: '/api/myanimelist'
 			});
 
-			await malClient.updateMyAnimeListStatus(animeId, {
+			await malClient.updateMyAnimeListStatus(anime.node.id, {
 				score: myScore,
 				status: status,
 				num_watched_episodes: episodesSeen
 			});
+
+			toast.success('Your anime list updated successfully');
+			dispatch('save');
 		} catch (err: any) {
 			const message = typeof err.message === 'string' ? err.message : 'Something went wrong';
 			console.error(err);
-			alert(message);
+			toast.error(message);
+		} finally {
+			isSubmitting = false;
+			loading = false;
+		}
+	}
+
+	async function onDelete(event: MouseEvent) {
+		event.stopPropagation();
+		isDeleting = true;
+	}
+
+	async function onConfirmDelete(event: CustomEvent<{ close: () => void }>) {
+		if ($session.accessToken == null) {
+			throw new Error('user is not logged in');
+		}
+
+		loading = true;
+
+		try {
+			const malClient = new MALClient({
+				accessToken: $session.accessToken,
+				proxyUrl: '/api/myanimelist'
+			});
+
+			await malClient.deleteMyAnimeListStatus(anime.node.id);
+			toast.success('Anime was deleted from your list successfully');
+			dispatch('delete');
+			isDeleting = false;
+			event.detail.close();
+		} catch (err: any) {
+			const message = typeof err.message === 'string' ? err.message : 'Something went wrong';
+			console.error(err);
+			toast.error(message);
 		} finally {
 			isSubmitting = false;
 			loading = false;
@@ -76,7 +158,31 @@
 	}
 </script>
 
-<form class="flex flex-col gap-2" on:submit|preventDefault={onSubmit}>
+<ConfirmDialog
+	closeOnConfirm={false}
+	open={isDeleting}
+	class="w-11/12 sm:w-[400px] px-2"
+	on:cancel={() => (isDeleting = false)}
+	on:confirm={onConfirmDelete}
+>
+	<div class="pb-4 pt-4 px-1 sm:px-4">
+		<span>
+			Remove
+			<span class="text-pink-400">{anime.node.title}</span>
+			from your anime list?
+		</span>
+	</div>
+
+	<span slot="confirm" class="flex flex-row gap-2 items-center">
+		{#if loading && isDeleting}
+			<Spinner bg="bg-transparent" size="4" />
+		{/if}
+
+		Remove
+	</span>
+</ConfirmDialog>
+
+<div class="flex flex-col gap-2">
 	<div class="flex flex-col sm:flex-row gap-1 sm:gap-2 sm:items-center">
 		<div class="basis-3/12 text-orange-500">Status</div>
 		<Select
@@ -104,7 +210,7 @@
 						/>
 
 						<div class="flex flex-row justify-between text-violet-300 mx-1 text-[6px]">
-							{#each range(numEpisodes) as i}
+							{#each numberRange(numEpisodes) as i}
 								<span>|</span>
 							{/each}
 						</div>
@@ -133,7 +239,7 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col sm:flex-row gap-1 sm:gap-2 mt-4 sm:mt-0 sm:items-center">
+	<div class="flex flex-col gap-1 sm:gap-2 mt-4 sm:mt-4">
 		<div class="basis-3/12 text-orange-500">Score</div>
 
 		<div class="flex flex-col w-full">
@@ -149,7 +255,7 @@
 					/>
 
 					<div class="flex flex-row justify-between text-amber-500 mx-1 text-[6px]">
-						{#each range(10) as i}
+						{#each numberRange(10) as _i}
 							<span>|</span>
 						{/each}
 					</div>
@@ -168,7 +274,7 @@
 			<div class="w-full flex flex-row justify-end mt-2">
 				<div
 					data-score={myScore}
-					class=" py-1 px-2 rounded-lg text-[12px]
+					class=" py-1 px-2 rounded-lg text-[12px] transition duration-300
                     shadow-lg min-w-[105px] max-w-fit text-center"
 				>
 					{scoreText[myScore - 1]}
@@ -177,26 +283,41 @@
 		</div>
 	</div>
 
-	<div class="w-full text-center mt-12">
+	<div class="w-full flex flex-col-reverse sm:flex-row gap-2 text-center mt-12">
 		<button
-			disabled={loading}
-			class={`w-full py-2 text-md font-semibold shadow-xl rounded-lg
-				bg-orange-500 hover:bg-orange-600 text-white flex flex-row justify-center gap-2 items-center`}
+			disabled={loading || isDeleting}
+			on:click={onSave}
+			class={`w-full py-2 text-md font-semibold shadow-xl rounded-lg transition duration-200
+				border-2 border-violet-500 hover:border-violet-600 text-violet-400 hover:text-violet-600 
+				flex flex-row justify-center gap-2 items-center`}
 		>
 			{#if loading}
 				<Spinner bg="bg-transparent" size="4" />
 			{:else}
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
 					><path
-						fill="white"
+						fill="currentColor"
 						d="M15 9H5V5h10m-3 14a3 3 0 0 1-3-3a3 3 0 0 1 3-3a3 3 0 0 1 3 3a3 3 0 0 1-3 3m5-16H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Z"
 					/></svg
 				>
 			{/if}
 			<span>Save</span>
 		</button>
+
+		{#if canDelete}
+			<button
+				disabled={loading || isDeleting}
+				on:click={onDelete}
+				class={`w-full py-2 text-md font-semibold shadow-xl rounded-lg
+				border-2 border-red-500 hover:border-red-600
+				text-red-500 hover:text-red-700  flex flex-row justify-center gap-2 items-center`}
+			>
+				<TrashBinSolid />
+				<span>Delete</span>
+			</button>
+		{/if}
 	</div>
-</form>
+</div>
 
 <style lang="postcss">
 	[data-score='10'] {

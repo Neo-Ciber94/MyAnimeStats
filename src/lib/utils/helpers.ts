@@ -10,6 +10,12 @@ export function hash(s: string): number {
     return hash >>> 0; // Ensure a positive 32-bit integer hash value
 }
 
+export function* numberRange(max: number) {
+    for (let i = 0; i < max; i++) {
+        yield i;
+    }
+}
+
 export function identity<T>(value: T) {
     return value;
 }

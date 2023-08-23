@@ -14,6 +14,7 @@
 	import { EyeSlashSolid, EyeSolid, StarSolid } from 'flowbite-svelte-icons';
 	import MyAnimeListInput from './MyAnimeListInput.svelte';
 	import session from '$stores/session';
+	import { slide } from 'svelte/transition';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -22,6 +23,7 @@
 	const shouldCensor = data.nsfw === 'black';
 	let showUncensored = false;
 	let openMyAnimeList = data.my_list_status != null;
+	let isInMyList = data.my_list_status != null;
 
 	function getDurationFormatted(durationSeconds: number) {
 		const durationMinutes = Math.ceil(durationSeconds / 60);
@@ -211,13 +213,23 @@
 			{#if openMyAnimeList}
 				<div class="bg-black/40 mt-8 mb-4 px-8 pb-8 pt-2 rounded-lg">
 					<h1 class="text-white mb-12 mt-4 text-3xl">My List Status</h1>
-					<MyAnimeListInput
-						animeId={data.id}
-						episodesSeen={data.my_list_status?.num_episodes_watched}
-						numEpisodes={data.num_episodes}
-						myScore={data.my_list_status?.score}
-						status={data.my_list_status?.status}
-					/>
+					<div in:slide>
+						<MyAnimeListInput
+							anime={{ node: data }}
+							episodesSeen={data.my_list_status?.num_episodes_watched}
+							numEpisodes={data.num_episodes}
+							myScore={data.my_list_status?.score}
+							status={data.my_list_status?.status}
+							canDelete={isInMyList}
+							on:delete={() => {
+								isInMyList = false;
+								openMyAnimeList = false;
+							}}
+							on:save={() => {
+								isInMyList = true;
+							}}
+						/>
+					</div>
 				</div>
 			{:else}
 				<div class="bg-black/40 mt-8 mb-4 px-8 pb-8 pt-2 rounded-lg">

@@ -4,6 +4,7 @@
 	import SessionProvider from '../provider/SessionProvider.svelte';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import type { LayoutServerData } from './$types';
+	import { Toaster } from 'svelte-french-toast';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
@@ -24,9 +25,10 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<SessionProvider userSession={data.session}>
+	<SessionProvider userSession={data.session ?? undefined}>
 		<Layout>
 			<slot />
 		</Layout>
 	</SessionProvider>
 </QueryClientProvider>
+<Toaster />
