@@ -15,7 +15,7 @@
 	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 	import { getResponseError } from '@/lib/utils/getResponseError';
 	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 	import { onClient } from '@/lib/utils/helpers';
@@ -29,14 +29,14 @@
 		search = target.value;
 	}
 
-	async function fetchAnime(q: string | null | undefined) {
+	async function fetchAnime(q: string | null | undefined, signal: AbortSignal | undefined) {
 		const url = new URL('/api/anime', window.location.origin);
 
 		if (q && q.trim().length >= 3) {
 			url.searchParams.set('q', q);
 		}
 
-		const res = await fetch(url);
+		const res = await fetch(url, { signal });
 		if (!res.ok) {
 			const msg = await getResponseError(res);
 			throw new Error(msg || 'Something went wrong');
@@ -46,9 +46,10 @@
 		return json;
 	}
 
+	const queryClient = useQueryClient();
 	const animeQuery = createQuery<ApiResponse, ApiError>({
 		queryKey: ['anime'],
-		queryFn: async () => await fetchAnime(search),
+		queryFn: async ({ signal }) => await fetchAnime(search, signal),
 		enabled: false
 	});
 
@@ -63,23 +64,25 @@
 		await $animeQuery.refetch();
 	});
 
-	onDestroy(() => {
+	onDestroy(async () => {
 		if (timeout) {
 			clearTimeout(timeout);
 		}
+
+		await queryClient.cancelQueries({ queryKey: ['anime'] });
 	});
 
-	$: {
-		const _ = search;
-		onClient(() => {
-			if (timeout) {
-				clearTimeout(timeout);
-			}
+	// $: {
+	// 	const _ = search;
+	// 	onClient(() => {
+	// 		if (timeout) {
+	// 			clearTimeout(timeout);
+	// 		}
 
-			timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
-			console.log('Search');
-		});
-	}
+	// 		timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
+	// 		console.log('Search');
+	// 	});
+	// }
 
 	$: {
 		onClient(() => {

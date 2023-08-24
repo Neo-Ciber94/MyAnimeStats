@@ -5,7 +5,7 @@ import { getCurrentAnimeSeason, type AiringStatus, type AnimeSeason } from "@/li
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { error } from "@sveltejs/kit";
 
-const LIMIT = 100;
+const LIMIT = 10;
 
 export const GET: RequestHandler = async ({ request }) => {
     const { searchParams } = new URL(request.url);
@@ -24,38 +24,6 @@ export const GET: RequestHandler = async ({ request }) => {
 
     const { animeList, next } = await getAnimeByQuery({ q, offset });
     return Response.json({ data: animeList, next });
-}
-
-async function getSeasonalAnime(offset: number) {
-    const malClient = new MALClient({
-        clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
-    })
-
-    const { season, year } = getCurrentAnimeSeason();
-    const result = await malClient.getSeasonalAnime({
-        season,
-        year,
-        limit: LIMIT,
-        offset,
-        sort: 'anime_num_list_users',
-        fields: ["nsfw", "genres", "status", "mean", 'start_season', 'broadcast'],
-        nsfw: true
-    });
-
-    const AVAILABLE_STATUSES = ['currently_airing', 'finished_airing'] as AiringStatus[];
-    const animeList = result.data.filter(({ node }) => {
-        if (!node.start_season) {
-            return false;
-        }
-
-        return node.start_season.season === season
-            && node.start_season.year === year
-            && node.broadcast?.start_time != null
-            && AVAILABLE_STATUSES.includes(node.status)
-            && !node.genres.some(x => x.id === ANIME_GENRES.Hentai.ID)
-    });
-
-    return { animeList, next: null }
 }
 
 type AnimeQuery = {
@@ -87,6 +55,45 @@ async function getAnimeByQuery(query: AnimeQuery) {
     });
 
     return { animeList, next: null }
+}
+
+async function getSeasonalAnime(offset: number) {
+    const malClient = new MALClient({
+        clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
+    })
+
+    const { season, year } = getCurrentAnimeSeason();
+    const result = await malClient.getSeasonalAnime({
+        season,
+        year,
+        limit: LIMIT,
+        offset: offset + 1,
+        sort: 'anime_num_list_users',
+        fields: ["nsfw", "genres", "status", "mean", 'start_season', 'broadcast'],
+        nsfw: true
+    });
+
+    const AVAILABLE_STATUSES = ['currently_airing', 'finished_airing'] as AiringStatus[];
+    const animeList = result.data.filter(({ node }) => {
+        if (!node.start_season) {
+            return false;
+        }
+
+        return node.start_season.season === season
+            && node.start_season.year === year
+            && node.broadcast?.start_time != null
+            && AVAILABLE_STATUSES.includes(node.status)
+            && !node.genres.some(x => x.id === ANIME_GENRES.Hentai.ID)
+    });
+
+    let next: string | null = null;
+
+    // If we fetched the additional element means we can fetch more
+    if (animeList.length == (offset + 1)) {
+        next = `/api/anime?offset=${offset}`;
+    }
+
+    return { animeList, next }
 }
 
 function parseNumberOrNull(s: string | null): number | null {
