@@ -53,15 +53,13 @@
 			swiper.slidePrev();
 		}
 	}
-
-	function handleClick(anime: AnimeObject) {}
 </script>
 
-<div class={`swiper group h-[300px]`} bind:this={swiperElement}>
+<div class={`swiper group h-[200px] sm:h-[300px]`} bind:this={swiperElement}>
 	{#if swiper == null}
 		<div class="flex flex-row space-x-[10px]">
 			{#each Array.from(Array(10).keys()) as _}
-				<div class="flex-shrink-0 rounded-sm w-[200px] h-[300px] bg-indigo-400/20 animate-pulse" />
+				<div class="flex-shrink-0 rounded-sm w-[130px] h-[200px] sm:w-[200px] sm:h-[300px] bg-indigo-400/20 animate-pulse" />
 			{/each}
 		</div>
 	{/if}
@@ -70,7 +68,7 @@
 	<div class={`swiper-wrapper ${swiper == null ? 'invisible' : 'visible'}`}>
 		<!-- Slides -->
 		{#each animeList as anime}
-			<div class="swiper-slide !w-[200px] !h-[300px] cursor-pointer">
+			<div class="swiper-slide !w-[130px] !h-[200px] sm:!w-[200px] sm:!h-[300px] cursor-pointer">
 				<a
 					href={`/anime/${anime.node.id}`}
 					class="group/image block overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
@@ -88,8 +86,8 @@
 
 					<!-- Image -->
 					<img
-						width={300}
-						height={400}
+						width={0}
+						height={0}
 						class="object-cover w-full h-full"
 						alt={anime.node.title}
 						src={anime.node.main_picture.large}
@@ -97,7 +95,7 @@
 
 					<!-- Title -->
 					<span
-						class="absolute inset-x-0 bottom-2 text-center text-white text-xs font-thin px-1 z-40"
+						class="absolute inset-x-0 bottom-2 text-center text-white text-[10px] sm:text-xs font-thin px-1 z-40"
 					>
 						{mapTitle(anime)}
 					</span>

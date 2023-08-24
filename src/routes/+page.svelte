@@ -91,7 +91,7 @@
 
 	<div class="bg-violet-500 h-1 rounded-lg w-8/12 mt-14 mb-8 mx-auto" />
 
-	<section class="px-10 py-4 text-center">
+	<section class="px-2 sm:px-10 text-center">
 		<Button
 			color="purple"
 			class="px-20 text-white text-lg md:text-2xl w-full sm:w-64"
@@ -102,7 +102,7 @@
 		</Button>
 	</section>
 
-	<section class="px-10 py-4">
+	<section class="px-2 sm:px-10 py-4">
 		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
 			{`${capitalize(animeSeason.season)} ${animeSeason.year} anime`}
 		</h1>
@@ -111,7 +111,7 @@
 	</section>
 
 	{#if data.suggestedAnimeList}
-		<section class="px-10 py-4">
+		<section class="px-2 sm:px-10 py-4">
 			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
 				{`Anime recommendations`}
 			</h1>
@@ -121,7 +121,7 @@
 	{/if}
 
 	{#if data.upcomingAnimeList.length > 0}
-		<section class="px-10 py-4">
+		<section class="px-2 sm:px-10 py-4">
 			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
 				{`Upcoming anime`}
 			</h1>
@@ -130,7 +130,7 @@
 		</section>
 	{/if}
 
-	<section class="px-10 py-4">
+	<section class="px-2 sm:px-10 py-4">
 		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
 			{`Most popular anime`}
 		</h1>
