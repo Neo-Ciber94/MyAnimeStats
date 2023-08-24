@@ -15,43 +15,29 @@
 	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { getResponseError } from '@/lib/utils/getResponseError';
 	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 	import { onClient } from '@/lib/utils/helpers';
+	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
+	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
+	import type { Readable } from 'svelte/store';
+	import { scale } from 'svelte/transition';
+	import DotLoader from '$components/DotLoader.svelte';
 
 	let search: string = '';
 	let timeout: number | undefined;
+
+	let loadMoreMarkerElement: Element | undefined;
 	let isInit = false;
+
+	const animeQuery = useAnimeListQuery(search);
+	let canLoadMore: Readable<boolean>;
 
 	function handleSearch(e: CustomEvent) {
 		const target = e.currentTarget as HTMLInputElement;
 		search = target.value;
 	}
 
-	async function fetchAnime(q: string | null | undefined, signal: AbortSignal | undefined) {
-		const url = new URL('/api/anime', window.location.origin);
-
-		if (q && q.trim().length >= 3) {
-			url.searchParams.set('q', q);
-		}
-
-		const res = await fetch(url, { signal });
-		if (!res.ok) {
-			const msg = await getResponseError(res);
-			throw new Error(msg || 'Something went wrong');
-		}
-
-		const json = (await res.json()) as ApiResponse;
-		return json;
-	}
-
-	const queryClient = useQueryClient();
-	const animeQuery = createQuery<ApiResponse, ApiError>({
-		queryKey: ['anime'],
-		queryFn: async ({ signal }) => await fetchAnime(search, signal),
-		enabled: false
-	});
+	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	onMount(async () => {
 		const { searchParams } = new URL(window.location.href);
@@ -65,36 +51,38 @@
 	});
 
 	onDestroy(async () => {
-		if (timeout) {
-			clearTimeout(timeout);
-		}
-
-		await queryClient.cancelQueries({ queryKey: ['anime'] });
+		clearTimeout(timeout);
+		await $animeQuery.cancel();
 	});
-
-	// $: {
-	// 	const _ = search;
-	// 	onClient(() => {
-	// 		if (timeout) {
-	// 			clearTimeout(timeout);
-	// 		}
-
-	// 		timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
-	// 		console.log('Search');
-	// 	});
-	// }
 
 	$: {
 		onClient(() => {
-			if (isInit == false) {
+			clearTimeout(timeout);
+			timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
+			console.log('Search');
+		});
+	}
+
+	$: {
+		onClient(() => {
+			if (!isInit) {
 				return;
 			}
 
 			const newUrl = new URL(window.location.href);
-			newUrl.searchParams.set('q', search);
-			const path = newUrl.toString();
-			window.history.pushState({ path }, '', path);
+			if (search && search.length > 0) {
+				newUrl.searchParams.set('q', search);
+				const path = newUrl.toString();
+				window.history.pushState({ path }, '', path);
+			}
 		});
+	}
+
+	$: {
+		if ($canLoadMore) {
+			$animeQuery.fetchNextPage();
+			console.log('load more');
+		}
 	}
 </script>
 
@@ -107,7 +95,7 @@
 </div>
 
 <div class="w-full">
-	{#if $animeQuery.error}
+	{#if $animeQuery.isError && $animeQuery.error}
 		<div>
 			<Alert border color="red">
 				<InfoCircleSolid />
@@ -119,9 +107,9 @@
 
 	{#if $animeQuery.isLoading || !$animeQuery.data}
 		<div class="w-full flex flex-row justify-center">
-			<Spinner size={'16'} bg="bg-transparent" />
+			<Spinner size={'12'} bg="bg-transparent" />
 		</div>
-	{:else if $animeQuery.data.data.length === 0}
+	{:else if $animeQuery.data.length === 0}
 		<div
 			class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
 		>
@@ -132,11 +120,21 @@
 		<div
 			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 flex-wrap gap-2 items-center mx-10 mb-4"
 		>
-			{#each $animeQuery.data.data as anime}
-				{#key anime.node.id}
-					<AnimeCard {anime} />
-				{/key}
+			{#each $animeQuery.data as anime, idx}
+				<div class="h-full" in:scale={{ start: 0.5, delay: (idx % 10) * 50 }}>
+					{#key anime.node.id}
+						<AnimeCard {anime} />
+					{/key}
+				</div>
 			{/each}
 		</div>
+
+		<div bind:this={loadMoreMarkerElement} />
+
+		{#if $animeQuery.isFetching}
+			<div class="w-full text-center">
+				<DotLoader class="bg-orange-500/80" />
+			</div>
+		{/if}
 	{/if}
 </div>

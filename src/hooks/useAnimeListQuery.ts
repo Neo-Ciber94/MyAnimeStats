@@ -18,24 +18,31 @@ export function useAnimeListQuery(search: string) {
     const animeQuery = createInfiniteQuery<ApiResponse, AnimeError>({
         queryKey: ['anime', search],
         enabled: false,
-        queryFn: async ({ signal }) => await fetchAnimeList({
+        queryFn: async ({ signal, pageParam }) => await fetchAnimeList({
             search,
             signal,
+            offset: pageParam
         }),
         getNextPageParam(lastPage) {
-            return lastPage.next
+            if (!lastPage.next) {
+                return null;
+            }
+
+            const { searchParams } = new URL(lastPage.next, window.location.href);
+            const offset = searchParams.get('offset');
+            return offset == null ? null : Number(offset);
         }
     });
+
+    async function cancel() {
+        await queryClient.cancelQueries({ queryKey: ['anime'] })
+    }
 
     onMount(() => {
         animeQuery.subscribe($animeQuery => {
             $animeQuery.refetch();
         });
     });
-
-    async function cancel() {
-        await queryClient.cancelQueries({ queryKey: ['anime'] })
-    }
 
     return derived(animeQuery, $animeQuery => {
         const animeList = ($animeQuery.data?.pages || []).flatMap(x => x.data);
@@ -52,9 +59,11 @@ export function useAnimeListQuery(search: string) {
         return {
             data: animeList,
             isLoading: $animeQuery.isLoading,
+            isFetching: $animeQuery.isFetching,
             isError: $animeQuery.isError,
             error: $animeQuery.error,
             hasNext: $animeQuery.hasNextPage,
+            refetch: $animeQuery.refetch,
             fetchNextPage,
             cancel
         }
@@ -63,14 +72,19 @@ export function useAnimeListQuery(search: string) {
 
 type AnimeQuery = {
     search: string | null | undefined,
-    signal: AbortSignal | undefined
+    signal: AbortSignal | undefined,
+    offset?: number,
 }
 
-async function fetchAnimeList({ search, signal }: AnimeQuery) {
+async function fetchAnimeList({ search, signal, offset }: AnimeQuery) {
     const url = new URL('/api/anime', window.location.origin);
 
     if (search) {
         url.searchParams.set('q', search);
+    }
+
+    if (offset) {
+        url.searchParams.set('offset', String(offset));
     }
 
     const res = await fetch(url, { signal });
