@@ -86,7 +86,7 @@
 	}
 </script>
 
-<div class="mx-10 my-8">
+<div class="mx-2 sm:mx-10 my-8">
 	<AnimeSearchBar
 		on:input={handleSearch}
 		on:search={() => $animeQuery.refetch()}
@@ -96,8 +96,8 @@
 
 <div class="w-full">
 	{#if $animeQuery.isError && $animeQuery.error}
-		<div>
-			<Alert border color="red">
+		<div class="mb-4 mx-2 sm:mx-10">
+			<Alert dismissable border color="red">
 				<InfoCircleSolid />
 				<span class="font-medium">Error</span>
 				{$animeQuery.error.message}
@@ -118,7 +118,9 @@
 		</div>
 	{:else}
 		<div
-			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 flex-wrap gap-2 items-center mx-10 mb-4"
+			class="items-center mx-2 sm:mx-10 mb-4 gap-2 grid
+			grid-cols-[repeat(auto-fill,minmax(120px,1fr))]
+			sm:grid-cols-[repeat(auto-fill,minmax(180px,1fr))]"
 		>
 			{#each $animeQuery.data as anime, idx}
 				<div class="h-full" in:scale={{ start: 0.5, delay: (idx % 10) * 50 }}>

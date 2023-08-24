@@ -12,7 +12,7 @@
 	}
 </script>
 
-<div class="flex flex-row gap-2">
+<div class="flex flex-col sm:flex-row gap-2">
 	<input
 		bind:value
 		required
