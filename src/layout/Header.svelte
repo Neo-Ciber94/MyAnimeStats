@@ -3,7 +3,7 @@
 	import session from '../stores/session';
 	import { Avatar, Button, Dropdown, DropdownItem, Spinner } from 'flowbite-svelte';
 	import { signIn, signOut } from '$lib/myanimelist/auth/client';
-	import HeaderSearchBar from './HeaderSearchBar.svelte';
+	import NavSearchBar from './NavSearchBar.svelte';
 	import { page } from '$app/stores';
 </script>
 
@@ -13,7 +13,7 @@
 			<Logo />
 			<div class="flex flex-row gap-8 items-center">
 				{#if $page.url.pathname !== '/anime'}
-					<HeaderSearchBar class="md:flex hidden" />
+					<NavSearchBar class="md:flex hidden" />
 				{/if}
 
 				<div>
@@ -53,7 +53,7 @@
 		</div>
 
 		<div class="block md:hidden mb-2">
-			<HeaderSearchBar />
+			<NavSearchBar />
 		</div>
 
 		<div class="flex flex-row items-center text-base gap-5 px-10 bg-violet-800 py-4 h-10">

@@ -19,25 +19,31 @@
 	import { onClient } from '@/lib/utils/helpers';
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
-	import type { Readable } from 'svelte/store';
 	import { scale } from 'svelte/transition';
 	import DotLoader from '$components/DotLoader.svelte';
 
-	let search: string = '';
+	let search: string | undefined;
 	let timeout: number | undefined;
-
 	let loadMoreMarkerElement: Element | undefined;
 	let isInit = false;
 
-	const animeQuery = useAnimeListQuery(search);
-	let canLoadMore: Readable<boolean>;
+	const animeQuery = useAnimeListQuery(() => search);
+	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	function handleSearch(e: CustomEvent) {
 		const target = e.currentTarget as HTMLInputElement;
 		search = target.value;
 	}
 
-	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
+	function queueRefetch() {
+		if (typeof window === 'undefined') {
+			return;
+		}
+
+		clearTimeout(timeout);
+		timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
+		console.log('Search');
+	}
 
 	onMount(async () => {
 		const { searchParams } = new URL(window.location.href);
@@ -46,8 +52,9 @@
 			search = q;
 		}
 
-		isInit = true;
+		console.log({ q });
 		await $animeQuery.refetch();
+		isInit = true;
 	});
 
 	onDestroy(async () => {
@@ -56,11 +63,8 @@
 	});
 
 	$: {
-		onClient(() => {
-			clearTimeout(timeout);
-			timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
-			console.log('Search');
-		});
+		const _ = search;
+		queueRefetch();
 	}
 
 	$: {
@@ -69,8 +73,8 @@
 				return;
 			}
 
-			const newUrl = new URL(window.location.href);
-			if (search && search.length > 0) {
+			if (search != null) {
+				const newUrl = new URL(window.location.href);
 				newUrl.searchParams.set('q', search);
 				const path = newUrl.toString();
 				window.history.pushState({ path }, '', path);

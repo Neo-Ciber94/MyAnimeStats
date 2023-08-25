@@ -1,7 +1,6 @@
 import type { AnimeObject } from "@/lib/myanimelist/common/types";
 import { getResponseError } from "@/lib/utils/getResponseError";
 import { createInfiniteQuery, useQueryClient } from "@tanstack/svelte-query";
-import { onMount } from "svelte";
 import { derived } from "svelte/store";
 
 type ApiResponse = {
@@ -13,7 +12,8 @@ type AnimeError = {
     message: string;
 };
 
-export function useAnimeListQuery(search: string) {
+export function useAnimeListQuery(searchFn?: () => string | null | undefined) {
+    let search = searchFn?.();
     const queryClient = useQueryClient();
     const animeQuery = createInfiniteQuery<ApiResponse, AnimeError>({
         queryKey: ['anime', search],
@@ -38,13 +38,8 @@ export function useAnimeListQuery(search: string) {
         await queryClient.cancelQueries({ queryKey: ['anime'] })
     }
 
-    onMount(() => {
-        animeQuery.subscribe($animeQuery => {
-            $animeQuery.refetch();
-        });
-    });
-
     return derived(animeQuery, $animeQuery => {
+        search = searchFn?.();
         const animeList = ($animeQuery.data?.pages || []).flatMap(x => x.data);
 
         async function fetchNextPage() {
@@ -79,6 +74,7 @@ type AnimeQuery = {
 async function fetchAnimeList({ search, signal, offset }: AnimeQuery) {
     const url = new URL('/api/anime', window.location.origin);
 
+    console.log({ search })
     if (search) {
         url.searchParams.set('q', search);
     }
