@@ -63,7 +63,15 @@ async function getAnimeByQuery(query: AnimeQuery) {
         return !allowNsfw && !node.genres?.some(x => x.id === ANIME_GENRES.Hentai.ID)
     });
 
-    return { animeList, next: null }
+    let next: string | null = null;
+
+    // While we had anime we assume there is more
+    if (animeList.length > 0) {
+        const nextOffset = LIMIT + offset;
+        next = `/api/anime?offset=${nextOffset}`;
+    }
+
+    return { animeList, next }
 }
 
 async function getSeasonalAnime({ offset, allowNsfw }: { offset: number, allowNsfw?: boolean }) {
@@ -89,7 +97,7 @@ async function getSeasonalAnime({ offset, allowNsfw }: { offset: number, allowNs
             return false;
         }
 
-        const isNsfw = node.genres.some(x => x.id === ANIME_GENRES.Hentai.ID);
+        const isNsfw = node.genres?.some(x => x.id === ANIME_GENRES.Hentai.ID);
 
         return node.start_season.season === season
             && node.start_season.year === year
@@ -100,9 +108,8 @@ async function getSeasonalAnime({ offset, allowNsfw }: { offset: number, allowNs
 
     let next: string | null = null;
 
-    // If we fetched the additional element means we can fetch more
-    if (animeList.length >= (LIMIT + 1)) {
-        animeList.pop(); // remove?
+    // While we had anime we assume there is more
+    if (animeList.length > 0) {
         const nextOffset = LIMIT + offset;
         next = `/api/anime?offset=${nextOffset}`;
     }
