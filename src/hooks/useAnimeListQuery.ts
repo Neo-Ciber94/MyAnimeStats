@@ -12,8 +12,8 @@ type AnimeError = {
     message: string;
 };
 
-export function useAnimeListQuery(searchFn?: () => string | null | undefined) {
-    let search = searchFn?.();
+export function useAnimeListQuery() {
+    let search: string | null | undefined;
     const queryClient = useQueryClient();
     const animeQuery = createInfiniteQuery<ApiResponse, AnimeError>({
         queryKey: ['anime', search],
@@ -39,7 +39,6 @@ export function useAnimeListQuery(searchFn?: () => string | null | undefined) {
     }
 
     return derived(animeQuery, $animeQuery => {
-        search = searchFn?.();
         const animeList = ($animeQuery.data?.pages || []).flatMap(x => x.data);
 
         async function fetchNextPage() {
@@ -51,6 +50,11 @@ export function useAnimeListQuery(searchFn?: () => string | null | undefined) {
             return true;
         }
 
+        async function refetch(s?: string | null) {
+            search = s;
+            await $animeQuery.refetch();
+        }
+
         return {
             data: animeList,
             isLoading: $animeQuery.isLoading,
@@ -58,7 +62,7 @@ export function useAnimeListQuery(searchFn?: () => string | null | undefined) {
             isError: $animeQuery.isError,
             error: $animeQuery.error,
             hasNext: $animeQuery.hasNextPage,
-            refetch: $animeQuery.refetch,
+            refetch,
             fetchNextPage,
             cancel
         }

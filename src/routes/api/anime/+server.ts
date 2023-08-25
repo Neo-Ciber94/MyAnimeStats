@@ -19,14 +19,12 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 
     const cacheControl = 'max-age=3600, stale-while-revalidate=600';
 
-
     // If there is not search params we just return the seasonal anime
     if (q.length === 0) {
         const { animeList, next } = await getSeasonalAnime({ offset, allowNsfw });
 
         // Cache results for 1 hour
         setHeaders({ 'Cache-Control': cacheControl })
-
         return Response.json({ data: animeList, next });
     }
 
@@ -34,7 +32,6 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 
     // Cache results for 1 hour
     setHeaders({ 'Cache-Control': cacheControl })
-
     return Response.json({ data: animeList, next });
 }
 

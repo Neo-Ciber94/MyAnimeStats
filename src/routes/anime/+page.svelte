@@ -22,12 +22,12 @@
 	import { scale } from 'svelte/transition';
 	import DotLoader from '$components/DotLoader.svelte';
 
-	let search: string | undefined;
+	let search: string | undefined = '';
 	let timeout: number | undefined;
 	let loadMoreMarkerElement: Element | undefined;
 	let isInit = false;
 
-	const animeQuery = useAnimeListQuery(() => search);
+	const animeQuery = useAnimeListQuery();
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	function handleSearch(e: CustomEvent) {
@@ -35,14 +35,19 @@
 		search = target.value;
 	}
 
-	function queueRefetch() {
-		if (typeof window === 'undefined') {
+	function refetchAnime(q: string | null | undefined) {
+		if (!isInit || typeof window === 'undefined') {
 			return;
 		}
 
+		const newUrl = new URL(window.location.href);
+		newUrl.searchParams.set('q', q ?? '');
+		const path = newUrl.toString();
+		window.history.pushState({ path }, '', path);
+
+		// refetch
 		clearTimeout(timeout);
-		timeout = window.setTimeout(() => $animeQuery.refetch(), 500);
-		console.log('Search');
+		timeout = window.setTimeout(() => $animeQuery.refetch(q), 500);
 	}
 
 	onMount(async () => {
@@ -52,8 +57,7 @@
 			search = q;
 		}
 
-		console.log({ q });
-		await $animeQuery.refetch();
+		await $animeQuery.refetch(q);
 		isInit = true;
 	});
 
@@ -63,23 +67,7 @@
 	});
 
 	$: {
-		const _ = search;
-		queueRefetch();
-	}
-
-	$: {
-		onClient(() => {
-			if (!isInit) {
-				return;
-			}
-
-			if (search != null) {
-				const newUrl = new URL(window.location.href);
-				newUrl.searchParams.set('q', search);
-				const path = newUrl.toString();
-				window.history.pushState({ path }, '', path);
-			}
-		});
+		refetchAnime(search);
 	}
 
 	$: {
