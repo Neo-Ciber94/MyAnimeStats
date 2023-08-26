@@ -103,7 +103,7 @@
 	</section>
 
 	<section class="px-2 sm:px-10 py-4">
-		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+		<h1 class="text-2xl sm:text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[1.5em] sm:leading-[2.5em]">
 			{`${capitalize(animeSeason.season)} ${animeSeason.year} anime`}
 		</h1>
 
@@ -112,7 +112,7 @@
 
 	{#if data.suggestedAnimeList}
 		<section class="px-2 sm:px-10 py-4">
-			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+			<h1 class="text-2xl sm:text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[1.5em] sm:leading-[2.5em]">
 				{`Anime recommendations`}
 			</h1>
 
@@ -122,7 +122,7 @@
 
 	{#if data.upcomingAnimeList.length > 0}
 		<section class="px-2 sm:px-10 py-4">
-			<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+			<h1 class="text-2xl sm:text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[1.5em] sm:leading-[2.5em]">
 				{`Upcoming anime`}
 			</h1>
 
@@ -131,7 +131,7 @@
 	{/if}
 
 	<section class="px-2 sm:px-10 py-4">
-		<h1 class="text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[2.5em]">
+		<h1 class="text-2xl sm:text-3xl text-white mb-4 border-b-4 border-b-orange-500 leading-[1.5em] sm:leading-[2.5em]">
 			{`Most popular anime`}
 		</h1>
 
