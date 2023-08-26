@@ -44,7 +44,9 @@
 
 	<section>
 		<div class="flex flex-col">
-			<div class="w-full justify-end my-2 sm:my-0 flex flex-row h-7 flex-wrap gap-2 items-center">
+			<div
+				class="w-full justify-center xs:justify-end my-2 sm:my-0 flex flex-row flex-wrap gap-2 items-center"
+			>
 				{#if isNsfw}
 					<div
 						class="rounded-lg text-white uppercase flex flex-row items-center justify-center h-full text-xs px-4
@@ -156,7 +158,7 @@
 
 			<div class="pb-5">
 				<h3 class="text-orange-500 text-2xl mb-2">Synopsis</h3>
-				<p class="text-white text-sm">
+				<p class="text-white text-sm text-justify">
 					{`${data.synopsis || 'N/A'}`}
 				</p>
 			</div>
@@ -369,7 +371,7 @@
 
 			<TabItem title="Pictures">
 				{#if data.pictures}
-					<div class="flex flex-row flex-wrap gap-4">
+					<div class="flex flex-row justify-center flex-wrap gap-4">
 						{#each data.pictures as picture}
 							<img
 								alt={data.title}
