@@ -25,14 +25,37 @@
 	let search: string | undefined = '';
 	let timeout: number | undefined;
 	let loadMoreMarkerElement: Element | undefined;
+	let searchError: string | undefined;
 	let isInit = false;
 
 	const animeQuery = useAnimeListQuery();
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
+	const triggerSearch = async () => {
+		const s = search?.trim();
+
+		// We need 3 or more character of an empty string for a search
+		if (s && s != '' && s.length < 3) {
+			return;
+		}
+
+		searchError = undefined;
+		$animeQuery.refetch(search);
+	};
+
 	function handleSearch(e: CustomEvent) {
 		const target = e.currentTarget as HTMLInputElement;
 		search = target.value;
+	}
+
+	async function onSearchBarSearch() {
+		const s = search?.trim();
+		if (s && s.length >= 1 && s.length < 3) {
+			searchError = 'Requires at least 3 characters';
+			return;
+		}
+
+		await triggerSearch();
 	}
 
 	function refetchAnime(q: string | null | undefined) {
@@ -47,7 +70,7 @@
 
 		// refetch
 		clearTimeout(timeout);
-		timeout = window.setTimeout(() => $animeQuery.refetch(q), 500);
+		timeout = window.setTimeout(() => triggerSearch(), 500);
 	}
 
 	onMount(async () => {
@@ -57,7 +80,7 @@
 			search = q;
 		}
 
-		await $animeQuery.refetch(q);
+		await triggerSearch();
 		isInit = true;
 	});
 
@@ -73,17 +96,16 @@
 	$: {
 		if ($canLoadMore) {
 			$animeQuery.fetchNextPage();
-			console.log('load more');
 		}
 	}
 </script>
 
-<div class="mx-2 sm:mx-10 my-8">
-	<AnimeSearchBar
-		on:input={handleSearch}
-		on:search={() => $animeQuery.refetch()}
-		bind:value={search}
-	/>
+<div class="mx-2 sm:mx-10 my-8 flex flex-col">
+	<AnimeSearchBar on:input={handleSearch} on:search={onSearchBarSearch} bind:value={search} />
+
+	{#if searchError}
+		<small class="text-red-600 mt-2">{searchError}</small>
+	{/if}
 </div>
 
 <div class="w-full">
