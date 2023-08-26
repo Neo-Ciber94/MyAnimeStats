@@ -8,7 +8,7 @@
 </script>
 
 <header>
-	<div class="h-full md:h-28 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
+	<div class="h-full md:h-28 pt-2 sm:pt-0 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
 		<div class="flex flex-row flex-wrap justify-between items-center px-10 h-2/3">
 			<Logo />
 			<div class="flex flex-row gap-8 items-center">
