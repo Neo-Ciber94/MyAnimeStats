@@ -16,10 +16,8 @@
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';
 	import type { AnimeObject } from '@/lib/myanimelist/common/types';
-	import { onClient } from '@/lib/utils/helpers';
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
-	import { scale } from 'svelte/transition';
 	import DotLoader from '$components/DotLoader.svelte';
 
 	let search: string | undefined = '';
@@ -27,9 +25,6 @@
 	let loadMoreMarkerElement: Element | undefined;
 	let searchError: string | undefined;
 	let isInit = false;
-
-	// We control when to show the cards to ensure the transition is played
-	let show = false;
 
 	const animeQuery = useAnimeListQuery();
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
@@ -44,9 +39,6 @@
 
 		searchError = undefined;
 		await $animeQuery.refetch(search);
-		setTimeout(() => {
-			show = true;
-		}, 100);
 	};
 
 	function handleSearch(e: CustomEvent) {
@@ -69,7 +61,6 @@
 			return;
 		}
 
-		show = false;
 		const newUrl = new URL(window.location.href);
 		newUrl.searchParams.set('q', q ?? '');
 		const path = newUrl.toString();
@@ -79,12 +70,6 @@
 		clearTimeout(timeout);
 		timeout = window.setTimeout(() => triggerSearch(), 500);
 	}
-
-	onMount(() => {
-		setTimeout(() => {
-			show = true;
-		}, 100);
-	});
 
 	onMount(async () => {
 		const { searchParams } = new URL(window.location.href);
@@ -150,24 +135,41 @@
 			sm:grid-cols-[repeat(auto-fill,minmax(180px,1fr))]"
 		>
 			{#each $animeQuery.data as anime, idx}
-				{#if show}
-					<div class="h-full" in:scale={{ start: 0.5, delay: (idx % 10) * 50 }}>
-						{#key anime.node.id}
-							<AnimeCard {anime} />
-						{/key}
+				{#key anime.node.id}
+					<div
+						class="fade-in h-full opacity-0 scale-50"
+						style="--animation-delay: {(idx % 10) * 50}ms"
+					>
+						<AnimeCard {anime} />
 					</div>
-				{/if}
+				{/key}
 			{/each}
 		</div>
 
-		{#if show}
-			<div bind:this={loadMoreMarkerElement} />
+		<div bind:this={loadMoreMarkerElement} />
 
-			{#if $animeQuery.isFetching}
-				<div class="w-full text-center">
-					<DotLoader class="bg-orange-500/80" />
-				</div>
-			{/if}
+		{#if $animeQuery.isFetching}
+			<div class="w-full text-center">
+				<DotLoader class="bg-orange-500/80" />
+			</div>
 		{/if}
 	{/if}
 </div>
+
+<style>
+	.fade-in {
+		animation: fadeIn forwards 300ms ease-out;
+		animation-delay: var(--animation-delay);
+	}
+
+	@keyframes fadeIn {
+		0% {
+			opacity: 0;
+			transform: scale(0.5);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+</style>

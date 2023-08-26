@@ -20,10 +20,6 @@ const sessionStore = writable<SessionState>({
 
 async function initialize(init?: Omit<SessionState, 'loading'>) {
     if (initialized === true) {
-        if (dev) {
-            console.warn("session was already initialized");
-        }
-
         return;
     }
 
