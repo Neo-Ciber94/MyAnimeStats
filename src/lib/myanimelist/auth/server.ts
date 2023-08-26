@@ -156,7 +156,7 @@ export namespace Auth {
     }
 }
 
-function createCodeVerifier(length = 64) {
+function createCodeVerifier(length = 43) {
     if (length < 43 || length > 128) {
         throw new Error("code verifier length must be between 43 and 128 characters");
     }
