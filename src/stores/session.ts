@@ -19,7 +19,13 @@ const sessionStore = writable<SessionState>({
 
 
 async function initialize(init?: Omit<SessionState, 'loading'>) {
-    if (typeof window === 'undefined' || initialized === true) {
+    if (initialized === true) {
+        return;
+    }
+
+    // If we are not setting the default value with exit early to avoid 
+    // triggering a fetch request from the server.
+    if (typeof window === 'undefined' && init == null) {
         return;
     }
 
