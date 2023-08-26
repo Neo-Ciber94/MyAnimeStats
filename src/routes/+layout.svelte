@@ -5,9 +5,13 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import type { LayoutServerData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
+	import { page } from '$app/stores';
+	import { fly } from 'svelte/transition';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
+
+	$: url = $page.url.toString();
 </script>
 
 <svelte:head>
@@ -27,7 +31,11 @@
 <QueryClientProvider client={queryClient}>
 	<SessionProvider userSession={data.session ?? undefined}>
 		<Layout>
-			<slot />
+			{#key url}
+				<div in:fly={{ duration: 400, x: -10 }}>
+					<slot />
+				</div>
+			{/key}
 		</Layout>
 	</SessionProvider>
 </QueryClientProvider>

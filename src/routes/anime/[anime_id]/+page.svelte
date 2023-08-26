@@ -47,7 +47,7 @@
 			<div class="w-full justify-end my-2 sm:my-0 flex flex-row h-7 flex-wrap gap-2 items-center">
 				{#if isNsfw}
 					<div
-						class="rounded-lg text-white capitalize flex flex-row items-center justify-center h-full text-xs px-4
+						class="rounded-lg text-white uppercase flex flex-row items-center justify-center h-full text-xs px-4
 						bg-gradient-to-b from-pink-500 to-pink-600"
 					>
 						nsfw
