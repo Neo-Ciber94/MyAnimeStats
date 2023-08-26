@@ -28,6 +28,9 @@
 	let searchError: string | undefined;
 	let isInit = false;
 
+	// We control when to show the cards to ensure the transition is played
+	let show = false;
+
 	const animeQuery = useAnimeListQuery();
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
@@ -40,7 +43,10 @@
 		}
 
 		searchError = undefined;
-		$animeQuery.refetch(search);
+		await $animeQuery.refetch(search);
+		setTimeout(() => {
+			show = true;
+		}, 100);
 	};
 
 	function handleSearch(e: CustomEvent) {
@@ -63,6 +69,7 @@
 			return;
 		}
 
+		show = false;
 		const newUrl = new URL(window.location.href);
 		newUrl.searchParams.set('q', q ?? '');
 		const path = newUrl.toString();
@@ -72,6 +79,12 @@
 		clearTimeout(timeout);
 		timeout = window.setTimeout(() => triggerSearch(), 500);
 	}
+
+	onMount(() => {
+		setTimeout(() => {
+			show = true;
+		}, 100);
+	});
 
 	onMount(async () => {
 		const { searchParams } = new URL(window.location.href);
@@ -137,20 +150,24 @@
 			sm:grid-cols-[repeat(auto-fill,minmax(180px,1fr))]"
 		>
 			{#each $animeQuery.data as anime, idx}
-				<div class="h-full" in:scale={{ start: 0.5, delay: (idx % 10) * 50 }}>
-					{#key anime.node.id}
-						<AnimeCard {anime} />
-					{/key}
-				</div>
+				{#if show}
+					<div class="h-full" in:scale={{ start: 0.5, delay: (idx % 10) * 50 }}>
+						{#key anime.node.id}
+							<AnimeCard {anime} />
+						{/key}
+					</div>
+				{/if}
 			{/each}
 		</div>
 
-		<div bind:this={loadMoreMarkerElement} />
+		{#if show}
+			<div bind:this={loadMoreMarkerElement} />
 
-		{#if $animeQuery.isFetching}
-			<div class="w-full text-center">
-				<DotLoader class="bg-orange-500/80" />
-			</div>
+			{#if $animeQuery.isFetching}
+				<div class="w-full text-center">
+					<DotLoader class="bg-orange-500/80" />
+				</div>
+			{/if}
 		{/if}
 	{/if}
 </div>

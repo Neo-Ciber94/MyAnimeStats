@@ -31,7 +31,7 @@ export function useAnimeListQuery() {
             const { searchParams } = new URL(lastPage.next, window.location.href);
             const offset = searchParams.get('offset');
             return offset == null ? null : Number(offset);
-        }
+        },
     });
 
     async function cancel() {
