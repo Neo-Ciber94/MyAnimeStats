@@ -10,5 +10,14 @@
         "inactiveClass",
         "listClass",
         "containerClass"
+    ],
+    "tailwindCSS.experimental.classRegex": [
+        [
+            "(?:twMerge|twJoin)\\(([^\\);]*)[\\);]",
+            "[`'\"`]([^'\"`,;]*)[`'\"`]"
+        ],
+        [
+            "\\w+Class=\\s*(?:\"|'|{`)([^(?:\"|'|`})]*)"
+        ]
     ]
 }

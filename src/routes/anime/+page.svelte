@@ -157,6 +157,10 @@
 </div>
 
 <style>
+	:global(body) {
+		overflow-y: scroll;
+	}
+
 	.fade-in {
 		animation: fadeIn forwards 300ms ease-out;
 		animation-delay: var(--animation-delay);

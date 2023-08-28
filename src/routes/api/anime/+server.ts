@@ -17,21 +17,23 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
         throw error(400, 'Expected a search of 3 or more characters')
     }
 
-    const cacheControl = 'max-age=3600, stale-while-revalidate=600';
+    const cacheHeaders = {
+        'cache-control': 'max-age=3600, stale-while-revalidate=600'
+    };
 
     // If there is not search params we just return the seasonal anime
     if (q.length === 0) {
         const { animeList, next } = await getSeasonalAnime({ offset, allowNsfw });
 
         // Cache results for 1 hour
-        setHeaders({ 'Cache-Control': cacheControl })
+        setHeaders({ ...cacheHeaders })
         return Response.json({ data: animeList, next });
     }
 
     const { animeList, next } = await getAnimeByQuery({ q, offset, allowNsfw });
 
     // Cache results for 1 hour
-    setHeaders({ 'Cache-Control': cacheControl })
+    setHeaders({ ...cacheHeaders })
     return Response.json({ data: animeList, next });
 }
 
@@ -85,7 +87,7 @@ async function getSeasonalAnime({ offset, allowNsfw }: { offset: number, allowNs
     const result = await malClient.getSeasonalAnime({
         season,
         year,
-        limit: LIMIT + 1,
+        limit: LIMIT,
         offset,
         sort: 'anime_num_list_users',
         fields: ["nsfw", "genres", "status", "mean", 'start_season', 'broadcast'],

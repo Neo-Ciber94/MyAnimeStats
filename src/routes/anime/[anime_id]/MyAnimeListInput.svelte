@@ -6,13 +6,9 @@
 	import { numberRange } from '@/lib/utils/helpers';
 	import { Select, Spinner } from 'flowbite-svelte';
 	import {
-		BackwardStepSolid,
-		BadgeCheckSolid,
-		BarsSolid,
 		CheckSolid,
 		ChevronRightSolid,
 		EyeSolid,
-		ListSolid,
 		TrashBinSolid
 	} from 'flowbite-svelte-icons';
 	import { createEventDispatcher, onMount } from 'svelte';
@@ -169,8 +165,8 @@
 
 <ConfirmDialog
 	closeOnConfirm={false}
-	open={isDeleting}
-	class="w-11/12 sm:w-[400px] px-2"
+	isOpen={isDeleting}
+	class=" w-11/12 sm:w-[400px] px-2"
 	on:cancel={() => (isDeleting = false)}
 	on:confirm={onConfirmDelete}
 >

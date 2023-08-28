@@ -29,7 +29,6 @@ export interface GetAnimeRankingOptions {
     nsfw?: boolean;
 }
 
-
 export interface GetSeasonalAnimeOptions {
     year: number,
     season: AnimeSeason,
