@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import { Alert, Spinner } from 'flowbite-svelte';
+	import { Alert, Checkbox, Spinner } from 'flowbite-svelte';
 	import AnimeCard from '../../components/AnimeCard.svelte';
 	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
@@ -78,6 +78,7 @@
 	});
 
 	$: {
+		let _ = allowNsfw;
 		refetchAnime(search);
 	}
 
@@ -100,11 +101,8 @@
 		<small class="text-red-600 mt-2">{searchError}</small>
 	{/if}
 
-	<div class="flex flex-row justify-start mt-4 text-white text-xs">
-		<label class="space-x-1">
-			<input bind:checked={allowNsfw} type="checkbox" />
-			<span>nsfw</span>
-		</label>
+	<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
+		<Checkbox bind:checked={allowNsfw} class="text-white" color="purple">nsfw</Checkbox>
 	</div>
 </div>
 
@@ -158,7 +156,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	:global(body) {
 		overflow-y: scroll;
 	}

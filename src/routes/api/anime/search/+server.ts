@@ -3,6 +3,7 @@ import type { RequestHandler } from "./$types";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
+import { _getSeasonalAnime } from "../+server";
 
 const LIMIT = 100;
 
@@ -15,6 +16,14 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
     const cacheHeaders = {
         'cache-control': 'max-age=3600, stale-while-revalidate=600'
     };
+
+    if (q.length < 3) {
+        const { animeList, next } = await _getSeasonalAnime({ allowNsfw, offset });
+
+        // Cache results for 1 hour
+        setHeaders({ ...cacheHeaders });
+        return Response.json({ data: animeList, next });
+    }
 
     const { animeList, next } = await getAnimeByQuery({ q, offset, allowNsfw });
 

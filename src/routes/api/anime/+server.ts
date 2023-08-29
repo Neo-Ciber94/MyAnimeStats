@@ -4,6 +4,7 @@ import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { getCurrentAnimeSeason, type AiringStatus, type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { error } from "@sveltejs/kit";
+import { parseNumberOrNull } from "@/lib/utils/helpers";
 
 const LIMIT = 100;
 
@@ -29,7 +30,7 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
             .catch(undefined)
             .parse(searchParams.get('season'));
 
-        const { animeList, next } = await getSeasonalAnime({ offset, allowNsfw, season, year });
+        const { animeList, next } = await _getSeasonalAnime({ offset, allowNsfw, season, year });
 
         // Cache results for 1 hour
         setHeaders({ ...cacheHeaders })
@@ -89,7 +90,7 @@ type SeasonalAnimeQuery = {
     allowNsfw?: boolean;
 }
 
-async function getSeasonalAnime(query: SeasonalAnimeQuery) {
+export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
     const malClient = new MALClient({
         clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
     })
@@ -131,13 +132,4 @@ async function getSeasonalAnime(query: SeasonalAnimeQuery) {
     }
 
     return { animeList, next }
-}
-
-function parseNumberOrNull(s: string | null): number | null {
-    if (s == null) {
-        return null;
-    }
-
-    const value = Number(s);
-    return Number.isNaN(value) ? null : value;
 }
