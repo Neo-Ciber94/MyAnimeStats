@@ -4,6 +4,18 @@
 	import AiringStatusBadge from './AiringStatusBadge.svelte';
 
 	export let anime: AnimeObject;
+
+	const PLACEHOLDER_IMAGE = 'https://placehold.co/300x400/fbcfe8/db2777?text=Not+Found';
+
+	function getImage() {
+		const image = anime.node.main_picture;
+		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
+	}
+
+	function handleImgError(event: Event & { currentTarget: EventTarget & Element }) {
+		const el = event.currentTarget as HTMLImageElement;
+		el.src = PLACEHOLDER_IMAGE;
+	}
 </script>
 
 <a
@@ -26,9 +38,10 @@
 			height={0}
 			width={0}
 			class="object-contain h-[200px] w-full sm:h-[280px] scale-100 hover:scale-110 transition duration-500 origin-center"
-			src={anime.node.main_picture.large}
+			src={getImage()}
 			alt={anime.node.title}
 			style={'will-change: transform;'}
+			on:error={handleImgError}
 		/>
 	</div>
 

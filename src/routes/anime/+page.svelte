@@ -14,15 +14,17 @@
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/DotLoader.svelte';
+	import { useSearchParams } from '@/hooks/useSearchParams';
 
 	let search: string = '';
-	let allowNsfw = false;
+	let nsfw = false;
 	let timeout: number | undefined;
 	let loadMoreMarkerElement: Element | undefined;
 	let searchError: string | undefined;
 	let isInit = false;
 
 	const animeQuery = useAnimeListQuery<Query>('/api/anime/search');
+	const searchParams = useSearchParams<Query>();
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	const triggerSearch = async () => {
@@ -34,7 +36,7 @@
 		}
 
 		searchError = undefined;
-		await $animeQuery.refetch({ q: search, nsfw: allowNsfw });
+		await $animeQuery.refetch($searchParams);
 	};
 
 	function handleSearch(e: CustomEvent) {
@@ -46,15 +48,12 @@
 		await triggerSearch();
 	}
 
-	function refetchAnime(q: string | null | undefined) {
+	function refetchAnime(query: Query) {
 		if (!isInit || typeof window === 'undefined') {
 			return;
 		}
 
-		const newUrl = new URL(window.location.href);
-		newUrl.searchParams.set('q', q ?? '');
-		const path = newUrl.toString();
-		window.history.pushState({ path }, '', path);
+		searchParams.set(query);
 
 		// refetch
 		clearTimeout(timeout);
@@ -62,11 +61,9 @@
 	}
 
 	onMount(async () => {
-		const { searchParams } = new URL(window.location.href);
-		const q = searchParams.get('q');
-		if (q) {
-			search = q;
-		}
+		// init
+		search = $searchParams.q || '';
+		nsfw = $searchParams.nsfw === true;
 
 		await triggerSearch();
 		isInit = true;
@@ -76,10 +73,9 @@
 		clearTimeout(timeout);
 		await $animeQuery.cancel();
 	});
-
+	
 	$: {
-		let _ = allowNsfw;
-		refetchAnime(search);
+		refetchAnime({ q: search, nsfw });
 	}
 
 	$: {
@@ -102,7 +98,7 @@
 	{/if}
 
 	<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
-		<Checkbox bind:checked={allowNsfw} class="text-white" color="purple">nsfw</Checkbox>
+		<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
 	</div>
 </div>
 
@@ -117,7 +113,7 @@
 		</div>
 	{/if}
 
-	{#if $animeQuery.isLoading || !$animeQuery.data}
+	{#if $animeQuery.isLoading && $animeQuery.data == null}
 		<div class="w-full flex flex-row justify-center">
 			<Spinner size={'12'} bg="bg-transparent" />
 		</div>

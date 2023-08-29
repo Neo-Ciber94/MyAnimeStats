@@ -49,7 +49,7 @@
 			>
 				{#if isNsfw}
 					<div
-						class="rounded-lg text-white uppercase flex flex-row items-center justify-center h-full text-xs px-4
+						class="rounded-lg text-white uppercase flex flex-row items-center justify-center h-7 text-xs px-4
 						bg-gradient-to-b from-pink-500 to-pink-600"
 					>
 						nsfw
