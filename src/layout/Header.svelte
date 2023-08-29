@@ -5,6 +5,9 @@
 	import { signIn, signOut } from '$lib/myanimelist/auth/client';
 	import NavSearchBar from './NavSearchBar.svelte';
 	import { page } from '$app/stores';
+	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
+
+	const { season, year } = getCurrentAnimeSeason();
 </script>
 
 <header>
@@ -61,6 +64,12 @@
 				href="/anime"
 				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
 				>Anime
+			</a>
+
+			<a
+				href={`/anime/season/${year}/${season}`}
+				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+				>Season
 			</a>
 
 			{#if $session.user}

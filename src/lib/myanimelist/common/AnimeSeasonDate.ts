@@ -10,6 +10,10 @@ export class AnimeSeasonDate {
         this._year = year;
     }
 
+    static from(season: AnimeSeason, year: number) {
+        return new AnimeSeasonDate(season, year);
+    }
+
     static current() {
         const { season, year } = getCurrentAnimeSeason();
         return new AnimeSeasonDate(season, year);
@@ -27,7 +31,7 @@ export class AnimeSeasonDate {
         let season = this._season;
         let year = this._year;
 
-        if (season === 'winter') {
+        if (season === 'spring') {
             year -= 1;
         }
 

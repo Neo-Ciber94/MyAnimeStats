@@ -1,83 +1,40 @@
 <script context="module" lang="ts">
 	type Query = {
-		q: string | undefined;
+		season?: AnimeSeason;
+		year?: number;
 		nsfw?: boolean;
 	};
 </script>
 
 <script lang="ts">
 	import { Alert, Checkbox, Spinner } from 'flowbite-svelte';
-	import AnimeCard from '../../components/AnimeCard.svelte';
-	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/DotLoader.svelte';
-	import { useSearchParams } from '@/hooks/useSearchParams';
 	import AnimeCardGrid from '$components/AnimeCardGrid.svelte';
+	import SeasonalAnimeSelector from '$components/SeasonalAnimeSelector.svelte';
+	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
 
-	let search: string = '';
+	const season = $page.params.season as AnimeSeason;
+	const year = Number($page.params.year);
 	let nsfw = false;
-	let timeout: number | undefined;
 	let loadMoreMarkerElement: Element | undefined;
-	let searchError: string | undefined;
-	let isInit = false;
 
-	const animeQuery = useAnimeListQuery<Query>('/api/anime/search');
-	const searchParams = useSearchParams<Query>();
+	const animeQuery = useAnimeListQuery<Query>('/api/anime');
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
-	const triggerSearch = async () => {
-		const s = search?.trim();
-
-		// We need 3 or more character of an empty string for a search
-		if (s && s != '' && s.length < 3) {
-			return;
-		}
-
-		searchError = undefined;
-		await $animeQuery.refetch($searchParams);
-	};
-
-	function handleSearch(e: CustomEvent) {
-		const target = e.currentTarget as HTMLInputElement;
-		search = target.value;
-	}
-
-	async function onSearchBarSearch() {
-		await triggerSearch();
-	}
-
-	function refetchAnime(query: Query) {
-		if (!isInit || typeof window === 'undefined') {
-			return;
-		}
-
-		searchParams.set(query);
-
-		// refetch
-		clearTimeout(timeout);
-		timeout = window.setTimeout(() => triggerSearch(), 500);
-	}
-
 	onMount(async () => {
-		// init
-		search = $searchParams.q || '';
-		nsfw = $searchParams.nsfw === true;
-
-		await triggerSearch();
-		isInit = true;
+		await $animeQuery.refetch({ season, year, nsfw });
 	});
 
 	onDestroy(async () => {
-		clearTimeout(timeout);
 		await $animeQuery.cancel();
 	});
-
-	$: {
-		refetchAnime({ q: search, nsfw });
-	}
 
 	$: {
 		if ($canLoadMore) {
@@ -87,16 +44,13 @@
 </script>
 
 <div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
-	<AnimeSearchBar
-		placeholder="Search anime..."
-		on:input={handleSearch}
-		on:search={onSearchBarSearch}
-		bind:value={search}
+	<SeasonalAnimeSelector
+		start={AnimeSeasonDate.from(season, year)}
+		on:click={(e) => {
+			const { season, year } = e.detail;
+			goto(`/anime/season/${year}/${season}`);
+		}}
 	/>
-
-	{#if searchError}
-		<small class="text-red-600 mt-2">{searchError}</small>
-	{/if}
 
 	<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
 		<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
