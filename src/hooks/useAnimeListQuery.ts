@@ -12,17 +12,21 @@ type AnimeError = {
     message: string;
 };
 
-export function useAnimeListQuery() {
-    let search: string | null | undefined;
+type QueryValue = string | number | boolean | null | undefined;
+type QueryObject = Record<string, QueryValue>;
+
+export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: string) {
+    let query: Q | undefined = undefined;
     const queryClient = useQueryClient();
     const animeQuery = createInfiniteQuery<ApiResponse, AnimeError>({
-        queryKey: ['anime', search],
+        queryKey: [path, query],
         enabled: false,
-        queryFn: async ({ signal, pageParam }) => await fetchAnimeList({
-            search,
-            signal,
-            offset: pageParam
-        }),
+        queryFn: async ({ signal, pageParam: offset }) => {
+            return await fetchAnimeList(path, query, {
+                signal,
+                offset
+            })
+        },
         getNextPageParam(lastPage) {
             if (!lastPage.next) {
                 return null;
@@ -35,7 +39,7 @@ export function useAnimeListQuery() {
     });
 
     async function cancel() {
-        await queryClient.cancelQueries({ queryKey: ['anime'] })
+        await queryClient.cancelQueries({ queryKey: [path] })
     }
 
     return derived(animeQuery, $animeQuery => {
@@ -50,8 +54,8 @@ export function useAnimeListQuery() {
             return true;
         }
 
-        async function refetch(s?: string | null) {
-            search = s;
+        async function refetch(q: Q | undefined) {
+            query = q;
             await $animeQuery.refetch();
         }
 
@@ -69,22 +73,25 @@ export function useAnimeListQuery() {
     })
 }
 
-type AnimeQuery = {
-    search: string | null | undefined,
-    signal: AbortSignal | undefined,
-    offset?: number,
+type FetchAnimeListOptions = {
+    signal?: AbortSignal | undefined,
+    offset?: number
 }
 
-async function fetchAnimeList({ search, signal, offset }: AnimeQuery) {
-    const url = new URL('/api/anime', window.location.origin);
-
-    console.log({ search })
-    if (search) {
-        url.searchParams.set('q', search);
-    }
+async function fetchAnimeList(path: string, query: QueryObject | undefined, options: FetchAnimeListOptions) {
+    const { signal, offset } = options;
+    const url = new URL(path, window.location.origin);
 
     if (offset) {
         url.searchParams.set('offset', String(offset));
+    }
+
+    if (query) {
+        for (const [key, value] of Object.entries(query)) {
+            if (value) {
+                url.searchParams.set(key, String(value));
+            }
+        }
     }
 
     const res = await fetch(url, { signal });

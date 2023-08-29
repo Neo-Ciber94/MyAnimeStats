@@ -52,10 +52,11 @@ export function shuffleArray<T>(array: T[]): T[] {
     return array;
 }
 
-export function onClient<T = void>(f: () => T) {
-    if (typeof window === 'undefined') {
-        return;
+export function parseNumberOrNull(s: string | null): number | null {
+    if (s == null) {
+        return null;
     }
 
-    return f();
+    const value = Number(s);
+    return Number.isNaN(value) ? null : value;
 }

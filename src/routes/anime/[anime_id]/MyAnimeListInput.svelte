@@ -342,7 +342,7 @@
 	</div>
 </div>
 
-<style lang="postcss">
+<!-- <style lang="postcss">
 	[data-score='10'] {
 		@apply bg-violet-600 text-white;
 	}
@@ -382,4 +382,4 @@
 	[data-score='1'] {
 		@apply bg-red-800 text-white;
 	}
-</style>
+</style> -->

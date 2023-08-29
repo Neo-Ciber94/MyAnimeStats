@@ -1,26 +1,14 @@
 <script lang="ts">
-	import { FilterSolid } from 'flowbite-svelte-icons';
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { fade, scale } from 'svelte/transition';
-	import AlertDialog from '$components/AlertDialog.svelte';
-
+	import { createEventDispatcher } from 'svelte';
 	export let value = '';
-
-	let dialogElement: HTMLDialogElement;
-	let isFiltersOpen = false;
+	export let placeholder: string | undefined = 'Search anime...';
 
 	const dispatch = createEventDispatcher<{
-		search: {
-			q: string;
-		};
+		search: string;
 	}>();
 
 	function handleSearch(q: string) {
-		dispatch('search', { q });
-	}
-
-	function handleOpenFilters() {
-		isFiltersOpen = true;
+		dispatch('search', q);
 	}
 </script>
 
@@ -29,7 +17,7 @@
 		bind:value
 		required
 		name="q"
-		placeholder="Search anime.."
+		{placeholder}
 		minlength="3"
 		type="text"
 		class="w-full h-12 rounded-lg bg-gray-950 text-white outline-none border-none
@@ -45,21 +33,3 @@
 		Search
 	</button>
 </div>
-
-<button
-	on:click|stopPropagation={handleOpenFilters}
-	class={`flex flex-row gap-1 text-white text-xs justify-start items-center rounded-md
-		transition duration-200 max-w-fit px-5 py-[2px] mt-2
-		${isFiltersOpen ? 'bg-pink-500 hover:bg-pink-600' : 'bg-violet-500 hover:bg-violet-600'} `}
->
-	<FilterSolid size="xs" />
-	<span>Filter</span>
-</button>
-
-<AlertDialog
-	on:close={() => (isFiltersOpen = false)}
-	isOpen={isFiltersOpen}
-	dialogClass="bg-gray-900 p-4 rounded-lg border border-gray-300"
->
-	<div class="text-white">Example dialog</div>
-</AlertDialog>

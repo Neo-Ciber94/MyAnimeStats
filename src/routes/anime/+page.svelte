@@ -1,11 +1,7 @@
 <script context="module" lang="ts">
-	export type ApiResponse = {
-		data: AnimeObject[];
-		next: string;
-	};
-
-	export type ApiError = {
-		message: string;
+	type Query = {
+		q: string | undefined;
+		nsfw?: boolean;
 	};
 </script>
 
@@ -15,18 +11,18 @@
 	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';
-	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/DotLoader.svelte';
 
-	let search: string | undefined = '';
+	let search: string = '';
+	let allowNsfw = false;
 	let timeout: number | undefined;
 	let loadMoreMarkerElement: Element | undefined;
 	let searchError: string | undefined;
 	let isInit = false;
 
-	const animeQuery = useAnimeListQuery();
+	const animeQuery = useAnimeListQuery<Query>('/api/anime/search');
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	const triggerSearch = async () => {
@@ -38,7 +34,7 @@
 		}
 
 		searchError = undefined;
-		await $animeQuery.refetch(search);
+		await $animeQuery.refetch({ q: search, nsfw: allowNsfw });
 	};
 
 	function handleSearch(e: CustomEvent) {
@@ -47,12 +43,6 @@
 	}
 
 	async function onSearchBarSearch() {
-		const s = search?.trim();
-		if (s && s.length >= 1 && s.length < 3) {
-			searchError = 'Requires at least 3 characters';
-			return;
-		}
-
 		await triggerSearch();
 	}
 
@@ -98,12 +88,24 @@
 	}
 </script>
 
-<div class="mx-2 sm:mx-10 my-8 flex flex-col">
-	<AnimeSearchBar on:input={handleSearch} on:search={onSearchBarSearch} bind:value={search} />
+<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
+	<AnimeSearchBar
+		placeholder="Search anime..."
+		on:input={handleSearch}
+		on:search={onSearchBarSearch}
+		bind:value={search}
+	/>
 
 	{#if searchError}
 		<small class="text-red-600 mt-2">{searchError}</small>
 	{/if}
+
+	<div class="flex flex-row justify-start mt-4 text-white text-xs">
+		<label class="space-x-1">
+			<input bind:checked={allowNsfw} type="checkbox" />
+			<span>nsfw</span>
+		</label>
+	</div>
 </div>
 
 <div class="w-full">
@@ -126,7 +128,7 @@
 			class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
 		>
 			<InboxSolid size={'xl'} />
-			<span>No anime available</span>
+			<span>No anime found</span>
 		</div>
 	{:else}
 		<div

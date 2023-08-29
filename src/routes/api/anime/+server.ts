@@ -1,7 +1,7 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { RequestHandler } from "./$types";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
-import { getCurrentAnimeSeason, type AiringStatus, type AnimeSeason } from "@/lib/myanimelist/common/types";
+import { getCurrentAnimeSeason, type AiringStatus, type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { error } from "@sveltejs/kit";
 
@@ -23,7 +23,13 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 
     // If there is not search params we just return the seasonal anime
     if (q.length === 0) {
-        const { animeList, next } = await getSeasonalAnime({ offset, allowNsfw });
+        const year = parseNumberOrNull(searchParams.get('year')) ?? undefined;
+        const season = animeSeasonSchema
+            .optional()
+            .catch(undefined)
+            .parse(searchParams.get('season'));
+
+        const { animeList, next } = await getSeasonalAnime({ offset, allowNsfw, season, year });
 
         // Cache results for 1 hour
         setHeaders({ ...cacheHeaders })
@@ -76,12 +82,20 @@ async function getAnimeByQuery(query: AnimeQuery) {
     return { animeList, next }
 }
 
-async function getSeasonalAnime({ offset, allowNsfw }: { offset: number, allowNsfw?: boolean }) {
+type SeasonalAnimeQuery = {
+    offset: number,
+    season?: AnimeSeason,
+    year?: number,
+    allowNsfw?: boolean;
+}
+
+async function getSeasonalAnime(query: SeasonalAnimeQuery) {
     const malClient = new MALClient({
         clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
     })
 
-    const { season, year } = getCurrentAnimeSeason();
+    const currentSeason = getCurrentAnimeSeason();
+    const { offset, allowNsfw, season = currentSeason.season, year = currentSeason.year } = query;
     const AVAILABLE_STATUSES = ['currently_airing', 'finished_airing'] as AiringStatus[];
 
     const result = await malClient.getSeasonalAnime({
