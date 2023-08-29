@@ -14,14 +14,14 @@
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/DotLoader.svelte';
 	import AnimeCardGrid from '$components/AnimeCardGrid.svelte';
-	import SeasonalAnimeSelector from '$components/SeasonalAnimeSelector.svelte';
+	import AnimeSeasonSelector from '$components/AnimeSeasonSelector.svelte';
 	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
+	import type { PageData } from './$types';
 
-	const season = $page.params.season as AnimeSeason;
-	const year = Number($page.params.year);
+	export let data: PageData;
+
 	let nsfw = false;
 	let loadMoreMarkerElement: Element | undefined;
 
@@ -29,7 +29,7 @@
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	onMount(async () => {
-		await $animeQuery.refetch({ season, year, nsfw });
+		await $animeQuery.refetch({ season: data.season, year: data.year, nsfw });
 	});
 
 	onDestroy(async () => {
@@ -41,16 +41,23 @@
 			$animeQuery.fetchNextPage();
 		}
 	}
+
+	async function goToSeason(season: AnimeSeason, year: number) {
+		await goto(`/anime/season/${year}/${season}`);
+		await $animeQuery.refetch({ season, year, nsfw });
+	}
 </script>
 
 <div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
-	<SeasonalAnimeSelector
-		start={AnimeSeasonDate.from(season, year)}
-		on:click={(e) => {
-			const { season, year } = e.detail;
-			goto(`/anime/season/${year}/${season}`);
-		}}
-	/>
+	{#key [data.season, data.year]}
+		<AnimeSeasonSelector
+			current={AnimeSeasonDate.from(data.season, data.year)}
+			on:click={(e) => {
+				const { season, year } = e.detail;
+				goToSeason(season, year);
+			}}
+		/>
+	{/key}
 
 	<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
 		<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
@@ -68,7 +75,7 @@
 		</div>
 	{/if}
 
-	{#if $animeQuery.isLoading && $animeQuery.data == null}
+	{#if $animeQuery.isLoading}
 		<div class="w-full flex flex-row justify-center">
 			<Spinner size={'12'} bg="bg-transparent" />
 		</div>

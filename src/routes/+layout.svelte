@@ -31,11 +31,12 @@
 <QueryClientProvider client={queryClient}>
 	<SessionProvider userSession={data.session ?? undefined}>
 		<Layout>
-			{#key url}
+			<!-- {#key url}
 				<div in:fly={{ duration: 400, x: -10 }}>
 					<slot />
 				</div>
-			{/key}
+			{/key} -->
+			<slot />
 		</Layout>
 	</SessionProvider>
 </QueryClientProvider>
