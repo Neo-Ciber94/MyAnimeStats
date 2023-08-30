@@ -1,23 +1,45 @@
 <script lang="ts">
 	import type { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
 	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
-	import { createEventDispatcher } from 'svelte';
+	import SeasonWinter from './seasons/SeasonWinter.svelte';
+	import SeasonSpring from './seasons/SeasonSpring.svelte';
+	import SeasonSummer from './seasons/SeasonSummer.svelte';
+	import SeasonFall from './seasons/SeasonFall.svelte';
 
 	export let season: AnimeSeasonDate;
-
-	const dispatch = createEventDispatcher<{
-		click: { season: AnimeSeason; year: number };
-	}>();
-
-	function onSeasonClick({ season, year }: AnimeSeasonDate) {
-		dispatch('click', { season, year });
-	}
+	const SEASONS: Record<AnimeSeason, { icon: any; name: string }> = {
+		winter: {
+			icon: SeasonWinter,
+			name: 'Winter'
+		},
+		spring: {
+			icon: SeasonSpring,
+			name: 'Spring'
+		},
+		summer: {
+			icon: SeasonSummer,
+			name: 'Summer'
+		},
+		fall: {
+			icon: SeasonFall,
+			name: 'Fall'
+		}
+	};
 </script>
 
 <button
-	on:click={() => onSeasonClick(season)}
+	on:click
 	class="text-sm text-white transition duration-200 rounded-lg w-full
-bg-violet-500 hover:bg-pink-600 px-4 py-2 font-semibold min-w-[120px]"
+bg-violet-500 hover:bg-pink-600 px-4 py-2 font-semibold min-w-[120px]
+flex flex-row items-center gap-2 justify-center pr-4 group"
 >
-	{season.toString()}
+	<svelte:component this={SEASONS[season.season].icon} size={18} class="season-svg" />
+
+	<span>{season.toString()}</span>
 </button>
+
+<style lang="postcss">
+	:global(.season-svg path) {
+		@apply fill-violet-800 group-hover:fill-pink-800;
+	}
+</style>

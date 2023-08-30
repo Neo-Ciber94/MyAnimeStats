@@ -3,6 +3,7 @@
 	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
 	import { createEventDispatcher } from 'svelte';
 	import AnimeSeasonSelectorButton from './AnimeSeasonSelectorButton.svelte';
+	import { scale } from 'svelte/transition';
 
 	export let current: AnimeSeasonDate;
 
@@ -23,7 +24,9 @@
 <div class="flex flex-col sm:flex-row gap-2 justify-between">
 	<div class="flex flex-row gap-2 justify-between w-full">
 		{#each seasons.slice(0, 2) as season}
-			<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
+			<div in:scale class="w-full">
+				<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
+			</div>
 		{/each}
 	</div>
 
@@ -31,7 +34,11 @@
 
 	<div class="flex flex-row gap-2 justify-between w-full">
 		{#each seasons.slice(2, 4) as season}
-			<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
+			{#key [season]}
+				<div in:scale={{ start: 0.5 }} class="w-full">
+					<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
+				</div>
+			{/key}
 		{/each}
 	</div>
 </div>

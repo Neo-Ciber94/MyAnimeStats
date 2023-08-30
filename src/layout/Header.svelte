@@ -67,6 +67,7 @@
 			</a>
 
 			<a
+				data-sveltekit-reload={$page.route.id === '/anime/season/[year]/[season]' ? true : 'off'}
 				href={`/anime/season/${year}/${season}`}
 				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
 				>Season
