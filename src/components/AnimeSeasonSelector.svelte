@@ -21,8 +21,8 @@
 	}
 </script>
 
-<div class="flex flex-col sm:flex-row gap-2 justify-between">
-	<div class="flex flex-row gap-2 justify-between w-full">
+<div class="flex flex-col md:flex-row gap-2 justify-between">
+	<div class="flex flex-col xs:flex-row gap-2 justify-between w-full">
 		{#each seasons.slice(0, 2) as season}
 			<div in:scale class="w-full">
 				<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
@@ -30,9 +30,7 @@
 		{/each}
 	</div>
 
-	<div class="w-1/4" />
-
-	<div class="flex flex-row gap-2 justify-between w-full">
+	<div class="flex flex-col xs:flex-row gap-2 justify-between w-full">
 		{#each seasons.slice(2, 4) as season}
 			{#key [season]}
 				<div in:scale={{ start: 0.5 }} class="w-full">
