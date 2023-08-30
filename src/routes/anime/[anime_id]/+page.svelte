@@ -41,7 +41,7 @@
 	}
 
 	$: {
-		if (data.id) {
+		if (typeof window !== 'undefined' && data.id) {
 			invalidateAll();
 		}
 	}
