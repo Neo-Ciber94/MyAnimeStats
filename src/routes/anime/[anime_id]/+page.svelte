@@ -16,7 +16,7 @@
 	import session from '$stores/session';
 	import { slide } from 'svelte/transition';
 	import PageTransition from '$components/PageTransition.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { invalidateAll, invalidate } from '$app/navigation';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -42,7 +42,8 @@
 
 	$: {
 		if (typeof window !== 'undefined' && data.id) {
-			invalidateAll();
+			//invalidateAll();
+			invalidate(`/anime/${data.id}`);
 		}
 	}
 </script>
