@@ -2,10 +2,9 @@
 	import type { AnimeObject } from '$lib/myanimelist/common/types';
 	import { Badge } from 'flowbite-svelte';
 	import AiringStatusBadge from './AiringStatusBadge.svelte';
+	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 
 	export let anime: AnimeObject;
-
-	const PLACEHOLDER_IMAGE = 'https://placehold.co/300x400/fbcfe8/db2777?text=Not+Found';
 
 	function getImage() {
 		const image = anime.node.main_picture;

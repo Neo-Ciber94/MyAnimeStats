@@ -1,4 +1,6 @@
 <script lang="ts" generics="TAnime extends AnimeObject">
+	import { PLACEHOLDER_IMAGE } from '@/common/constants';
+
 	import type { SwiperModule } from 'swiper/types/shared';
 
 	import 'swiper/css/bundle';
@@ -36,11 +38,16 @@
 			autoplay: {
 				delay: 2500,
 				pauseOnMouseEnter: true,
-				
+
 				disableOnInteraction: false
 			}
 		});
 	});
+
+	function getImage(anime: TAnime) {
+		const image = anime.node.main_picture;
+		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
+	}
 
 	function handleSlideNext() {
 		if (swiper) {
@@ -59,7 +66,9 @@
 	{#if swiper == null}
 		<div class="flex flex-row space-x-[10px]">
 			{#each Array.from(Array(10).keys()) as _}
-				<div class="flex-shrink-0 rounded-sm w-[130px] h-[200px] sm:w-[200px] sm:h-[300px] bg-indigo-400/20 animate-pulse" />
+				<div
+					class="flex-shrink-0 rounded-sm w-[130px] h-[200px] sm:w-[200px] sm:h-[300px] bg-indigo-400/20 animate-pulse"
+				/>
 			{/each}
 		</div>
 	{/if}
@@ -90,7 +99,7 @@
 						height={0}
 						class="object-cover w-full h-full"
 						alt={anime.node.title}
-						src={anime.node.main_picture.large}
+						src={getImage(anime)}
 					/>
 
 					<!-- Title -->

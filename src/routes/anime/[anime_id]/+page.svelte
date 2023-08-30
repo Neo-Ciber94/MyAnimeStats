@@ -17,6 +17,8 @@
 	import { slide } from 'svelte/transition';
 	import PageTransition from '$components/PageTransition.svelte';
 	import { invalidateAll, invalidate } from '$app/navigation';
+	import type { AnimeObject } from '@/lib/myanimelist/common/types';
+	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	dayjs.extend(LocalizedFormat);
 
 	export let data: PageServerData;
@@ -38,6 +40,11 @@
 
 	function addToFavorites() {
 		openMyAnimeList = true;
+	}
+
+	function getImage() {
+		const image = data.main_picture;
+		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
 	}
 
 	$: {
@@ -96,7 +103,7 @@
 			<section class="flex flex-col items-center md:items-start md:flex-row justify-around gap-4">
 				<div class="w-full md:w-1/3 overflow-hidden">
 					<img
-						src={data.main_picture.large}
+						src={getImage()}
 						alt={data.title}
 						class={`w-full mx-auto md:w-auto h-[300px] md:h-[400px] object-contain transition duration-200 ${
 							shouldCensor && !showUncensored ? 'blur-lg' : 'blur-0'

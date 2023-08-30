@@ -30,3 +30,5 @@ export const PERSONAL_STATS = {
     MAX_INTELLIGENCE: 120,
     MAX_VITALITY: 400
 } as const;
+
+export const PLACEHOLDER_IMAGE = 'https://placehold.co/300x400/fbcfe8/db2777?text=Not+Found';
