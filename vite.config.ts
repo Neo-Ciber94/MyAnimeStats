@@ -15,7 +15,7 @@ export default defineConfig({
 		port: 5175
 	},
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
+		include: ['src/**/*.{test,spec}.{js,ts}', "tests/**/*.test.{js,ts}"]
 	},
 	optimizeDeps: {
 		include: ['./src/lib/badges/**']
@@ -24,7 +24,7 @@ export default defineConfig({
 
 // For some reason this crash because cannot found `process/browser.js` so we only import during development
 async function loadNodePolyfill() {
-	if (process.env.NODE_ENV === 'development') {
+	if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
 		return undefined;
 	}
 

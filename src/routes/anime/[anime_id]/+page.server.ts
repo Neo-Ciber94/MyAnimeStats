@@ -2,6 +2,7 @@ import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { error } from "@sveltejs/kit";
+import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
 
 export const load: PageServerLoad = async (event) => {
     const malClient = new MALClient({
@@ -10,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
     });
 
     const animeId = Number(event.params.anime_id);
-    const result = await malClient.getAnimeDetails(animeId, {
+    const getAnime = () => malClient.getAnimeDetails(animeId, {
         fields: [
             'statistics',
             'synopsis',
@@ -39,6 +40,8 @@ export const load: PageServerLoad = async (event) => {
             'my_list_status'
         ]
     });
+
+    const result = await runAndRetryOnThrow(getAnime, Retry.exponential({ attends: 10 }));
 
     if (result == null) {
         throw error(404, "Anime not found");
