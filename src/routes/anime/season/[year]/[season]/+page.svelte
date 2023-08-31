@@ -44,7 +44,7 @@
 	}
 
 	async function goToSeason(season: AnimeSeason, year: number) {
-		await $animeQuery.remove();
+		$animeQuery.remove();
 		await goto(`/anime/season/${year}/${season}`);
 		await $animeQuery.refetch({ season, year, nsfw });
 	}

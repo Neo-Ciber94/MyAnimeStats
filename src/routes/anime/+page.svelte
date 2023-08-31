@@ -116,7 +116,7 @@
 			</div>
 		{/if}
 
-		{#if $animeQuery.isLoading && $animeQuery.data == null}
+		{#if $animeQuery.isLoading}
 			<div class="w-full flex flex-row justify-center">
 				<Spinner size={'12'} bg="bg-transparent" />
 			</div>
