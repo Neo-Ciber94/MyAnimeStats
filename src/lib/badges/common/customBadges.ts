@@ -3,7 +3,6 @@ import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import type { AnimeBadge } from "../AnimeBadge";
 import { badgeIconText, badgeImage, hadWatchedAnime } from "../utils";
 import narutoSvg from "../icons/naruto";
-import fujoshi from "../icons/fujoshi";
 import lesbianIcon from "../icons/lesbianIcon";
 import onePieceFlag from "../icons/onePieceFlag";
 
