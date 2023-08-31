@@ -1,11 +1,8 @@
 import Enumerable from "linq";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import type { AnimeBadge } from "../AnimeBadge";
-import { badgeIconText, hadWatchedAnime } from "../utils";
-import jotaroSvg from "../icons/jotaro";
+import { badgeIconText, badgeImage, hadWatchedAnime } from "../utils";
 import narutoSvg from "../icons/naruto";
-// import vinlandSagaThorfinn from "../icons/vinlandSagaThorfinn";
-// import onePieceWhitebeardFlag from "../icons/onePieceWhitebeardFlag";
 import fujoshi from "../icons/fujoshi";
 import lesbianIcon from "../icons/lesbianIcon";
 import onePieceFlag from "../icons/onePieceFlag";
@@ -57,7 +54,12 @@ const customBadges = [
         id: "fujoshi_badge",
         name: "Fujoshi",
         description: "Watched 20 or more Boys Love anime",
-        icon: fujoshi,
+        icon: badgeImage({
+            src: '/images/fujoshi.jpg',
+            alt: 'Fujoshi',
+            height: 32,
+            width: 32
+        }),
         styles: {
             px: 10,
             background: "linear-gradient(90deg, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%)",
@@ -95,7 +97,12 @@ const customBadges = [
         styles: {
             border: "2px solid #696969"
         },
-        icon: size => jotaroSvg(size + 8),
+        icon: badgeImage({
+            src: '/images/jotaro.png',
+            alt: 'Jotaro Kujo',
+            height: 32,
+            width: 32
+        }),
         canHaveBadge(animeList) {
             const jojoBizarreAdventureIds = [
                 14719, // JoJo no Kimyou na Bouken (TV)
@@ -135,10 +142,12 @@ const customBadges = [
         id: "vinland_saga_badge",
         name: "You had no enemies",
         description: "Completed Vinland Saga season 1 and 2",
-        icon: async size => {
-            const { default: vinlandSagaThorfinn } = await import("../icons/vinlandSagaThorfinn");
-            return vinlandSagaThorfinn(size + 5)
-        },
+        icon: badgeImage({
+            src: '/images/thorfinn_vinland_saga.jpg',
+            alt: 'Thorfinn Vinland Saga',
+            height: 32,
+            width: 32
+        }),
         styles: {
             border: "2px solid orange",
             background: "linear-gradient(125deg, rgba(73,13,0,1) 34%, rgba(226,56,0,1) 100%)"
@@ -162,10 +171,12 @@ const customBadges = [
             background: "linear-gradient(205deg, rgba(108,0,0,1) 47%, rgba(255,255,255,1) 100%)",
             border: "2px solid white"
         },
-        icon: async (size) => {
-            const { default: onePieceWhitebeardFlag } = await import("../icons/onePieceWhitebeardFlag");
-            return onePieceWhitebeardFlag(size);
-        },
+        icon: badgeImage({
+            src: '/images/whitebeard_flag.png',
+            alt: 'Whitebeard Flag',
+            height: 32,
+            width: 32
+        }),
         canHaveBadge(animeList) {
             const onePiceAnimeId = 21; // https://myanimelist.net/anime/21/One_Piece
             const onePieceAnime = animeList.find(anime => anime.node.id === onePiceAnimeId);

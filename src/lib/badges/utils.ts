@@ -16,6 +16,36 @@ export function badgeIconText(text: string, className?: string): RenderBadgeIcon
     }
 }
 
+type BadgeImageOptions = {
+    src: string,
+    alt: string,
+    height?: string | number,
+    width?: string | number,
+    className?: string;
+}
+
+/**
+ * Returns an html to render an `<img>` tag.
+ * @param opts The options
+ */
+export function badgeImage(opts: BadgeImageOptions): RenderBadgeIcon {
+    const { src, alt, height, width, className } = opts;
+    return (size) => {
+        if (className) {
+            return /*html*/ `<img 
+                class="${className}" 
+                src='${src}' 
+                alt='${alt}' 
+                width='${width || size}' 
+                height='${height || size}'
+            />`
+        }
+
+        return /*html*/ `<img src='${src}' alt='${alt}' width='${width || size}' height='${height || size}'/>`
+    }
+}
+
+
 export function hadWatchedAnime(anime: AnimeNodeWithStatus) {
     const watchedStatus = ['completed', 'dropped'] as WatchStatus[];
     return watchedStatus.includes(anime.list_status.status)

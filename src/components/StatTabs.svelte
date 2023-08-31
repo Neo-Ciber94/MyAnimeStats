@@ -13,13 +13,13 @@
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 	import CalculateStatsButton from './CalculateStatsButton.svelte';
-	// import UserBadgeList from './UserBadgeList.svelte';
-	// import { useUserBadges } from '$stores/userBadges';
+	import UserBadgeList from './UserBadgeList.svelte';
+	import { useUserBadges } from '$stores/userBadges';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeNodeWithStatus[];
 
-	// const userBadges = useUserBadges(animeList);
+	const userBadges = useUserBadges(animeList);
 </script>
 
 <div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
@@ -43,7 +43,7 @@
 
 			<MyStatsSection {stats} />
 
-			<!-- {#if $userBadges.loading}
+			{#if $userBadges.loading}
 				<div class="w-full p-7 flex flex-row justify-center">
 					<Spinner bg="transparent" />
 				</div>
@@ -60,7 +60,7 @@
 						<UserBadgeList user={$userBadges.user} badges={$userBadges.badges} />
 					</div>
 				</div>
-			{/if} -->
+			{/if}
 
 			<div
 				class="w-10/12 mx-auto flex flex-row justify-center mt-[10%] h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
