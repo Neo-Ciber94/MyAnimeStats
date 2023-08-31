@@ -66,6 +66,7 @@ export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: str
             isError: $animeQuery.isError,
             error: $animeQuery.error,
             hasNext: $animeQuery.hasNextPage,
+            remove: $animeQuery.remove,
             refetch,
             fetchNextPage,
             cancel
