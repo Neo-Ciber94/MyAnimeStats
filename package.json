@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"dev:cf": "npx wrangler pages dev --proxy 4300 -- npm run dev",
+		"dev:cf": "npx wrangler pages dev -- npm run dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
@@ -33,6 +33,7 @@
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
 		"flowbite-svelte-icons": "^0.2.6",
+		"miniflare": "^3.20230821.0",
 		"postcss": "^8.4.26",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.10.1",

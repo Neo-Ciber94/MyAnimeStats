@@ -2,10 +2,16 @@ import { MyAnimeListHandler } from "$lib/myanimelist/svelte/handle";
 import type { Handle } from "@sveltejs/kit";
 import { getServerSession } from "./lib/myanimelist/svelte/auth";
 import { MALClient } from "./lib/myanimelist/api";
+import { dev } from "$app/environment";
 
 const myAnimeListHandler = MyAnimeListHandler();
 
 export const handle = (async ({ event, resolve }) => {
+    if (dev) {
+		const { fallBackPlatformToMiniFlareInDev } = await import('$lib/miniflare');
+		event.platform = await fallBackPlatformToMiniFlareInDev(event.platform);
+	}
+    
     const session = await getServerSession(event.cookies);
 
     if (session) {
