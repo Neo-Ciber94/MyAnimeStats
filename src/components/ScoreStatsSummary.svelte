@@ -91,11 +91,12 @@
 
 		<div class="w-full text-center">
 			{#if selectedAnime}
-				<div
-					class="py-1 px-4 rounded-lg text-white bg-orange-500 flex flex-row gap-2 justify-center"
+				<a
+					href={`/anime/${selectedAnime.node.id}`}
+					class="py-1 px-4 rounded-lg text-white bg-orange-500 hover:bg-orange-600 flex flex-row gap-2 justify-center"
 				>
 					<span>{selectedAnime.node.title}</span>
-				</div>
+				</a>
 			{/if}
 		</div>
 	</div>
