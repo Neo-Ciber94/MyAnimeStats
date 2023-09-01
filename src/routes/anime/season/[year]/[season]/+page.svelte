@@ -20,12 +20,12 @@
 	import { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
 	import type { PageData } from './$types';
 	import PageTransition from '$components/PageTransition.svelte';
+	import { capitalize } from '@/lib/utils/helpers';
 
 	export let data: PageData;
 
 	let nsfw = false;
 	let loadMoreMarkerElement: Element | undefined;
-
 	const animeQuery = useAnimeListQuery<Query>('/api/anime');
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
@@ -51,7 +51,13 @@
 </script>
 
 <PageTransition>
-	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
+	<div class="mx-2 sm:mx-10 mt-6">
+		<h1 class="text-white text-3xl">
+			{`${capitalize(data.season)} ${data.year} anime`}
+		</h1>
+	</div>
+
+	<div class="mx-2 sm:mx-10 mt-4 mb-3 flex flex-col">
 		{#key [data.season, data.year]}
 			<AnimeSeasonSelector
 				current={AnimeSeasonDate.from(data.season, data.year)}

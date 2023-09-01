@@ -5,7 +5,7 @@ import { derived } from "svelte/store";
 
 type ApiResponse = {
     data: AnimeObject[];
-    next: string;
+    next?: string | null;
 };
 
 type AnimeError = {
@@ -15,7 +15,11 @@ type AnimeError = {
 type QueryValue = string | number | boolean | null | undefined;
 type QueryObject = Record<string, QueryValue>;
 
-export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: string) {
+type UseAnimeListQueryOptions = {
+    returnEmptyOn404?: boolean
+}
+
+export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: string, options?: UseAnimeListQueryOptions) {
     let query: Q | undefined = undefined;
     const queryClient = useQueryClient();
     const animeQuery = createInfiniteQuery<ApiResponse, AnimeError>({
@@ -24,7 +28,8 @@ export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: str
         queryFn: async ({ signal, pageParam: offset }) => {
             return await fetchAnimeList(path, query, {
                 signal,
-                offset
+                offset,
+                returnEmptyOn404: options?.returnEmptyOn404
             })
         },
         getNextPageParam(lastPage) {
@@ -76,11 +81,12 @@ export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: str
 
 type FetchAnimeListOptions = {
     signal?: AbortSignal | undefined,
+    returnEmptyOn404?: boolean;
     offset?: number
 }
 
 async function fetchAnimeList(path: string, query: QueryObject | undefined, options: FetchAnimeListOptions) {
-    const { signal, offset } = options;
+    const { signal, offset, returnEmptyOn404 = false } = options;
     const url = new URL(path, window.location.origin);
 
     if (offset) {
@@ -96,6 +102,13 @@ async function fetchAnimeList(path: string, query: QueryObject | undefined, opti
     }
 
     const res = await fetch(url, { signal });
+
+    if (res.status === 404 && returnEmptyOn404) {
+        return {
+            data: [],
+            next: null
+        }
+    }
 
     if (!res.ok) {
         const msg = await getResponseError(res);
