@@ -12,7 +12,6 @@
 	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
-	import CalculateStatsButton from './CalculateStatsButton.svelte';
 	import UserBadgeList from './UserBadgeList.svelte';
 	import { useUserBadges } from '$stores/userBadges';
 
@@ -62,11 +61,7 @@
 				</div>
 			{/if}
 
-			<div
-				class="w-10/12 mx-auto flex flex-row justify-center mt-[10%] h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
-			>
-				<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
-			</div>
+			<slot />
 		</TabItem>
 
 		<TabItem

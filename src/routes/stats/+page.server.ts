@@ -8,8 +8,11 @@ import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
 import { getServerSession } from "$lib/myanimelist/svelte/auth";
 import { UserAnimeListStats } from "./user_stats_service";
-import { delay } from "@/lib/utils/promises";
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+dayjs.extend(isSameOrAfter);
 
+const RECALCULATE_WAIT_DAYS = 1;
 
 export const load = (async ({ platform, locals }) => {
     if (locals.authenticatedUser == null) {
@@ -25,11 +28,15 @@ export const load = (async ({ platform, locals }) => {
             return { stats: null, animeList: null, lastUpdated: null }
         }
 
+        const dayToRecalculate = dayjs(userData.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
+        const canRecalculate = dayjs(userData.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
+
         return {
             data: {
                 stats: userData.stats,
                 animeList: userData.animeList as AnimeNodeWithStatus[],
-                lastUpdated: userData.lastUpdated
+                lastUpdated: userData.lastUpdated,
+                canRecalculate
             }
         }
     }
@@ -51,13 +58,15 @@ export const actions = {
             const userStatsService = new UserAnimeListStats(platform?.env.KV_STORE!);
             const calculatedResults = await calculateUserStats(cookies);
             const result = await userStatsService.saveUserData(session.userId, calculatedResults);
+            const dayToRecalculate = dayjs(result.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
+            const canRecalculate = dayjs(result.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
 
-            await delay(3000);
             return {
                 data: {
                     stats: result.stats,
                     animeList: result.animeList as AnimeNodeWithStatus[],
-                    lastUpdated: result.lastUpdated
+                    lastUpdated: result.lastUpdated,
+                    canRecalculate
                 }
             }
         }

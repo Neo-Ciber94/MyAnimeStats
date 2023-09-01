@@ -15,6 +15,8 @@
 	onMount(() => {
 		loading = false;
 	});
+
+	$: result = data.data || form?.data || null;
 </script>
 
 <PageTransition>
@@ -25,12 +27,19 @@
 			<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
 				<StairsLoader size={30} class="text-violet-500" />
 			</div>
-		{:else if data.data?.stats}
-			{@const result = data.data}
-			<StatTabs stats={result.stats} animeList={result.animeList} />
-		{:else if form?.data.stats}
-			{@const result = form.data}
-			<StatTabs stats={result.stats} animeList={result.animeList || []} />
+		{:else if result}
+			<StatTabs stats={result.stats} animeList={result.animeList}>
+				{#if result.canRecalculate}
+					<div
+						class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
+							h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
+					>
+						<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
+					</div>
+				{/if}
+
+				<div class="mb-10"></div>
+			</StatTabs>
 		{:else}
 			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
 				<CalculateStatsButton>Calculate Stats</CalculateStatsButton>
