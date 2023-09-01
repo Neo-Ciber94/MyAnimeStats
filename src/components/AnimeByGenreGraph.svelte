@@ -41,8 +41,8 @@
 					{
 						label: 'Genres',
 						data: animeData.map((x) => x.totalWatched),
-						borderColor: Color(PASTEL_COLORS).darken(0.3).hex(),
-						backgroundColor: PASTEL_COLORS.map((c) => Color(c).darken(0.1).hex()),
+						borderColor: PASTEL_COLORS.map((c) => Color(c).darken(0.3).toString()),
+						backgroundColor: PASTEL_COLORS.map((c) => Color(c).darken(0.3).fade(0.7).toString()),
 						barThickness: 20,
 						categoryPercentage: 1,
 						barPercentage: 0.5
@@ -55,7 +55,7 @@
 				// In this case, we are setting the border of each horizontal bar to be 2px wide
 				elements: {
 					bar: {
-						borderWidth: 2
+						borderWidth: 1
 					}
 				},
 				onClick(event, elements, chart) {
@@ -92,7 +92,7 @@
 					legend: false,
 					title: {
 						display: true,
-						text: 'Watched By Genre',
+						text: 'Watched By Genre / Theme',
 						color: 'white',
 						font: {
 							size: 20

@@ -83,7 +83,7 @@
 					legend: false,
 					title: {
 						display: true,
-						text: 'Scores by anime genre',
+						text: 'Scores by anime genre / theme',
 						color: 'white',
 						font: {
 							size: 20
