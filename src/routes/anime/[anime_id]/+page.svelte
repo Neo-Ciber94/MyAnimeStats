@@ -16,8 +16,7 @@
 	import session from '$stores/session';
 	import { slide } from 'svelte/transition';
 	import PageTransition from '$components/PageTransition.svelte';
-	import { invalidateAll, invalidate } from '$app/navigation';
-	import type { AnimeObject } from '@/lib/myanimelist/common/types';
+	import { invalidateAll } from '$app/navigation';
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	dayjs.extend(LocalizedFormat);
 
@@ -49,8 +48,7 @@
 
 	$: {
 		if (typeof window !== 'undefined' && data.id) {
-			//invalidateAll();
-			invalidate(`/anime/${data.id}`);
+			invalidateAll();
 		}
 	}
 </script>

@@ -144,7 +144,7 @@ const genresBadges = [
     {
         id: "truck_kun_badge",
         name: "Truck-kun?",
-        description: "Watched 10 or more Isekai or Reincarnation anime anime",
+        description: "Watched 10 or more Isekai or Reincarnation anime",
         icon: badgeIconText("🚛"),
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
