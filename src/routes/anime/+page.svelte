@@ -13,7 +13,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
-	import DotLoader from '$components/DotLoader.svelte';
+	import DotLoader from '$components/loaders/DotLoader.svelte';
 	import { useSearchParams } from '@/hooks/useSearchParams';
 	import AnimeCardGrid from '$components/AnimeCardGrid.svelte';
 	import PageTransition from '$components/PageTransition.svelte';

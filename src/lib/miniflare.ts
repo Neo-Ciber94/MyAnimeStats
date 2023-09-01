@@ -2,16 +2,15 @@ import { Miniflare, Log, LogLevel } from 'miniflare';
 import { dev } from '$app/environment';
 
 export const fallBackPlatformToMiniFlareInDev = async (_platform: App.Platform | undefined) => {
-	if (!dev) return _platform;
+	if (!dev || _platform) {
+		return _platform;
+	}
 
-	if (_platform) return _platform;
+	// https://github.com/sveltejs/kit/issues/2966#issuecomment-1251898659
 	const mf = new Miniflare({
 		log: new Log(LogLevel.INFO),
-		kvPersist: './kv-data', // Use filebase or in memory store
-		kvNamespaces: ['KV_STORE'], //Declare array with NameSpaces
-		//globalAsyncIO: true,
-		//globalTimers: true,
-		//globalRandom: true,
+		kvPersist: './private/kv-data',
+		kvNamespaces: ['KV_STORE'],
 
 		script: `
 		addEventListener("fetch", (event) => {
@@ -24,9 +23,8 @@ export const fallBackPlatformToMiniFlareInDev = async (_platform: App.Platform |
 		`
 	});
 
-	// await mf.dispatchFetch('https://host.tld');
-
-	const env : any = await mf.getBindings();
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const env: any = await mf.getBindings();
 
 	const platform: App.Platform = { env };
 

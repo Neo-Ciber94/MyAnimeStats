@@ -2,12 +2,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
-import type { AnimeNodeWithStatus, AnimeObject } from "$lib/myanimelist/common/types";
+import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
 import type { CalculatedStats } from "$lib/types";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
 import { getServerSession } from "$lib/myanimelist/svelte/auth";
 import { UserAnimeListStats } from "./user_stats_service";
+import { delay } from "@/lib/utils/promises";
 
 
 export const load = (async ({ platform, locals }) => {
@@ -25,14 +26,16 @@ export const load = (async ({ platform, locals }) => {
         }
 
         return {
-            stats: userData.stats,
-            animeList: userData.animeList as AnimeObject[],
-            lastUpdated: userData.lastUpdated
+            data: {
+                stats: userData.stats,
+                animeList: userData.animeList as AnimeNodeWithStatus[],
+                lastUpdated: userData.lastUpdated
+            }
         }
     }
     catch (err) {
         console.error(err);
-        return { stats: null, animeList: null, lastUpdated: null }
+        return { data: null }
     }
 }) satisfies PageServerLoad;
 
@@ -49,10 +52,13 @@ export const actions = {
             const calculatedResults = await calculateUserStats(cookies);
             const result = await userStatsService.saveUserData(session.userId, calculatedResults);
 
+            await delay(3000);
             return {
-                stats: result.stats,
-                animeList: result.animeList as AnimeObject[],
-                lastUpdated: result.lastUpdated
+                data: {
+                    stats: result.stats,
+                    animeList: result.animeList as AnimeNodeWithStatus[],
+                    lastUpdated: result.lastUpdated
+                }
             }
         }
         catch (err) {
