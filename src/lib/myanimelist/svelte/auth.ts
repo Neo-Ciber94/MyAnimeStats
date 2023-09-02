@@ -1,7 +1,7 @@
 import * as jose from 'jose';
 import { SECRET_KEY } from "$env/static/private";
 import { DEFAULT_SESSION_DURATION_SECONDS } from "./handle";
-import type { Cookies } from '@sveltejs/kit';
+import { error, type Cookies } from '@sveltejs/kit';
 
 export const AUTH_SESSION_COOKIE = 'myanimestats.session';
 export const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
@@ -88,4 +88,14 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
         return null;
     }
 
+}
+
+export async function getRequiredServerSession(cookies: Cookies): Promise<AuthenticatedUser> {
+    const session = await getServerSession(cookies);
+
+    if (session == null) {
+        throw error(401, "unable to get session");
+    }
+
+    return session;
 }

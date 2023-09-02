@@ -3,39 +3,41 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
-import type { CalculatedStats } from "$lib/types";
+import { type CalculatedStats, userAnimeStatsSchema, userAnimeListSchema } from "$lib/types";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
-import { getServerSession } from "$lib/myanimelist/svelte/auth";
-import { UserAnimeListStats } from "./user_stats_service";
+import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import { KV } from "@/lib/kv";
 dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
 
-export const load = (async ({ platform, locals }) => {
+export const load = (async ({ locals }) => {
     if (locals.authenticatedUser == null) {
         throw redirect(307, "/");
     }
 
     try {
-        const userStatsService = new UserAnimeListStats(platform?.env.KV_STORE!);
+        const kv = KV.current();
         const userId = locals.authenticatedUser.user.id;
-        const userData = await userStatsService.getUserData(userId);
 
-        if (userData == null) {
-            return { stats: null, animeList: null, lastUpdated: null }
+        const userAnimeList = await kv.get(`userAnimeList/${userId}`, userAnimeListSchema);
+        const userAnimeStats = await kv.get(`userStats/${userId}`, userAnimeStatsSchema);
+
+        if (userAnimeList == null || userAnimeStats == null) {
+            return { data: null }
         }
 
-        const dayToRecalculate = dayjs(userData.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
-        const canRecalculate = dayjs(userData.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
+        const dayToRecalculate = dayjs(userAnimeStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
+        const canRecalculate = dayjs(userAnimeStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
 
         return {
             data: {
-                stats: userData.stats,
-                animeList: userData.animeList as AnimeNodeWithStatus[],
-                lastUpdated: userData.lastUpdated,
+                stats: userAnimeStats.stats,
+                animeList: userAnimeList.animeList as AnimeNodeWithStatus[],
+                lastUpdated: userAnimeList.lastUpdated,
                 canRecalculate
             }
         }
@@ -47,7 +49,7 @@ export const load = (async ({ platform, locals }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    async calculate({ cookies, platform }) {
+    async calculate({ cookies }) {
         const session = await getServerSession(cookies);
 
         if (session == null) {
@@ -55,17 +57,15 @@ export const actions = {
         }
 
         try {
-            const userStatsService = new UserAnimeListStats(platform?.env.KV_STORE!);
-            const calculatedResults = await calculateUserStats(cookies);
-            const result = await userStatsService.saveUserData(session.userId, calculatedResults);
-            const dayToRecalculate = dayjs(result.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
-            const canRecalculate = dayjs(result.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
+            const { userStats, animeList } = await calculateUserStats(cookies);
+            const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
+            const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
 
             return {
                 data: {
-                    stats: result.stats,
-                    animeList: result.animeList as AnimeNodeWithStatus[],
-                    lastUpdated: result.lastUpdated,
+                    stats: userStats.stats,
+                    animeList,
+                    lastUpdated: userStats.lastUpdated,
                     canRecalculate
                 }
             }
@@ -89,37 +89,54 @@ async function calculateUserStats(cookies: Cookies,) {
         }
     }
 
-    const animeList = await fetchMyAnimeList(cookies);
+    const kv = KV.current();
+    const { userId } = await getRequiredServerSession(cookies);
+    const animeList = await getUserMyAnimeList(cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
+
+    let userStats = await kv.get(`userStats/${userId}`, userAnimeStatsSchema);
+
+    if (userStats) {
+        return {
+            userStats,
+            animeList
+        }
+    }
 
     // Calculate stats
     stats.personal = calculatePersonalStats(animeList);
-    return { stats, animeList };
+
+    userStats = {
+        stats,
+        lastUpdated: new Date()
+    };
+
+    await kv.set(`userStats/${userId}`, userAnimeStatsSchema, userStats);
+
+    return { userStats, animeList };
 }
 
-// async function getMyAnimeList(ctx: StatsContext) {
-//     const { cookies, platform, userId } = ctx;
-//     const key = `anime/${userId}`
-//     const json = await platform?.env.KV_STORE.get(key);
-//     let animeList = json == null ? undefined : JSON.parse(json) as AnimeNodeWithStatus[] | undefined;
+async function getUserMyAnimeList(cookies: Cookies) {
+    const kv = KV.current();
+    const { userId } = await getRequiredServerSession(cookies);
+    const userAnimeList = await kv.get(`userAnimeList/${userId}`, userAnimeListSchema);
 
-//     if (animeList == null) {
-//         animeList = await fetchMyAnimeList(cookies);
-//         await platform?.env.KV_STORE.put(key, JSON.stringify(animeList));
-//     }
+    if (userAnimeList != null) {
+        return userAnimeList.animeList as AnimeNodeWithStatus[];
+    }
 
-//     return animeList;
-// }
+    const animeList = await fetchMyAnimeList(cookies);
+    await kv.set(`userAnimeList/${userId}`, userAnimeListSchema, {
+        animeList,
+        lastUpdated: new Date()
+    });
+
+    return animeList;
+}
 
 async function fetchMyAnimeList(cookies: Cookies) {
     const anime: AnimeNodeWithStatus[] = [];
-    const session = await getServerSession(cookies);
-
-    if (session == null) {
-        throw error(401, "unable to get session");
-    }
-
-    const { accessToken } = session;
+    const { accessToken } = await getRequiredServerSession(cookies);
     const limit = 500;
     let offset = 0;
 

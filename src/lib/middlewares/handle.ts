@@ -1,5 +1,6 @@
 import { dev } from "$app/environment";
 import { combineMiddlewares, type Middleware } from ".";
+import { cleanUpKv, initializeKv } from "../kv";
 import { MALClient } from "../myanimelist/api";
 import { getServerSession } from "../myanimelist/svelte/auth";
 import { MyAnimeListHandler } from "../myanimelist/svelte/handle";
@@ -11,7 +12,11 @@ function miniflareMiddleware(): Middleware {
             event.platform = await fallBackPlatformToMiniFlareInDev(event.platform);
         }
 
-        return next(event);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        initializeKv(event.platform?.env.KV_STORE!);
+        const res = await next(event);
+        cleanUpKv();
+        return res;
     }
 }
 
@@ -60,8 +65,8 @@ function loggerMiddleware(): Middleware {
         const status = response.status;
         const url = request.url;
         const now = new Date().toISOString();
-        // ❌ 2023-09-01T23:13:48.386Z - GET 200 (230ms) - /api/users/
-        console.log(`${icon} ${now} - ${method} ${status} (${elapsedMs}ms) - ${url}`);
+        // ❌ 2023-09-01T23:13:48.386Z - GET 200 - /api/users/ 230ms
+        console.log(`${icon} ${now} - ${method} ${status} [${elapsedMs}ms] - ${url}`);
 
         return response;
     }
