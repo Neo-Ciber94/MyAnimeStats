@@ -16,9 +16,9 @@
 	import { Input } from 'flowbite-svelte';
 	import Color from 'color';
 	import { capitalize, hash, numberToColor } from '$lib/utils/helpers';
-	import type { AutocompleteItem } from './Autocomplete.svelte';
+	import type { AutocompleteItem } from '../Autocomplete.svelte';
 	import { CalendarMonthSolid, ListSolid } from 'flowbite-svelte-icons';
-	import TagInput from './TagInput.svelte';
+	import TagInput from '../TagInput.svelte';
 
 	export let animeList: AnimeObject[];
 

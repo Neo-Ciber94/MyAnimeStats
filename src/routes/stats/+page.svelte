@@ -1,6 +1,6 @@
 <script lang="ts">
-	import StatSidebar from '$components/StatSidebar.svelte';
-	import StatTabs from '$components/StatTabs.svelte';
+	import StatSidebar from '@/routes/stats/StatSidebar.svelte';
+	import StatTabs from '@/routes/stats/StatTabs.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	import CalculateStatsButton from '$components/CalculateStatsButton.svelte';
 	import PageTransition from '$components/PageTransition.svelte';

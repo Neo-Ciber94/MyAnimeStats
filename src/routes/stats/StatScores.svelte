@@ -2,9 +2,9 @@
 	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import { Tabs, TabItem } from 'flowbite-svelte';
 	import ScoreStatsSummary from './ScoreStatsSummary.svelte';
-	import ScoreByTime from './ScoreByTime.svelte';
-	import ScoreByGenre from './ScoreByGenre.svelte';
-	import ScoreByAnimeStudio from './ScoreByAnimeStudio.svelte';
+	import ScoreByTime from '$components/graphs/ScoreByTimeGraph.svelte';
+	import ScoreByGenre from '$components/graphs/ScoreByGenreGraph.svelte';
+	import ScoreByAnimeStudio from '$components/graphs/ScoreByAnimeStudioGraph.svelte';
 
 	export let animeList: AnimeObjectWithStatus[];
 </script>

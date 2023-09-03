@@ -7,12 +7,12 @@
 		CheckCircleSolid,
 		ChartLineUpSolid
 	} from 'flowbite-svelte-icons';
-	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
+	import AnimeByGenreGraph from '$components/graphs/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
-	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
+	import AnimeWatchedByYear from '$components/graphs/AnimeWatchedByYearGraph.svelte';
 	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
-	import UserBadgeList from './UserBadgeList.svelte';
+	import UserBadgeList from '$components/UserBadgeList.svelte';
 	import { useUserBadges } from '$stores/userBadges';
 
 	export let stats: CalculatedStats;

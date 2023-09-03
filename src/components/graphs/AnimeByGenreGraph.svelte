@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
 	import Color from 'color';
-	import { PASTEL_COLORS } from '../common/constants';
 	import type { AnimeObjectWithStatus } from '@/lib/myanimelist/common/types';
+	import { PASTEL_COLORS } from '@/common/constants';
 
 	export let animeList: AnimeObjectWithStatus[];
 	let chartCanvas: HTMLCanvasElement;
