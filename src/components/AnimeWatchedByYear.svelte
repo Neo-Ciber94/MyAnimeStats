@@ -108,7 +108,9 @@
 				data: animeWatchedCount,
 				fill: true,
 				borderColor,
-				tension: 0.2
+				tension: 0.2,
+				pointRadius: 7,
+				pointHoverRadius: 12
 			});
 		}
 

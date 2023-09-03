@@ -72,6 +72,11 @@ function loggerMiddleware(): Middleware {
 }
 
 export function createMiddlewareHandler() {
-    const handle = combineMiddlewares([loggerMiddleware(), miniflareMiddleware(), authMiddleware(), myAnimeListMiddleware()]);
+    const handle = combineMiddlewares([
+        loggerMiddleware(),
+        miniflareMiddleware(),
+        authMiddleware(),
+        myAnimeListMiddleware()
+    ]);
     return handle;
 }

@@ -44,7 +44,7 @@ export function useSearchParams<Q extends Query = Query>(initialValue?: Q) {
         set({} as Q)
     }
 
-    function get() {
+    function get(): Readonly<Q> {
         return getStoreValue(searchParamStore);
     }
 

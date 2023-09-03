@@ -1,3 +1,10 @@
+<script context="module" lang="ts">
+	type Query = {
+		search: string;
+		nsfw: boolean;
+	};
+</script>
+
 <script lang="ts">
 	import AnimeListGrid from '$components/AnimeListGrid.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
@@ -15,6 +22,7 @@
 	import DotLoader from '$components/loaders/DotLoader.svelte';
 	import dayjs from 'dayjs';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
+	import { useSearchParams } from '@/hooks/useSearchParams';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -22,23 +30,26 @@
 
 	let loadMoreMarkerElement: HTMLDivElement;
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
+	$: searchParams = useSearchParams<Partial<Query>>();
 
 	let currentPages: AnimeObjectWithStatus[] = [];
 	let currentAnimeList: AnimeObjectWithStatus[] = [];
 
 	let filterTimeout: number | undefined;
 	let loadingTimeout: number | undefined;
-	let nsfw = false;
 	let mounted = false;
-	let search = '';
 	let isLoadingMore = false;
 
-	function filterAllAnime(s: string, allowNsfw: boolean) {
+	// query
+	let search = '';
+	let nsfw = false;
+
+	function filterAllAnime(query: Query) {
 		const animeList = data.data.userAnimeList?.animeList || [];
-		const term = s.toLowerCase().replace(/\s/g, '');
+		const term = query.search.toLowerCase().replace(/\s/g, '');
 		currentPages = Enumerable.from(animeList)
 			.where(({ node }) => {
-				if (allowNsfw) {
+				if (query.nsfw) {
 					return true;
 				}
 
@@ -49,9 +60,10 @@
 			.toArray();
 
 		currentAnimeList = currentPages.slice(0, pageSize);
+		searchParams.set({ search, nsfw });
 	}
 
-	function handleSearch(s: string, allowNsfw: boolean) {
+	function handleSearch(query: Query) {
 		if (typeof window === 'undefined') {
 			return;
 		}
@@ -59,7 +71,7 @@
 		clearTimeout(filterTimeout);
 		clearTimeout(loadingTimeout);
 
-		filterTimeout = window.setTimeout(() => filterAllAnime(s, allowNsfw), 500);
+		filterTimeout = window.setTimeout(() => filterAllAnime(query), 500);
 	}
 
 	function loadMore() {
@@ -77,12 +89,23 @@
 	}
 
 	onMount(() => {
-		filterAllAnime(search, nsfw);
+		if ($searchParams.search) {
+			search = $searchParams.search;
+		}
+
+		if ($searchParams.nsfw != null) {
+			nsfw = $searchParams.nsfw;
+		}
+
+		console.log({ $searchParams });
+		filterAllAnime({ search, nsfw });
+
+		// loaded
 		mounted = true;
 	});
 
 	$: {
-		handleSearch(search, nsfw);
+		handleSearch({ search, nsfw });
 	}
 
 	$: {
@@ -96,7 +119,7 @@
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
 		<AnimeSearchBar
 			placeholder="Search in list..."
-			on:search={(e) => handleSearch(e.detail, nsfw)}
+			on:search={(e) => handleSearch({ search: e.detail, nsfw })}
 			bind:value={search}
 		/>
 		<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
