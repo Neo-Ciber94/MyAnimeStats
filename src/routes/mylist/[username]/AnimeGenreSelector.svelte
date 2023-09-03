@@ -19,7 +19,7 @@
 	{selected}
 	on:change
 	listClass="backdrop-blur-lg border-violet-500 bg-gray-900/70"
-	class=" gap-2 bg-transparent  focus-within:border-b-orange-500 text-white border-b-2 pb-2 border-b-violet-500"
+	class="gap-2 bg-transparent  focus-within:border-b-orange-500 text-white border-b-2 pb-2 border-b-violet-500"
 >
 	<div slot="icon" class="mx-2">
 		<ListSolid class="text-orange-500 !outline-none" />

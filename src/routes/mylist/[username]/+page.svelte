@@ -1,8 +1,9 @@
 <script context="module" lang="ts">
 	const querySchema = z.object({
-		search: z.string().default(''),
-		nsfw: z.coerce.boolean().default(false),
-		genres: z.array(z.coerce.number()).default([])
+		search: z.string().default('').catch(''),
+		nsfw: z.coerce.boolean().default(false).catch(false),
+		genres: z.array(z.coerce.number()).default([]).catch([]),
+		order_by: animeOrderBySchema.default('my_score_desc').catch('my_score_desc').optional()
 	});
 
 	type Query = z.infer<typeof querySchema>;
@@ -28,6 +29,8 @@
 	import AnimeGenreSelector from './AnimeGenreSelector.svelte';
 	import { z } from 'zod';
 	import { useZodSearchParams } from '@/hooks/useZodSearchParams';
+	import type { AnimeOrderBy } from './AnimeOrderBySelector.svelte';
+	import AnimeOrderBySelector, { animeOrderBySchema } from './AnimeOrderBySelector.svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -35,7 +38,7 @@
 
 	let loadMoreMarkerElement: HTMLDivElement;
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
-	
+
 	const searchParams = useZodSearchParams(querySchema, undefined, {
 		ignoreEmptyArray: true,
 		ignoreEmptyStrings: true,
@@ -59,13 +62,40 @@
 	let selectedGenres: Genre[] = [];
 	let search = '';
 	let nsfw = false;
+	let orderBy: AnimeOrderBy | undefined = undefined;
 
-	function filterAllAnime(newQuery: Query | ((prev: Query) => Query)) {
+	const animeListSorter = () => {
+		return (anime: AnimeObjectWithStatus) => {
+			if (orderBy == null) {
+				return -Number(anime.list_status.score);
+			}
+
+			switch (orderBy) {
+				case 'my_score_asc':
+					return anime.list_status.score;
+				case 'my_score_desc':
+					return -Number(anime.list_status.score);
+				case 'score_asc':
+					return anime.node.mean;
+				case 'score_desc':
+					return -Number(anime.node.mean);
+				case 'rank_asc':
+					return anime.node.rank;
+				case 'rank_desc':
+					return -Number(anime.node.rank);
+				default:
+					throw new Error(`Unknown order ${orderBy}`);
+			}
+		};
+	};
+
+	function searchAnime(newQuery: Query | ((prev: Query) => Query)) {
 		let query: Query;
 		if (typeof newQuery === 'function') {
 			const prevQuery: Query = {
 				search,
 				nsfw,
+				order_by: orderBy,
 				genres: selectedGenres.map((x) => x.id)
 			};
 
@@ -94,7 +124,7 @@
 				const selectedGenreIds = node.genres.map((x) => x.id);
 				return selectedGenres.every((genreId) => selectedGenreIds.includes(genreId));
 			})
-			.orderByDescending(({ node }) => node.my_list_status?.score)
+			.orderBy(animeListSorter())
 			.toArray();
 
 		currentAnimeList = currentPages.slice(0, pageSize);
@@ -109,7 +139,7 @@
 		clearTimeout(filterTimeout);
 		clearTimeout(loadingTimeout);
 
-		filterTimeout = window.setTimeout(() => filterAllAnime(query), 500);
+		filterTimeout = window.setTimeout(() => searchAnime(query), 500);
 	}
 
 	function loadMore() {
@@ -130,9 +160,10 @@
 		search = $searchParams.search || '';
 		nsfw = $searchParams.nsfw;
 		selectedGenres = genres.filter((x) => $searchParams.genres.includes(x.id));
+		orderBy = $searchParams.order_by;
 
 		const genresIds = selectedGenres.map((x) => x.id);
-		filterAllAnime({ search, nsfw, genres: genresIds });
+		searchAnime({ search, nsfw, genres: genresIds, order_by: orderBy });
 
 		// loaded
 		mounted = true;
@@ -145,7 +176,7 @@
 
 	$: {
 		const genresIds = selectedGenres.map((x) => x.id);
-		handleSearch({ search, nsfw, genres: genresIds });
+		handleSearch({ search, nsfw, order_by: orderBy, genres: genresIds });
 	}
 
 	$: {
@@ -165,9 +196,11 @@
 
 		<div class="flex flex-row gap-2 w-full mt-2">
 			<AnimeGenreSelector {genres} bind:selected={selectedGenres} on:change={handleGenreChange} />
+
+			<AnimeOrderBySelector bind:selected={orderBy} />
 		</div>
 
-		<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
+		<div class="flex flex-row items-center justify-start mt-2 text-white text-xs">
 			<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
 		</div>
 	</div>
@@ -230,7 +263,7 @@
 						</slot>
 
 						<slot slot="footer">
-							<div class="flex flex-row justify-center">
+							<div class="flex flex-row justify-center gap-2">
 								{#if anime.node.mean}
 									<Badge
 										border
@@ -240,9 +273,15 @@
 										title="User score"
 									>
 										User score
-										<span class="text-gray-900 ml-1">
+										<span class="text-gray-950 ml-1">
 											{anime.node.mean.toFixed(2)}
 										</span>
+									</Badge>
+								{/if}
+
+								{#if anime.node.rank}
+									<Badge border rounded color="pink" class="font-bold text-[10px]">
+										{`Rank #${anime.node.rank}`}
 									</Badge>
 								{/if}
 							</div>

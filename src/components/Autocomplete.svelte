@@ -7,7 +7,7 @@
 
 <script lang="ts" generics="T">
 	import { CloseButton } from 'flowbite-svelte';
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	export let items: AutocompleteItem<T>[];
 	export let selected: T | undefined;
@@ -29,6 +29,8 @@
 	);
 
 	$: activeIndex = currentItems.findIndex((item) => item?.value === selected);
+
+	const dispatch = createEventDispatcher<{ change: T }>();
 
 	onMount(() => {
 		setValue(selected);
@@ -71,6 +73,7 @@
 		const item = currentItems[itemIndex];
 		search = item?.label ?? '';
 		selected = item?.value;
+		dispatch('change', selected);
 	}
 
 	function handleSelect(item: AutocompleteItem<T>) {
