@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tabs, TabItem, Spinner } from 'flowbite-svelte';
-	import MyStatsSection from '$components/MyStatsSection.svelte';
+	import MyStatsSection from '@/routes/mystats/MyStatsSection.svelte';
 	import {
 		UserSolid,
 		ChartPieSolid,

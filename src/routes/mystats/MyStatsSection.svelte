@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { CalculatedStats } from '$lib/types';
 	import { PERSONAL_STATS } from '@/common/constants';
-	import StatProgress from './StatProgress.svelte';
+	import StatProgress from '$components/StatProgress.svelte';
 	import { Tooltip } from 'flowbite-svelte';
 	import { InfoCircleSolid } from 'flowbite-svelte-icons';
 
@@ -18,7 +18,7 @@
 	>
 		<div slot="title" class="text-white text-xl flex flex-row gap-2 items-center">
 			<span>Strength</span>
-			<InfoCircleSolid id="strength-info" size={'sm'} />
+			<InfoCircleSolid id="strength-info" size={'sm'} class="text-violet-400" />
 			<Tooltip triggeredBy="#strength-info" class="bg-black">
 				You may gain strength by watching action anime
 			</Tooltip>
@@ -35,7 +35,7 @@
 	>
 		<div slot="title" class="text-white text-xl flex flex-row gap-2 items-center">
 			<span>Charisma</span>
-			<InfoCircleSolid id="charisma-info" size={'sm'} />
+			<InfoCircleSolid id="charisma-info" size={'sm'} class="text-violet-400" />
 			<Tooltip triggeredBy="#charisma-info" class="bg-black">
 				Make people laugh, that's charisma, right?
 			</Tooltip>
@@ -52,7 +52,7 @@
 	>
 		<div slot="title" class="text-white text-xl flex flex-row gap-2 items-center">
 			<span>Intelligence</span>
-			<InfoCircleSolid id="intelligence-info" size={'sm'} />
+			<InfoCircleSolid id="intelligence-info" size={'sm'} class="text-violet-400" />
 			<Tooltip triggeredBy="#intelligence-info" class="bg-black">
 				Some anime may make you look intelligent
 			</Tooltip>
@@ -69,7 +69,7 @@
 	>
 		<span slot="title" class="text-white text-xl flex flex-row gap-2 items-center">
 			<span>Vitality</span>
-			<InfoCircleSolid id="vitality-info" size={'sm'} />
+			<InfoCircleSolid id="vitality-info" size={'sm'} class="text-violet-400" />
 			<Tooltip triggeredBy="#vitality-info" class="bg-black">
 				Boost your vitality by being active
 			</Tooltip>
