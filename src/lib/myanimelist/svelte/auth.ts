@@ -43,7 +43,7 @@ export async function generateJwt(userId: number, refreshToken: string): Promise
 
 /**
  * Verify the session and return the MyAnimeList refresh token and user id.
- * @param cookies The cookies to extract the token.
+ * @param cookies The cookies to extract the user token.
  * @returns The user refresh token and user id.
  */
 export async function getServerSession(cookies: Cookies): Promise<AuthenticatedUser | null> {
@@ -90,11 +90,17 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
 
 }
 
-export async function getRequiredServerSession(cookies: Cookies): Promise<AuthenticatedUser> {
+/**
+ * Verify the session and returns the user id and refresh token, if the user is not authenticated throws 401.
+ * @param cookies The cookies to extract the user token.
+ * @param message The error message to show when the user is not authenticated. Defaults to `"unable to get user session"`.
+ * @returns The user refresh token and id.
+ */
+export async function getRequiredServerSession(cookies: Cookies, message = "unable to get user session"): Promise<AuthenticatedUser> {
     const session = await getServerSession(cookies);
 
     if (session == null) {
-        throw error(401, "unable to get session");
+        throw error(401, message);
     }
 
     return session;

@@ -5,7 +5,7 @@ import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import Enumerable from "linq";
 import { PERSONAL_STATS } from "@/common/constants";
 
-type PersonalStats = z.infer<typeof calculatedStatsSchema>['personal'];
+type PersonalStats = z.infer<typeof calculatedStatsSchema>;
 
 export function calculatePersonalStats(animeList: AnimeNodeWithStatus[]): PersonalStats {
     return {

@@ -9,7 +9,7 @@ export class KV {
 
     static current() {
         if (GLOBAL_KV == null) {
-            throw new Error("KVNamespace was not set");
+            throw new Error("KVNamespace was not set, `KV.current()` should be called on the server inside a `load` function or hook");
         }
 
         return new KV(GLOBAL_KV);

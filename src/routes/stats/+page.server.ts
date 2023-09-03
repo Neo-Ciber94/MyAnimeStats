@@ -3,13 +3,15 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
-import { type CalculatedStats, userAnimeStatsSchema, userAnimeListSchema } from "$lib/types";
+import { type CalculatedStats, userAnimeStatsSchema } from "$lib/types";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
 import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { KV } from "@/lib/kv";
+import { UserAnimeListService } from "@/lib/services/userAnimeList";
+import { UserStatsService } from "@/lib/services/userStats";
 dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
@@ -23,7 +25,7 @@ export const load = (async ({ locals }) => {
         const kv = KV.current();
         const userId = locals.authenticatedUser.user.id;
 
-        const userAnimeList = await kv.get(`userAnimeList/${userId}`, userAnimeListSchema);
+        const userAnimeList = await UserAnimeListService.getAnimeList(userId);
         const userAnimeStats = await kv.get(`userStats/${userId}`, userAnimeStatsSchema);
 
         if (userAnimeList == null || userAnimeStats == null) {
@@ -80,21 +82,11 @@ export const actions = {
 
 
 async function calculateUserStats(cookies: Cookies,) {
-    const stats: CalculatedStats = {
-        personal: {
-            strength: 0,
-            charisma: 0,
-            intelligence: 0,
-            vitality: 0
-        }
-    }
-
-    const kv = KV.current();
     const { userId } = await getRequiredServerSession(cookies);
     const animeList = await getUserMyAnimeList(cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
-    let userStats = await kv.get(`userStats/${userId}`, userAnimeStatsSchema);
+    let userStats = await UserStatsService.getStats(userId);
 
     if (userStats) {
         return {
@@ -104,33 +96,28 @@ async function calculateUserStats(cookies: Cookies,) {
     }
 
     // Calculate stats
-    stats.personal = calculatePersonalStats(animeList);
+    const stats: CalculatedStats = calculatePersonalStats(animeList);
 
     userStats = {
         stats,
         lastUpdated: new Date()
     };
 
-    await kv.set(`userStats/${userId}`, userAnimeStatsSchema, userStats);
+    await UserStatsService.setStats(userId, stats);
 
     return { userStats, animeList };
 }
 
 async function getUserMyAnimeList(cookies: Cookies) {
-    const kv = KV.current();
     const { userId } = await getRequiredServerSession(cookies);
-    const userAnimeList = await kv.get(`userAnimeList/${userId}`, userAnimeListSchema);
+    const userAnimeList = await UserAnimeListService.getAnimeList(userId);
 
     if (userAnimeList != null) {
         return userAnimeList.animeList as AnimeNodeWithStatus[];
     }
 
     const animeList = await fetchMyAnimeList(cookies);
-    await kv.set(`userAnimeList/${userId}`, userAnimeListSchema, {
-        animeList,
-        lastUpdated: new Date()
-    });
-
+    await UserAnimeListService.setAnimeList(userId, animeList);
     return animeList;
 }
 
