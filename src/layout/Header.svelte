@@ -77,16 +77,18 @@
 			{#if $session.user}
 				<a
 					href="/stats"
-					class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+					class="inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
 				>
-					Stats
+					<span class="text-red-500">My</span>
+					<span>Stats</span>
 				</a>
 
 				<a
 					href="/myanimelist/@me"
-					class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+					class="inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
 				>
-					MyList
+					<span class="text-red-500">My</span>
+					<span>List</span>
 				</a>
 			{/if}
 		</div>
