@@ -3,14 +3,13 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
-import { type CalculatedStats, userAnimeStatsSchema } from "$lib/types";
+import type { CalculatedStats } from "$lib/types";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
 import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { KV } from "@/lib/kv";
-import { UserAnimeListService } from "@/lib/services/userAnimeList";
+import { UserAnimeListCacheService } from "@/lib/services/userAnimeListCache";
 import { UserStatsService } from "@/lib/services/userStats";
 dayjs.extend(isSameOrAfter);
 
@@ -22,11 +21,10 @@ export const load = (async ({ locals }) => {
     }
 
     try {
-        const kv = KV.current();
         const userId = locals.authenticatedUser.user.id;
 
-        const userAnimeList = await UserAnimeListService.getAnimeList(userId);
-        const userAnimeStats = await kv.get(`userStats/${userId}`, userAnimeStatsSchema);
+        const userAnimeList = await UserAnimeListCacheService.getAnimeList(userId);
+        const userAnimeStats = await UserStatsService.getStats(userId);
 
         if (userAnimeList == null || userAnimeStats == null) {
             return { data: null }
@@ -110,14 +108,14 @@ async function calculateUserStats(cookies: Cookies,) {
 
 async function getUserMyAnimeList(cookies: Cookies) {
     const { userId } = await getRequiredServerSession(cookies);
-    const userAnimeList = await UserAnimeListService.getAnimeList(userId);
+    const userAnimeList = await UserAnimeListCacheService.getAnimeList(userId);
 
     if (userAnimeList != null) {
         return userAnimeList.animeList as AnimeNodeWithStatus[];
     }
 
     const animeList = await fetchMyAnimeList(cookies);
-    await UserAnimeListService.setAnimeList(userId, animeList);
+    await UserAnimeListCacheService.setAnimeList(userId, animeList);
     return animeList;
 }
 

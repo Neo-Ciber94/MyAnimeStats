@@ -7,7 +7,7 @@ function getKey(userId: number) {
     return `userAnimeList/${userId}`;
 }
 
-export namespace UserAnimeListService {
+export namespace UserAnimeListCacheService {
     export async function getAnimeList(userId: number) {
         const key = getKey(userId);
         const kv = KV.current();

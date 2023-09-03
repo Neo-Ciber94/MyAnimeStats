@@ -6,13 +6,12 @@
 	import { InfoCircleSolid } from 'flowbite-svelte-icons';
 
 	export let stats: CalculatedStats;
-	const { personal } = stats;
 </script>
 
 <div class="flex flex-col gap-4 mt-4 w-full px-2 xl:px-20">
 	<StatProgress
 		max={PERSONAL_STATS.MAX_STRENGTH}
-		value={personal.strength}
+		value={stats.strength}
 		containerClass="border-2 border-red-500"
 		class="bg-gradient-to-r from-red-500 via-red-600 to-red-700 h-6 md:h-10"
 		delay={50}
@@ -24,12 +23,12 @@
 				You may gain strength by watching action anime
 			</Tooltip>
 		</div>
-		<span slot="text" class="text-white text-xl">{personal.strength}</span>
+		<span slot="text" class="text-white text-xl">{stats.strength}</span>
 	</StatProgress>
 
 	<StatProgress
 		max={PERSONAL_STATS.MAX_CHARISMA}
-		value={personal.charisma}
+		value={stats.charisma}
 		containerClass="border-2 border-pink-500"
 		class="bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600  h-6 md:h-10"
 		delay={100}
@@ -41,12 +40,12 @@
 				Make people laugh, that's charisma, right?
 			</Tooltip>
 		</div>
-		<span slot="text" class="text-white text-xl">{personal.charisma}</span>
+		<span slot="text" class="text-white text-xl">{stats.charisma}</span>
 	</StatProgress>
 
 	<StatProgress
 		max={PERSONAL_STATS.MAX_INTELLIGENCE}
-		value={personal.intelligence}
+		value={stats.intelligence}
 		containerClass="border-2 border-purple-500"
 		class="bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600  h-6 md:h-10"
 		delay={70}
@@ -58,12 +57,12 @@
 				Some anime may make you look intelligent
 			</Tooltip>
 		</div>
-		<span slot="text" class="text-white text-xl">{personal.intelligence}</span>
+		<span slot="text" class="text-white text-xl">{stats.intelligence}</span>
 	</StatProgress>
 
 	<StatProgress
 		max={PERSONAL_STATS.MAX_VITALITY}
-		value={personal.vitality}
+		value={stats.vitality}
 		containerClass="border-2 border-lime-500"
 		class="bg-gradient-to-r from-lime-400 via-lime-500 to-lime-600 h-6 md:h-10"
 		delay={30}
@@ -75,6 +74,6 @@
 				Boost your vitality by being active
 			</Tooltip>
 		</span>
-		<span slot="text" class="text-white text-xl">{personal.vitality}</span>
+		<span slot="text" class="text-white text-xl">{stats.vitality}</span>
 	</StatProgress>
 </div>
