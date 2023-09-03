@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { UserAnimeListCacheService } from "@/lib/services/userAnimeListCache";
 import { UserStatsService } from "@/lib/services/userStats";
+import { dev } from "$app/environment";
 dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
@@ -31,7 +32,7 @@ export const load = (async ({ locals }) => {
         }
 
         const dayToRecalculate = dayjs(userAnimeStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
-        const canRecalculate = dayjs(userAnimeStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
+        const canRecalculate = dayjs(userAnimeStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
         return {
             data: {
@@ -59,7 +60,7 @@ export const actions = {
         try {
             const { userStats, animeList } = await calculateUserStats(cookies);
             const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
-            const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day');
+            const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
             return {
                 data: {
@@ -133,7 +134,7 @@ async function fetchMyAnimeList(cookies: Cookies) {
             const res = await malClient.getUserAnimeList("@me", {
                 limit,
                 offset,
-                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", 'list_status']
+                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", 'list_status', 'mean']
             });
 
             const data = res.data;

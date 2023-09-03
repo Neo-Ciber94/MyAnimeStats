@@ -1,6 +1,6 @@
 import { dev } from "$app/environment";
 import { combineMiddlewares, type Middleware } from ".";
-import { cleanUpKv, initializeKv } from "../kv";
+import { initializeKv } from "../kv";
 import { MALClient } from "../myanimelist/api";
 import { getServerSession } from "../myanimelist/svelte/auth";
 import { MyAnimeListHandler } from "../myanimelist/svelte/handle";
@@ -15,7 +15,6 @@ function miniflareMiddleware(): Middleware {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
         initializeKv(event.platform?.env.KV_STORE!);
         const res = await next(event);
-        cleanUpKv();
         return res;
     }
 }

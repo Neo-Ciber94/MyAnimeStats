@@ -13,7 +13,7 @@
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/loaders/DotLoader.svelte';
-	import AnimeCardGrid from '$components/AnimeCardGrid.svelte';
+	import AnimeCardGrid from '$components/AnimeListGrid.svelte';
 	import AnimeSeasonSelector from '$components/AnimeSeasonSelector.svelte';
 	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
 	import { goto } from '$app/navigation';
