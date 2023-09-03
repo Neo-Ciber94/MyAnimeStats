@@ -6,8 +6,6 @@
 </script>
 
 <script lang="ts" generics="T">
-	import { twMerge } from 'tailwind-merge';
-
 	import { CloseButton } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
@@ -52,6 +50,19 @@
 
 		return () => {
 			window.removeEventListener('click', handleClick);
+		};
+	});
+
+	onMount(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				open = false;
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
 		};
 	});
 
