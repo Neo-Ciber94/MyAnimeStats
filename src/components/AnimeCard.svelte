@@ -24,12 +24,14 @@
     bg-gray-950 gap-2 px-2 pt-4 pb-2 h-full items-center"
 >
 	<div class="text-right w-full flex flex-row gap-2 justify-end">
-		<AiringStatusBadge status={anime.node.status} class="text-[10px]" />
-		{#if anime.node.mean}
-			<Badge rounded color="purple" class="font-bold text-[10px]"
-				>{anime.node.mean.toFixed(2)}</Badge
-			>
-		{/if}
+		<slot name="header">
+			<AiringStatusBadge status={anime.node.status} class="text-[10px]" />
+			{#if anime.node.mean}
+				<Badge rounded color="purple" class="font-bold text-[10px]"
+					>{anime.node.mean.toFixed(2)}</Badge
+				>
+			{/if}
+		</slot>
 	</div>
 
 	<div class="overflow-hidden w-full">
@@ -57,4 +59,6 @@
 			{/each}
 		</div>
 	{/if}
+
+	<slot name="footer" />
 </a>
