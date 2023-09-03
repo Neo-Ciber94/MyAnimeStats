@@ -1,10 +1,10 @@
 <script lang="ts">
-	import StatSidebar from '@/routes/stats/StatSidebar.svelte';
-	import StatTabs from '@/routes/stats/StatTabs.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	import CalculateStatsButton from '$components/CalculateStatsButton.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
 	import CubesLoader from '$components/loaders/CubesLoader.svelte';
+	import StatSidebar from './StatSidebar.svelte';
+	import StatTabs from './StatTabs.svelte';
 	import { onMount } from 'svelte';
 
 	export let data: PageServerData;
@@ -38,7 +38,7 @@
 					</div>
 				{/if}
 
-				<div class="mb-10"></div>
+				<div class="mb-10" />
 			</StatTabs>
 		{:else}
 			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
