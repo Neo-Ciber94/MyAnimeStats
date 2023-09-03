@@ -1,7 +1,14 @@
 <script context="module" lang="ts">
 	type Query = {
 		search: string;
-		nsfw: boolean;
+		nsfw?: boolean;
+		genres?: Genre[];
+	};
+
+	type SearchQuery = {
+		search?: string;
+		nsfw?: boolean;
+		genres?: string; // comma separated list
 	};
 </script>
 
@@ -12,7 +19,7 @@
 	import { Badge, Checkbox, Spinner } from 'flowbite-svelte';
 	import { InboxSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';
-	import type { AnimeObjectWithStatus } from '@/lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus, Genre } from '@/lib/myanimelist/common/types';
 	import ANIME_GENRES from '@/types/generated/animeGenres.generated';
 	import { onMount } from 'svelte';
 	import Enumerable from 'linq';
@@ -23,6 +30,7 @@
 	import dayjs from 'dayjs';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
 	import { useSearchParams } from '@/hooks/useSearchParams';
+	import AnimeGenreSelector from './AnimeGenreSelector.svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -30,7 +38,7 @@
 
 	let loadMoreMarkerElement: HTMLDivElement;
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
-	$: searchParams = useSearchParams<Partial<Query>>();
+	$: searchParams = useSearchParams<SearchQuery>();
 
 	let currentPages: AnimeObjectWithStatus[] = [];
 	let currentAnimeList: AnimeObjectWithStatus[] = [];
@@ -39,8 +47,13 @@
 	let loadingTimeout: number | undefined;
 	let mounted = false;
 	let isLoadingMore = false;
+	const genres = Enumerable.from(data.data.userAnimeList?.animeList || [])
+		.selectMany((x) => x.node.genres)
+		.distinct((x) => x.id)
+		.toArray();
 
 	// query
+	let selectedGenres: Genre[] = [];
 	let search = '';
 	let nsfw = false;
 
@@ -56,11 +69,31 @@
 				return !node.genres.some((s) => s.id === ANIME_GENRES.Hentai.ID);
 			})
 			.where((anime) => anime.node.title.toLowerCase().replace(/\s/g, '').includes(term))
+			.where(({ node }) => {
+				const selectedGenres = query.genres || [];
+				if (selectedGenres.length == 0) {
+					return true;
+				}
+
+				const genresIds = selectedGenres.map((x) => x.id);
+				const selectedGenreIds = node.genres.map((x) => x.id);
+				return genresIds.every((genreId) => selectedGenreIds.includes(genreId));
+			})
 			.orderByDescending(({ node }) => node.my_list_status?.score)
 			.toArray();
 
 		currentAnimeList = currentPages.slice(0, pageSize);
-		searchParams.set({ search, nsfw });
+
+		const newQuery: SearchQuery = {
+			search: query.search ? query.search : undefined,
+			nsfw: query.nsfw ? true : undefined
+		};
+
+		if (query.genres && query.genres.length > 0) {
+			newQuery.genres = query.genres.map((x) => String(x.id)).join(',');
+		}
+
+		searchParams.set(newQuery);
 	}
 
 	function handleSearch(query: Query) {
@@ -97,15 +130,28 @@
 			nsfw = $searchParams.nsfw;
 		}
 
-		console.log({ $searchParams });
-		filterAllAnime({ search, nsfw });
+		if ($searchParams.genres) {
+			const genresIds = $searchParams.genres
+				.split(',')
+				.map((x) => x.trim())
+				.map(Number);
+
+			selectedGenres = genres.filter((x) => genresIds.includes(x.id));
+		}
+
+		filterAllAnime({ search, nsfw, genres: selectedGenres });
 
 		// loaded
 		mounted = true;
 	});
 
+	// FIXME: I'm unable to declare the event handler as generic
+	function handleGenreChange(event: CustomEvent<unknown[]>) {
+		selectedGenres = event.detail as Genre[];
+	}
+
 	$: {
-		handleSearch({ search, nsfw });
+		handleSearch({ search, nsfw, genres: selectedGenres });
 	}
 
 	$: {
@@ -122,6 +168,11 @@
 			on:search={(e) => handleSearch({ search: e.detail, nsfw })}
 			bind:value={search}
 		/>
+
+		<div class="flex flex-row gap-2 w-full mt-2">
+			<AnimeGenreSelector {genres} bind:selected={selectedGenres} on:change={handleGenreChange} />
+		</div>
+
 		<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
 			<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
 		</div>

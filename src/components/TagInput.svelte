@@ -8,10 +8,11 @@
 	export let placeholder: string | undefined = undefined;
 	export let closeOnClickOutside = true;
 
-	// classess
+	// classes
 	export let listClass: string = '';
 
 	const dispatch = createEventDispatcher<{
+		change: T[];
 		added: AutocompleteItem<T>;
 		removed: AutocompleteItem<T>;
 	}>();
@@ -83,6 +84,8 @@
 		if (item) {
 			dispatch('added', item);
 		}
+
+		dispatch('change', selected);
 	}
 
 	function removeTag(index: number) {
@@ -93,6 +96,8 @@
 		if (item) {
 			dispatch('removed', item);
 		}
+
+		dispatch('change', selected);
 	}
 
 	function handleSelect(item: AutocompleteItem<T>) {
