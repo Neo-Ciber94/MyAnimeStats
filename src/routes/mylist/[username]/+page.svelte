@@ -35,15 +35,12 @@
 
 	let loadMoreMarkerElement: HTMLDivElement;
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
-	$: searchParams = useZodSearchParams(
-		querySchema,
-		undefined,
-		{
-			ignoreEmptyArray: true,
-			ignoreEmptyStrings: true,
-			ignoreFalse: true
-		}
-	);
+	
+	const searchParams = useZodSearchParams(querySchema, undefined, {
+		ignoreEmptyArray: true,
+		ignoreEmptyStrings: true,
+		ignoreFalse: true
+	});
 
 	let currentPages: AnimeObjectWithStatus[] = [];
 	let currentAnimeList: AnimeObjectWithStatus[] = [];
