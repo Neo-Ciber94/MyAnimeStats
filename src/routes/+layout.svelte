@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import Layout from '@/layout/Layout.svelte';
-	import SessionProvider from '../provider/SessionProvider.svelte';
+	import SessionProvider from '../providers/SessionProvider.svelte';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import type { LayoutServerData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
