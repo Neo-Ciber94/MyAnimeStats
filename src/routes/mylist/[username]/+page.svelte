@@ -1,15 +1,11 @@
 <script context="module" lang="ts">
-	type Query = {
-		search: string;
-		nsfw?: boolean;
-		genres?: Genre[];
-	};
+	const querySchema = z.object({
+		search: z.string().default(''),
+		nsfw: z.coerce.boolean().default(false),
+		genres: z.array(z.coerce.number()).default([])
+	});
 
-	type SearchQuery = {
-		search?: string;
-		nsfw?: boolean;
-		genres?: string; // comma separated list
-	};
+	type Query = z.infer<typeof querySchema>;
 </script>
 
 <script lang="ts">
@@ -29,8 +25,9 @@
 	import DotLoader from '$components/loaders/DotLoader.svelte';
 	import dayjs from 'dayjs';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
-	import { useSearchParams } from '@/hooks/useSearchParams';
 	import AnimeGenreSelector from './AnimeGenreSelector.svelte';
+	import { z } from 'zod';
+	import { useZodSearchParams } from '@/hooks/useZodSearchParams';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -38,15 +35,24 @@
 
 	let loadMoreMarkerElement: HTMLDivElement;
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
-	$: searchParams = useSearchParams<SearchQuery>();
+	$: searchParams = useZodSearchParams(
+		querySchema,
+		undefined,
+		{
+			ignoreEmptyArray: true,
+			ignoreEmptyStrings: true,
+			ignoreFalse: true
+		}
+	);
 
 	let currentPages: AnimeObjectWithStatus[] = [];
 	let currentAnimeList: AnimeObjectWithStatus[] = [];
-
 	let filterTimeout: number | undefined;
 	let loadingTimeout: number | undefined;
 	let mounted = false;
 	let isLoadingMore = false;
+
+	// genres
 	const genres = Enumerable.from(data.data.userAnimeList?.animeList || [])
 		.selectMany((x) => x.node.genres)
 		.distinct((x) => x.id)
@@ -57,7 +63,20 @@
 	let search = '';
 	let nsfw = false;
 
-	function filterAllAnime(query: Query) {
+	function filterAllAnime(newQuery: Query | ((prev: Query) => Query)) {
+		let query: Query;
+		if (typeof newQuery === 'function') {
+			const prevQuery: Query = {
+				search,
+				nsfw,
+				genres: selectedGenres.map((x) => x.id)
+			};
+
+			query = newQuery(prevQuery);
+		} else {
+			query = newQuery;
+		}
+
 		const animeList = data.data.userAnimeList?.animeList || [];
 		const term = query.search.toLowerCase().replace(/\s/g, '');
 		currentPages = Enumerable.from(animeList)
@@ -75,28 +94,17 @@
 					return true;
 				}
 
-				const genresIds = selectedGenres.map((x) => x.id);
 				const selectedGenreIds = node.genres.map((x) => x.id);
-				return genresIds.every((genreId) => selectedGenreIds.includes(genreId));
+				return selectedGenres.every((genreId) => selectedGenreIds.includes(genreId));
 			})
 			.orderByDescending(({ node }) => node.my_list_status?.score)
 			.toArray();
 
 		currentAnimeList = currentPages.slice(0, pageSize);
-
-		const newQuery: SearchQuery = {
-			search: query.search ? query.search : undefined,
-			nsfw: query.nsfw ? true : undefined
-		};
-
-		if (query.genres && query.genres.length > 0) {
-			newQuery.genres = query.genres.map((x) => String(x.id)).join(',');
-		}
-
-		searchParams.set(newQuery);
+		searchParams.set(query);
 	}
 
-	function handleSearch(query: Query) {
+	function handleSearch(query: Query | ((prev: Query) => Query)) {
 		if (typeof window === 'undefined') {
 			return;
 		}
@@ -122,24 +130,12 @@
 	}
 
 	onMount(() => {
-		if ($searchParams.search) {
-			search = $searchParams.search;
-		}
+		search = $searchParams.search || '';
+		nsfw = $searchParams.nsfw;
+		selectedGenres = genres.filter((x) => $searchParams.genres.includes(x.id));
 
-		if ($searchParams.nsfw != null) {
-			nsfw = $searchParams.nsfw;
-		}
-
-		if ($searchParams.genres) {
-			const genresIds = $searchParams.genres
-				.split(',')
-				.map((x) => x.trim())
-				.map(Number);
-
-			selectedGenres = genres.filter((x) => genresIds.includes(x.id));
-		}
-
-		filterAllAnime({ search, nsfw, genres: selectedGenres });
+		const genresIds = selectedGenres.map((x) => x.id);
+		filterAllAnime({ search, nsfw, genres: genresIds });
 
 		// loaded
 		mounted = true;
@@ -151,7 +147,8 @@
 	}
 
 	$: {
-		handleSearch({ search, nsfw, genres: selectedGenres });
+		const genresIds = selectedGenres.map((x) => x.id);
+		handleSearch({ search, nsfw, genres: genresIds });
 	}
 
 	$: {
@@ -165,7 +162,7 @@
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
 		<AnimeSearchBar
 			placeholder="Search in list..."
-			on:search={(e) => handleSearch({ search: e.detail, nsfw })}
+			on:search={(e) => handleSearch((x) => ({ ...x, search: e.detail }))}
 			bind:value={search}
 		/>
 

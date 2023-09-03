@@ -7,14 +7,18 @@ type UseZodSearchParamsOptions = {
     ignoreFalse?: boolean;
 }
 
-export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialValue: z.infer<S>, opts?: UseZodSearchParamsOptions) {
+export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialValue?: z.infer<S>, opts?: UseZodSearchParamsOptions) {
     type TValue = z.infer<S>;
 
     const searchParamStore = writable<TValue>(initialValue);
 
     function set(value: TValue) {
-        const obj = schema.parse(value);
-        replaceWindowSearchParams(obj, opts);
+        const result = schema.safeParse(value);
+        if (result.success) {
+            replaceWindowSearchParams(result.data, opts);
+        } else {
+            console.error(result.error);
+        }
     }
 
     function update(updater: (prev: TValue) => TValue) {
@@ -28,9 +32,14 @@ export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialV
         }
 
         const { searchParams } = new URL(window.location.href);
-        const obj = Object.fromEntries(searchParams);
-        const value = schema.parse(obj);
-        searchParamStore.set(value);
+        const obj = parseSearchParams(searchParams, schema);
+        const result = schema.safeParse(obj);
+
+        if (result.success) {
+            searchParamStore.set(result.data);
+        } else {
+            console.error(result.error);
+        }
     }
 
     initialize();
@@ -40,6 +49,43 @@ export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialV
         update,
         subscribe: searchParamStore.subscribe,
     }
+}
+
+// https://github.com/colinhacks/zod/discussions/1763
+export function parseSearchParams<SchemaType extends z.ZodRawShape>(
+    searchParams: URLSearchParams,
+    schema: z.ZodObject<SchemaType>,
+) {
+    const rawValues: Record<string, Array<string> | string> = {}
+    const schemaProps = schema._def.shape()
+    for (const key of searchParams.keys()) {
+        const values = searchParams.getAll(key)
+        const propSchema = schemaProps[key]
+        if (propSchema && values.length === 1 && !isExpectingArray(propSchema)) {
+            rawValues[key] = values[0]
+        } else {
+            rawValues[key] = values
+        }
+    }
+
+    return schema.parse(rawValues)
+}
+
+function isExpectingArray(schema?: z.ZodTypeAny): boolean {
+    if (!schema?._def) return false
+
+    const { typeName } = schema._def
+    if (typeName === 'ZodArray') return true
+    if (['ZodUnion', 'ZodIntersection'].includes(typeName)) {
+        return schema._def.options.some(isExpectingArray)
+    }
+    if (['ZodOptional', 'ZodNullable', 'ZodDefault'].includes(typeName)) {
+        return isExpectingArray(schema._def.innerType)
+    }
+    if (typeName === 'ZodLazy') {
+        return isExpectingArray(schema._def.getter())
+    }
+    return false
 }
 
 function replaceWindowSearchParams(obj: Record<string, unknown>, opts?: UseZodSearchParamsOptions) {
