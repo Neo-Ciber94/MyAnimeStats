@@ -13,6 +13,9 @@
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/loaders/DotLoader.svelte';
+	import dayjs from 'dayjs';
+	import localizedFormat from 'dayjs/plugin/localizedFormat';
+	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
 	const pageSize = 40;
@@ -101,7 +104,16 @@
 		</div>
 	</div>
 
-	<div class="w-full mt-8">
+	<div class="w-full mt-4">
+		{#if data.data.userAnimeList?.lastUpdated}
+			{@const lastUpdated = data.data.userAnimeList.lastUpdated}
+			<div class="flex flex-row justify-end text-white text-xs mx-2 sm:mx-10 mb-4 gap-1">
+				<span class="cursor-pointer">
+					Last updated <span class="text-pink-500"> {dayjs(lastUpdated).format('LL')}</span>
+				</span>
+			</div>
+		{/if}
+
 		{#if !mounted}
 			<div class="w-full flex flex-row justify-center">
 				<Spinner size={'12'} bg="bg-transparent" />

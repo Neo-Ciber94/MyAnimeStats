@@ -1,11 +1,9 @@
 <script lang="ts">
 	import AnimatedNumber from '$components/AnimatedNumber.svelte';
 	import SeasonAndYearIndicator from '$components/SeasonAndYearIndicator.svelte';
-	import dayjs from 'dayjs';
 	import type { PageServerData } from './$types';
 	import AnimeStatBadge from './AnimeStatBadge.svelte';
 	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
-	import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 	import AnimeMediaTypeBadge from './AnimeMediaTypeBadge.svelte';
 	import { Button, TabItem, Tabs } from 'flowbite-svelte';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
@@ -18,7 +16,9 @@
 	import PageTransition from '$components/PageTransition.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
-	dayjs.extend(LocalizedFormat);
+	import localizedFormat from 'dayjs/plugin/localizedFormat';
+	import dayjs from 'dayjs';
+	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
 
