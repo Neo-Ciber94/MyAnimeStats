@@ -10,21 +10,30 @@
 	import { onMount } from 'svelte';
 	import Enumerable from 'linq';
 	import AnimeCard from '$components/AnimeCard.svelte';
-	import AiringStatusBadge from '$components/AiringStatusBadge.svelte';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
+	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
+	import DotLoader from '$components/loaders/DotLoader.svelte';
 
 	export let data: PageServerData;
+	const pageSize = 40;
 
+	let loadMoreMarkerElement: HTMLDivElement;
+	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
+
+	let currentPages: AnimeObjectWithStatus[] = [];
 	let currentAnimeList: AnimeObjectWithStatus[] = [];
-	let timeout: number | undefined;
+
+	let filterTimeout: number | undefined;
+	let loadingTimeout: number | undefined;
 	let nsfw = false;
 	let mounted = false;
 	let search = '';
+	let isLoadingMore = false;
 
-	function getFilteredAnime(s: string, allowNsfw: boolean) {
+	function filterAllAnime(s: string, allowNsfw: boolean) {
 		const animeList = data.data.userAnimeList?.animeList || [];
 		const term = s.toLowerCase().replace(/\s/g, '');
-		return Enumerable.from(animeList)
+		currentPages = Enumerable.from(animeList)
 			.where(({ node }) => {
 				if (allowNsfw) {
 					return true;
@@ -35,6 +44,8 @@
 			.where((anime) => anime.node.title.toLowerCase().replace(/\s/g, '').includes(term))
 			.orderByDescending(({ node }) => node.my_list_status?.score)
 			.toArray();
+
+		currentAnimeList = currentPages.slice(0, pageSize);
 	}
 
 	function handleSearch(s: string, allowNsfw: boolean) {
@@ -42,19 +53,39 @@
 			return;
 		}
 
-		clearTimeout(timeout);
-		timeout = window.setTimeout(() => {
-			currentAnimeList = getFilteredAnime(s, allowNsfw);
-		}, 500);
+		clearTimeout(filterTimeout);
+		clearTimeout(loadingTimeout);
+
+		filterTimeout = window.setTimeout(() => filterAllAnime(s, allowNsfw), 500);
+	}
+
+	function loadMore() {
+		if (currentAnimeList.length >= currentPages.length) {
+			return;
+		}
+
+		clearTimeout(loadingTimeout);
+		isLoadingMore = true;
+		window.setTimeout(() => {
+			const size = Math.min(currentAnimeList.length + pageSize, currentPages.length);
+			currentAnimeList = currentPages.slice(0, size);
+			isLoadingMore = false;
+		}, 300);
 	}
 
 	onMount(() => {
-		currentAnimeList = getFilteredAnime(search, nsfw);
+		filterAllAnime(search, nsfw);
 		mounted = true;
 	});
 
 	$: {
 		handleSearch(search, nsfw);
+	}
+
+	$: {
+		if ($canLoadMore) {
+			loadMore();
+		}
 	}
 </script>
 
@@ -139,6 +170,14 @@
 					</AnimeCard>
 				</slot>
 			</AnimeListGrid>
+
+			<div bind:this={loadMoreMarkerElement} />
+
+			{#if isLoadingMore}
+				<div class="w-full text-center">
+					<DotLoader class="bg-orange-500/80" />
+				</div>
+			{/if}
 		{/if}
 	</div>
 </PageTransition>

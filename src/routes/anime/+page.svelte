@@ -7,7 +7,6 @@
 
 <script lang="ts">
 	import { Alert, Checkbox, Spinner } from 'flowbite-svelte';
-	import AnimeCard from '../../components/AnimeCard.svelte';
 	import AnimeSearchBar from './AnimeSearchBar.svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';

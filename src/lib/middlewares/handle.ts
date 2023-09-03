@@ -64,8 +64,8 @@ function loggerMiddleware(): Middleware {
         const status = response.status;
         const url = request.url;
         const now = new Date().toISOString();
-        // ❌ 2023-09-01T23:13:48.386Z - GET 200 - /api/users/ 230ms
-        console.log(`${icon} ${now} - ${method} ${status} [${elapsedMs}ms] - ${url}`);
+        // ❌ 2023-09-01T23:13:48.386Z - GET 200 [230ms] /api/users/ 
+        console.log(`${icon} ${now} - ${method} ${status} [${elapsedMs}ms] ${url}`);
 
         return response;
     }
