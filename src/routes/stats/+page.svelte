@@ -4,7 +4,7 @@
 	import type { ActionData, PageServerData } from './$types';
 	import CalculateStatsButton from '$components/CalculateStatsButton.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
-	import StairsLoader from '$components/loaders/StairsLoader.svelte';
+	import CubesLoader from '$components/loaders/CubesLoader.svelte';
 	import { onMount } from 'svelte';
 
 	export let data: PageServerData;
@@ -25,7 +25,7 @@
 
 		{#if loading}
 			<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
-				<StairsLoader size={30} class="text-violet-500" />
+				<CubesLoader size={30} class="text-violet-500" />
 			</div>
 		{:else if result}
 			<StatTabs stats={result.stats} animeList={result.animeList}>
