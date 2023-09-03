@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import { Tabs, TabItem } from 'flowbite-svelte';
 	import ScoreStatsSummary from './ScoreStatsSummary.svelte';
 	import ScoreByTime from './ScoreByTime.svelte';
 	import ScoreByGenre from './ScoreByGenre.svelte';
 	import ScoreByAnimeStudio from './ScoreByAnimeStudio.svelte';
 
-	export let animeList: AnimeNodeWithStatus[];
+	export let animeList: AnimeObjectWithStatus[];
 </script>
 
 <Tabs style="pill" contentClass="bg-transparent w-full mt-4">

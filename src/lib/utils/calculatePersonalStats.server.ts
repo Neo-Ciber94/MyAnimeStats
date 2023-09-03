@@ -1,4 +1,4 @@
-import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
+import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import type { calculatedStatsSchema } from "$lib/types";
 import type { z } from "zod";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
@@ -7,7 +7,7 @@ import { PERSONAL_STATS } from "@/common/constants";
 
 type PersonalStats = z.infer<typeof calculatedStatsSchema>;
 
-export function calculatePersonalStats(animeList: AnimeNodeWithStatus[]): PersonalStats {
+export function calculatePersonalStats(animeList: AnimeObjectWithStatus[]): PersonalStats {
     return {
         strength: calculateStrength(animeList).value,
         charisma: calculateCharisma(animeList).value,
@@ -16,7 +16,7 @@ export function calculatePersonalStats(animeList: AnimeNodeWithStatus[]): Person
     }
 }
 
-function calculateStrength(animeList: AnimeNodeWithStatus[]) {
+function calculateStrength(animeList: AnimeObjectWithStatus[]) {
     const max = PERSONAL_STATS.MAX_STRENGTH;
 
     const STRENGTH_GENRES = [
@@ -51,7 +51,7 @@ function calculateStrength(animeList: AnimeNodeWithStatus[]) {
     return { value, max }
 }
 
-function calculateCharisma(animeList: AnimeNodeWithStatus[]) {
+function calculateCharisma(animeList: AnimeObjectWithStatus[]) {
     const max = PERSONAL_STATS.MAX_CHARISMA;
 
     const CHARISMA_GENRES = [
@@ -83,7 +83,7 @@ function calculateCharisma(animeList: AnimeNodeWithStatus[]) {
     return { value, max }
 }
 
-function calculateIntelligence(animeList: AnimeNodeWithStatus[]) {
+function calculateIntelligence(animeList: AnimeObjectWithStatus[]) {
     const max = PERSONAL_STATS.MAX_INTELLIGENCE;
 
     const INTELLIGENCE_GENRES = [
@@ -119,7 +119,7 @@ function calculateIntelligence(animeList: AnimeNodeWithStatus[]) {
     return { value, max }
 }
 
-function calculateVitality(animeList: AnimeNodeWithStatus[]) {
+function calculateVitality(animeList: AnimeObjectWithStatus[]) {
     const max = PERSONAL_STATS.MAX_VITALITY;
 
     const VITALITY_GENRES = [

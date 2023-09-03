@@ -10,13 +10,13 @@
 	import AnimeByGenreGraph from '$components/AnimeByGenreGraph.svelte';
 	import type { CalculatedStats } from '$lib/types';
 	import AnimeWatchedByYear from './AnimeWatchedByYear.svelte';
-	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 	import UserBadgeList from './UserBadgeList.svelte';
 	import { useUserBadges } from '$stores/userBadges';
 
 	export let stats: CalculatedStats;
-	export let animeList: AnimeNodeWithStatus[];
+	export let animeList: AnimeObjectWithStatus[];
 
 	const userBadges = useUserBadges(animeList);
 </script>

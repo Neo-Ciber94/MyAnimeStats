@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import Enumerable from 'linq';
 	import dayjs from 'dayjs';
 	import Color from 'color';
 
-	export let animeList: AnimeNodeWithStatus[];
+	export let animeList: AnimeObjectWithStatus[];
 
 	let chartCanvas: HTMLCanvasElement;
 

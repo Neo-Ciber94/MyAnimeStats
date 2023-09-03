@@ -150,14 +150,14 @@ export type AnimeObject = {
     node: AnimeNode
 };
 
-export type AnimeNodeWithRanking = AnimeObject & {
+export type AnimeObjectWithRanking = AnimeObject & {
     ranking: {
         rank: number,
         previous_rank?: number
     }
 }
 
-export type AnimeNodeWithStatus = AnimeObject & {
+export type AnimeObjectWithStatus = AnimeObject & {
     list_status: MyListStatus
 }
 
@@ -169,9 +169,9 @@ export type AnimeApiResponse<T extends AnimeObject = AnimeObject> = {
     };
 };
 
-export type AnimeRankingApiResponse = AnimeApiResponse<AnimeNodeWithRanking>;
+export type AnimeRankingApiResponse = AnimeApiResponse<AnimeObjectWithRanking>;
 
-export type AnimeStatusApiResponse = AnimeApiResponse<AnimeNodeWithStatus>;
+export type AnimeStatusApiResponse = AnimeApiResponse<AnimeObjectWithStatus>;
 
 // https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
 export const animeSeasonSchema = z.enum(['winter', 'spring', 'summer', 'fall'])

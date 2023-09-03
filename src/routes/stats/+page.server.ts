@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
-import type { AnimeNodeWithStatus } from "$lib/myanimelist/common/types";
+import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import type { CalculatedStats } from "$lib/types";
 import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
@@ -37,7 +37,7 @@ export const load = (async ({ locals }) => {
         return {
             data: {
                 stats: userAnimeStats.stats,
-                animeList: userAnimeList.animeList as AnimeNodeWithStatus[],
+                animeList: userAnimeList.animeList as AnimeObjectWithStatus[],
                 lastUpdated: userAnimeList.lastUpdated,
                 canRecalculate
             }
@@ -80,7 +80,7 @@ export const actions = {
 
 
 
-async function calculateUserStats(cookies: Cookies,) {
+async function calculateUserStats(cookies: Cookies) {
     const { userId } = await getRequiredServerSession(cookies);
     const animeList = await getUserMyAnimeList(cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
@@ -109,11 +109,11 @@ async function calculateUserStats(cookies: Cookies,) {
 
 async function getUserMyAnimeList(cookies: Cookies) {
     const { userId } = await getRequiredServerSession(cookies);
-    const userAnimeList = await UserAnimeListCacheService.getAnimeList(userId);
+    // const userAnimeList = await UserAnimeListCacheService.getAnimeList(userId);
 
-    if (userAnimeList != null) {
-        return userAnimeList.animeList as AnimeNodeWithStatus[];
-    }
+    // if (userAnimeList != null) {
+    //     return userAnimeList.animeList as AnimeNodeWithStatus[];
+    // }
 
     const animeList = await fetchMyAnimeList(cookies);
     await UserAnimeListCacheService.setAnimeList(userId, animeList);
@@ -121,7 +121,7 @@ async function getUserMyAnimeList(cookies: Cookies) {
 }
 
 async function fetchMyAnimeList(cookies: Cookies) {
-    const anime: AnimeNodeWithStatus[] = [];
+    const anime: AnimeObjectWithStatus[] = [];
     const { accessToken } = await getRequiredServerSession(cookies);
     const limit = 500;
     let offset = 0;
@@ -134,7 +134,7 @@ async function fetchMyAnimeList(cookies: Cookies) {
             const res = await malClient.getUserAnimeList("@me", {
                 limit,
                 offset,
-                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", 'list_status', 'mean']
+                fields: ["genres", "start_season", "studios", "my_list_status", "end_date", 'list_status', 'status', 'mean']
             });
 
             const data = res.data;

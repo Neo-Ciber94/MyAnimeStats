@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import { ChartSolid, CheckSolid, ChevronDoubleRightOutline } from 'flowbite-svelte-icons';
 	import Enumerable from 'linq';
 	import AnimatedNumber from './AnimatedNumber.svelte';
 	import { fade } from 'svelte/transition';
 
-	export let animeList: AnimeNodeWithStatus[];
+	export let animeList: AnimeObjectWithStatus[];
 
 	const averageScore = Enumerable.from(animeList).average((x) => x.list_status.score);
 	const bestScored = Enumerable.from(animeList)

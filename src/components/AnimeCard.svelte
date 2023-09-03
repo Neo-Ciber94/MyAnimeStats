@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="T extends AnimeObject">
 	import type { AnimeObject } from '$lib/myanimelist/common/types';
 	import { Badge } from 'flowbite-svelte';
 	import AiringStatusBadge from './AiringStatusBadge.svelte';
@@ -27,9 +27,9 @@
 		<slot name="header">
 			<AiringStatusBadge status={anime.node.status} class="text-[10px]" />
 			{#if anime.node.mean}
-				<Badge rounded color="purple" class="font-bold text-[10px]"
-					>{anime.node.mean.toFixed(2)}</Badge
-				>
+				<Badge rounded color="purple" class="font-bold text-[10px]" title="User score">
+					{anime.node.mean.toFixed(2)}
+				</Badge>
 			{/if}
 		</slot>
 	</div>

@@ -1,4 +1,4 @@
-import type { AnimeNodeWithStatus } from "../myanimelist/common/types";
+import type { AnimeObjectWithStatus } from "../myanimelist/common/types";
 import type { User } from "../myanimelist/common/user";
 
 /**
@@ -82,5 +82,5 @@ export interface AnimeBadge {
      * @param user The user.
      * @returns `true` if can show the badge for the user.
      */
-    canHaveBadge: (animeList: AnimeNodeWithStatus[], user: User) => boolean;
+    canHaveBadge: (animeList: AnimeObjectWithStatus[], user: User) => boolean;
 }

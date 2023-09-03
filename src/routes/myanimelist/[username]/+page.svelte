@@ -5,14 +5,14 @@
 	import { Checkbox, Spinner } from 'flowbite-svelte';
 	import { InboxSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';
-	import type { AnimeNodeWithStatus } from '@/lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '@/lib/myanimelist/common/types';
 	import ANIME_GENRES from '@/types/generated/animeGenres.generated';
 	import { onMount } from 'svelte';
 	import Enumerable from 'linq';
 
 	export let data: PageServerData;
 
-	let currentAnimeList: AnimeNodeWithStatus[] = [];
+	let currentAnimeList: AnimeObjectWithStatus[] = [];
 	let timeout: number | undefined;
 	let nsfw = false;
 	let mounted = false;

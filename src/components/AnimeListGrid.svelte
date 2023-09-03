@@ -13,7 +13,9 @@
 	{#each animeList as anime, idx}
 		{#key anime.node.id}
 			<div class="fade-in h-full opacity-0 scale-50" style="--animation-delay: {(idx % 10) * 50}ms">
-				<AnimeCard {anime} />
+				<slot {anime}>
+					<AnimeCard {anime} />
+				</slot>
 			</div>
 		{/key}
 	{/each}

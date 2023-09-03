@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { KV } from "../kv";
-import type { AnimeNodeWithStatus } from "../myanimelist/common/types";
+import type { AnimeObjectWithStatus } from "../myanimelist/common/types";
 import { userAnimeListSchema } from "../types";
 
 function getKey(userId: number) {
@@ -19,11 +19,11 @@ export namespace UserAnimeListCacheService {
 
         return {
             ...result,
-            animeList: result.animeList as AnimeNodeWithStatus[],
+            animeList: result.animeList as AnimeObjectWithStatus[],
         }
     }
 
-    export async function setAnimeList(userId: number, animeList: AnimeNodeWithStatus[]) {
+    export async function setAnimeList(userId: number, animeList: AnimeObjectWithStatus[]) {
         const key = getKey(userId);
         const kv = KV.current();
 

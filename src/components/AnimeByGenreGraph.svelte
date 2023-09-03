@@ -3,9 +3,9 @@
 	import { Chart, registerables } from 'chart.js';
 	import Color from 'color';
 	import { PASTEL_COLORS } from '../common/constants';
-	import type { AnimeNodeWithStatus } from '@/lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '@/lib/myanimelist/common/types';
 
-	export let animeList: AnimeNodeWithStatus[];
+	export let animeList: AnimeObjectWithStatus[];
 	let chartCanvas: HTMLCanvasElement;
 	const animeData: { genre: string; totalWatched: number }[] = [];
 

@@ -1,16 +1,16 @@
 <script lang="ts">
-	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import { hash, numberToColor } from '$lib/utils/helpers';
 	import { Chart, registerables } from 'chart.js';
 	import Color from 'color';
 	import Enumerable from 'linq';
 	import { onMount } from 'svelte';
 
-	export let animeList: AnimeNodeWithStatus[];
+	export let animeList: AnimeObjectWithStatus[];
 
 	let chartCanvas: HTMLCanvasElement;
 
-	const scoresByGenre = new Map<string, AnimeNodeWithStatus[]>();
+	const scoresByGenre = new Map<string, AnimeObjectWithStatus[]>();
 
 	for (const anime of animeList) {
 		for (const genre of anime.node.genres) {

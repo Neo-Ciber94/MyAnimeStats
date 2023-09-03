@@ -1,4 +1,4 @@
-import type { AnimeNodeWithStatus, WatchStatus } from "../myanimelist/common/types"
+import type { AnimeObjectWithStatus, WatchStatus } from "../myanimelist/common/types"
 import type { RenderBadgeIcon } from "./AnimeBadge"
 
 /**
@@ -46,7 +46,7 @@ export function badgeImage(opts: BadgeImageOptions): RenderBadgeIcon {
 }
 
 
-export function hadWatchedAnime(anime: AnimeNodeWithStatus) {
+export function hadWatchedAnime(anime: AnimeObjectWithStatus) {
     const watchedStatus = ['completed', 'dropped'] as WatchStatus[];
     return watchedStatus.includes(anime.list_status.status)
 }
