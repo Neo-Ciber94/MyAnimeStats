@@ -5,7 +5,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import { seasonToNumber, type AnimeObject, type AnimeSeason } from '$lib/myanimelist/common/types';
+	import {
+		seasonToNumber,
+		type AnimeObject,
+		type AnimeSeason
+	} from '$lib/myanimelist/common/types';
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
@@ -102,9 +106,9 @@
 			datasets.push({
 				label,
 				data: animeWatchedCount,
-				fill: false,
+				fill: true,
 				borderColor,
-				tension: 0.1
+				tension: 0.2
 			});
 		}
 

@@ -68,6 +68,7 @@
 		"svelte-portal": "^2.2.0",
 		"swiper": "^10.1.0",
 		"tailwind-merge": "^1.14.0",
+		"tailwindcss-animated": "^1.0.1",
 		"webcrypto-core": "^1.7.7",
 		"zod": "^3.21.4"
 	}

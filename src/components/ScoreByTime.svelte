@@ -33,8 +33,9 @@
 						data: scores,
 						backgroundColor: Color('#ff8000').fade(0.8).rgb().toString(),
 						borderColor: '#ff8000',
+						fill: true,
 						showLine: true,
-						tension: 1
+						tension: 0.4
 					}
 				]
 			},

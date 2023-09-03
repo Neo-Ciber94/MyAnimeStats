@@ -1,14 +1,17 @@
 <script lang="ts">
 	import type { AnimeNodeWithStatus } from '$lib/myanimelist/common/types';
-	import { ChevronRight } from 'flowbite-svelte';
 	import { ChartSolid, CheckSolid, ChevronDoubleRightOutline } from 'flowbite-svelte-icons';
 	import Enumerable from 'linq';
+	import AnimatedNumber from './AnimatedNumber.svelte';
+	import { fade } from 'svelte/transition';
 
 	export let animeList: AnimeNodeWithStatus[];
 
 	const averageScore = Enumerable.from(animeList).average((x) => x.list_status.score);
 	const bestScored = Enumerable.from(animeList)
 		.orderByDescending((x) => x.list_status.score)
+		.take(10)
+		.orderByDescending((x) => Math.random() * 100)
 		.take(5)
 		.toArray();
 
@@ -38,8 +41,9 @@
 		<div>
 			<span
 				class="bg-violet-600 text-white py-2 px-6 cursor-pointer shadow-lg text-center rounded-md"
-				>{averageScore.toFixed(2)}</span
 			>
+				<AnimatedNumber id="average-score" once value={averageScore} decimalPlaces={2} />
+			</span>
 		</div>
 	</div>
 
@@ -54,8 +58,9 @@
 		<div>
 			<span
 				class="bg-violet-600 text-white py-2 px-6 cursor-pointer shadow-lg text-center rounded-md"
-				>{getTypicalScore().toFixed(2)}</span
 			>
+				<AnimatedNumber id="typical-score" once value={getTypicalScore()} decimalPlaces={2} />
+			</span>
 		</div>
 	</div>
 
@@ -74,11 +79,11 @@
 					on:click={() => {
 						selectedBestAnimeIndex = selectedBestAnimeIndex === index ? -1 : index;
 					}}
+					style={`animation-delay: ${index * 100}ms;`}
 					class={`rounded-lg border-4 w-[200px] h-[200px] shadow-lg
-						overflow-hidden hover:rotate-3 rotate-1 transition duration-300
-						hover:scale-110 cursor-pointer ${
-							selectedBestAnimeIndex === index ? 'border-orange-500' : 'border-violet-500'
-						}`}
+			overflow-hidden hover:rotate-3 rotate-1 transition duration-300
+			hover:scale-110 cursor-pointer animate-fade-left animate-duration-300
+			${selectedBestAnimeIndex === index ? 'border-orange-500' : 'border-violet-500'}`}
 				>
 					<img
 						class="object-cover aspect-square"

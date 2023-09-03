@@ -33,7 +33,11 @@ const config = {
 			}
 		}
 	},
-	plugins: [require('flowbite/plugin'), require('tailwind-scrollbar')]
+	plugins: [
+		require('flowbite/plugin'),
+		require('tailwind-scrollbar'),
+		require('tailwindcss-animated')
+	]
 };
 
 module.exports = config;
