@@ -95,7 +95,7 @@
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
 		<AnimeSearchBar
-			placeholder="Search anime..."
+			placeholder="Search in list..."
 			on:search={(e) => handleSearch(e.detail, nsfw)}
 			bind:value={search}
 		/>
