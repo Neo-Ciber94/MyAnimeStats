@@ -62,6 +62,19 @@
 		};
 	});
 
+	onMount(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				open = false;
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
 	function addTag(newValue: T) {
 		search = '';
 		selected = [...selected, newValue];
@@ -225,6 +238,6 @@
 	}
 
 	ul::-webkit-scrollbar {
-		@apply w-4 ;
+		@apply w-4;
 	}
 </style>
