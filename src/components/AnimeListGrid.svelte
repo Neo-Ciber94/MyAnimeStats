@@ -1,8 +1,8 @@
-<script lang="ts">
+<script lang="ts" generics="TAnime extends AnimeObject">
 	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 	import AnimeCard from './AnimeCard.svelte';
 
-	export let animeList: AnimeObject[];
+	export let animeList: TAnime[];
 </script>
 
 <div
@@ -13,7 +13,7 @@
 	{#each animeList as anime, idx}
 		{#key anime.node.id}
 			<div class="fade-in h-full opacity-0 scale-50" style="--animation-delay: {(idx % 10) * 50}ms">
-				<slot {anime}>
+				<slot {anime} name="anime">
 					<AnimeCard {anime} />
 				</slot>
 			</div>

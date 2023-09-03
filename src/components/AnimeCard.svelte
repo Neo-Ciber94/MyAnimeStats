@@ -1,10 +1,10 @@
-<script lang="ts" generics="T extends AnimeObject">
+<script lang="ts" generics="TAnime extends AnimeObject">
 	import type { AnimeObject } from '$lib/myanimelist/common/types';
 	import { Badge } from 'flowbite-svelte';
 	import AiringStatusBadge from './AiringStatusBadge.svelte';
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 
-	export let anime: AnimeObject;
+	export let anime: TAnime;
 
 	function getImage() {
 		const image = anime.node.main_picture;
@@ -60,5 +60,7 @@
 		</div>
 	{/if}
 
-	<slot name="footer" />
+	<div class="mt-auto w-full">
+		<slot name="footer" />
+	</div>
 </a>

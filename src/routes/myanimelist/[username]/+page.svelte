@@ -2,13 +2,16 @@
 	import AnimeListGrid from '$components/AnimeListGrid.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
 	import AnimeSearchBar from '@/routes/anime/AnimeSearchBar.svelte';
-	import { Checkbox, Spinner } from 'flowbite-svelte';
+	import { Badge, Checkbox, Spinner } from 'flowbite-svelte';
 	import { InboxSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';
 	import type { AnimeObjectWithStatus } from '@/lib/myanimelist/common/types';
 	import ANIME_GENRES from '@/types/generated/animeGenres.generated';
 	import { onMount } from 'svelte';
 	import Enumerable from 'linq';
+	import AnimeCard from '$components/AnimeCard.svelte';
+	import AiringStatusBadge from '$components/AiringStatusBadge.svelte';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	export let data: PageServerData;
 
@@ -94,7 +97,48 @@
 				<span>No anime found</span>
 			</div>
 		{:else}
-			<AnimeListGrid animeList={currentAnimeList} />
+			<AnimeListGrid animeList={currentAnimeList}>
+				<slot slot="anime" let:anime>
+					<AnimeCard {anime}>
+						<slot slot="header">
+							{#if anime.node.my_list_status}
+								{@const my_list = anime.node.my_list_status}
+
+								{#if my_list.status}
+									<Badge rounded color="dark" class="font-bold text-[10px]">
+										{AnimeHelper.watchStatusToString(my_list.status)}
+									</Badge>
+								{/if}
+
+								{#if my_list.score}
+									<Badge rounded color="yellow" class="font-bold text-[10px]" title="My score">
+										{my_list.score.toFixed(2)}
+									</Badge>
+								{/if}
+							{/if}
+						</slot>
+
+						<slot slot="footer">
+							<div class="flex flex-row justify-center">
+								{#if anime.node.mean}
+									<Badge
+										border
+										rounded
+										color="purple"
+										class="font-bold text-[10px]"
+										title="User score"
+									>
+										User score
+										<span class="text-gray-900 ml-1">
+											{anime.node.mean.toFixed(2)}
+										</span>
+									</Badge>
+								{/if}
+							</div>
+						</slot>
+					</AnimeCard>
+				</slot>
+			</AnimeListGrid>
 		{/if}
 	</div>
 </PageTransition>
