@@ -11,6 +11,7 @@
 <script lang="ts">
 	import AlertDialog from '$components/AlertDialog.svelte';
 	import SelectList, { type SelectItem } from '$components/SelectList.svelte';
+	import { CloseButton } from 'flowbite-svelte';
 	import {
 		CalendarMonthSolid,
 		CalendarWeekSolid,
@@ -28,13 +29,32 @@
 	export let season: AnimeSeason | undefined = undefined;
 	export let status: WatchStatus | undefined = undefined;
 
-	const tempFilters: Filters = {
-        year,
-        season,
-        status
-    };
+	let tempFilters: Filters = {
+		year,
+		season,
+		status
+	};
 
-	let yearItems: SelectItem<number | undefined>[];
+	onMount(() => {
+		tempFilters = {
+			year,
+			season,
+			status
+		};
+	});
+
+	const yearItems = (function () {
+		const _yearItems: SelectItem<number | undefined>[] = Enumerable.from(years)
+			.select((x) => ({ label: String(x), value: x }))
+			.toArray();
+
+		_yearItems.splice(0, 0, {
+			label: 'Any year',
+			value: undefined
+		});
+
+		return _yearItems;
+	})();
 
 	const seasonItems: SelectItem<AnimeSeason | undefined>[] = [
 		{ label: 'Any season', value: undefined },
@@ -53,22 +73,11 @@
 		{ label: 'Dropped', value: 'dropped' }
 	];
 
-	onMount(() => {
-		yearItems = Enumerable.from(years)
-			.select((x) => ({ label: String(x), value: x }))
-			.toArray();
-
-		yearItems.splice(0, 0, {
-			label: 'Any year',
-			value: undefined
-		});
-	});
-
 	function handleFilter() {
 		year = tempFilters.year;
 		season = tempFilters.season;
 		status = tempFilters.status;
-		isOpen = false
+		isOpen = false;
 	}
 </script>
 
@@ -83,23 +92,56 @@
 
 		<div class="py-4 flex flex-col gap-2">
 			<SelectList items={yearItems} bind:selected={tempFilters.year}>
-				<div slot="selected" let:selectedItem class="flex flex-row gap-3">
-					<CalendarMonthSolid class="text-violet-500" />
-					<span>{selectedItem.label}</span>
+				<div slot="selected" let:selectedItem class="flex flex-row items-center w-full">
+					<div class="flex flex-row gap-3">
+						<CalendarMonthSolid class="text-violet-500" />
+						<span>{selectedItem.label}</span>
+					</div>
+					{#if tempFilters.year}
+						<CloseButton
+							class="text-red-500 ml-auto focus:ring-0 hover:bg-transparent hover:text-red-700"
+							on:click={(e) => {
+								e.stopPropagation();
+								tempFilters.year = undefined;
+							}}
+						/>
+					{/if}
 				</div>
 			</SelectList>
 
 			<SelectList items={seasonItems} bind:selected={tempFilters.season}>
-				<div slot="selected" let:selectedItem class="flex flex-row gap-3">
-					<CalendarWeekSolid class="text-violet-500" />
-					<span>{selectedItem.label}</span>
+				<div slot="selected" let:selectedItem class="flex flex-row items-center w-full">
+					<div class="flex flex-row gap-3">
+						<CalendarWeekSolid class="text-violet-500" />
+						<span>{selectedItem.label}</span>
+					</div>
+					{#if tempFilters.season}
+						<CloseButton
+							class="text-red-500 ml-auto focus:ring-0 hover:bg-transparent hover:text-red-700"
+							on:click={(e) => {
+								e.stopPropagation();
+								tempFilters.season = undefined;
+							}}
+						/>
+					{/if}
 				</div>
 			</SelectList>
 
 			<SelectList items={statusItems} bind:selected={tempFilters.status}>
-				<div slot="selected" let:selectedItem class="flex flex-row gap-3">
-					<QuestionCircleSolid class="text-violet-500" />
-					<span>{selectedItem.label}</span>
+				<div slot="selected" let:selectedItem class="flex flex-row items-center w-full">
+					<div class="flex flex-row gap-3">
+						<QuestionCircleSolid class="text-violet-500" />
+						<span>{selectedItem.label}</span>
+					</div>
+					{#if tempFilters.status}
+						<CloseButton
+							class="text-red-500 ml-auto focus:ring-0 hover:bg-transparent hover:text-red-700"
+							on:click={(e) => {
+								e.stopPropagation();
+								tempFilters.status = undefined;
+							}}
+						/>
+					{/if}
 				</div>
 			</SelectList>
 		</div>

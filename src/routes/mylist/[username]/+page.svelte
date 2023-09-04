@@ -82,7 +82,7 @@
 	const releaseYears = Enumerable.from(data.data.userAnimeList?.animeList || [])
 		.select((x) => x.node.start_season!.year)
 		.distinct()
-		.orderByDescending(x => x)
+		.orderByDescending((x) => x)
 		.toArray();
 
 	const animeListSorter = () => {
@@ -219,9 +219,9 @@
 		status = undefined;
 	}
 
-	function getFiltersText() {
+	$: filtersText = (function () {
 		const filters: string[] = [];
-	
+
 		if (year) {
 			filters.push('Year');
 		}
@@ -239,7 +239,7 @@
 		}
 
 		return null;
-	}
+	})();
 
 	$: {
 		const genresIds = selectedGenres.map((x) => x.id);
@@ -255,22 +255,27 @@
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
-		<div class="flex flex-row mb-1 sm:justify-start justify-end gap-2">
+		<div class="flex flex-row mb-1 justify-start gap-2 items-center">
 			<div class="flex flex-row gap-2 items-center">
 				<button
 					on:click={() => (isFilterOpen = !isFilterOpen)}
-					class="text-sm text-pink-500 hover:text-pink-400 py-2 font-medium font-mono
-				flex flex-row items-center gap-1 transition duration-200 active:text-pink-800"
+					class="text-sm text-pink-500 hover:text-pink-400 mb-2 font-medium font-mono
+				flex flex-row items-center gap-1 transition duration-200 active:text-pink-800 group"
 				>
-					<FilterOutline class="outline-none" />
-					<span>Filters</span>
-				</button>
+					<div class="flex gap-1 rounded-lg group-hover:bg-pink-500/10 p-2">
+						<FilterOutline class="outline-none" />
+						<span>Filters</span>
+					</div>
 
-				<span class="text-pink-500 text-xs italic">{getFiltersText()}</span>
+					<span class="text-pink-400 text-xs italic ml-2 font-extralight">{filtersText || ''}</span>
+				</button>
 			</div>
 
-			{#if getFiltersText()}
-				<CloseButton on:click={clearFilters} />
+			{#if filtersText}
+				<CloseButton
+					on:click={clearFilters}
+					class="ml-0 text-red-500 -mt-2 hover:bg-transparent hover:text-red-600"
+				/>
 			{/if}
 		</div>
 		<AnimeSearchBar
@@ -385,7 +390,15 @@
 	</div>
 </PageTransition>
 
-<FiltersDialog bind:isOpen={isFilterOpen} years={releaseYears} bind:year bind:season bind:status />
+{#if mounted && isFilterOpen}
+	<FiltersDialog
+		bind:isOpen={isFilterOpen}
+		years={releaseYears}
+		bind:year
+		bind:season
+		bind:status
+	/>
+{/if}
 
 <style>
 	:global(body) {

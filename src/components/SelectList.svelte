@@ -12,6 +12,7 @@
 		ListboxOptions,
 		ListboxOption
 	} from '@rgossiaux/svelte-headlessui';
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
 	export let selected: T;
@@ -19,12 +20,14 @@
 
 	$: selectedItem = items?.find((x) => x.value === selected) || items?.[0];
 
+	const dispatch = createEventDispatcher<{ change: T }>();
+
 	// According docs we can use any value: https://svelte-headlessui.goss.io/docs/2.0/listbox
 	const asAny = (x: unknown) => x as any;
 </script>
 
 <div class="w-full flex flex-row items-center">
-	<Listbox bind:value={selected} let:open class="w-full relative py-4 ">
+	<Listbox bind:value={selected} let:open class="w-full relative py-4">
 		<ListboxButton
 			class="text-base !z-0 flex flex-row text-start text-gray-200 border-b-2 pb-2 border-b-violet-500 w-full"
 		>
@@ -42,8 +45,10 @@
 					{#each items as item (item.value)}
 						<ListboxOption
 							value={asAny(item.value)}
-							class={`text-white hover:bg-violet-500 w-full py-2 px-4 cursor-pointer
-                            ${item.value === selectedItem.value ? 'bg-violet-500' : ''} `}
+							on:click={() => dispatch('change', item.value)}
+							class={({ active }) =>
+								`text-white hover:bg-violet-500 w-full py-2 px-4 cursor-pointer
+                            	${active ? 'bg-violet-500' : ''} `}
 						>
 							{item.label}
 						</ListboxOption>
