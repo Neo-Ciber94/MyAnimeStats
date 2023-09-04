@@ -5,6 +5,7 @@
 	import { twMerge } from 'tailwind-merge';
 
 	export let isOpen: boolean;
+	export let containerClass: string | undefined = undefined;
 	export let dialogClass: string | undefined = undefined;
 	export let backdropClass: string | undefined = undefined;
 
@@ -17,6 +18,7 @@
 		if (cleanupScrollLock) {
 			cleanupScrollLock();
 		}
+
 		if (!isOpen) return;
 		if (!mounted) return;
 
@@ -65,7 +67,7 @@
 {#if isOpen}
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="relative w-full">
+	<div class="relative w-full h-full">
 		<slot {closeDialog} name="backdrop">
 			<div
 				in:fade={{ duration: 200 }}
@@ -81,7 +83,10 @@
 		<div
 			in:scale={{ duration: 400, start: 0.9, opacity: 0.5, easing: quintOut }}
 			out:scale={{ duration: 400, start: 0.9, opacity: 0, easing: quintOut }}
-			class="fixed w-screen left-0 flex flex-row justify-center bottom-1/2 z-40"
+			class={twMerge(
+				'fixed w-screen left-0 flex flex-row justify-center bottom-1/2 top-1/2 z-40 items-center',
+				containerClass
+			)}
 		>
 			<div class={dialogClass}>
 				<slot />

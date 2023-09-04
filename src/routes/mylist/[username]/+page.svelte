@@ -3,7 +3,10 @@
 		search: z.string().default('').catch(''),
 		nsfw: z.coerce.boolean().default(false).catch(false),
 		genres: z.array(z.coerce.number()).default([]).catch([]),
-		order_by: animeOrderBySchema.default('my_score_desc').catch('my_score_desc').optional()
+		order_by: animeOrderBySchema.default('my_score_desc').catch('my_score_desc').optional(),
+		year: z.coerce.number().min(1900).optional().catch(undefined),
+		season: animeSeasonSchema.optional().catch(undefined),
+		status: watchStatusSchema.optional().catch(undefined)
 	});
 
 	type Query = z.infer<typeof querySchema>;
@@ -13,10 +16,17 @@
 	import AnimeListGrid from '$components/AnimeListGrid.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
 	import AnimeSearchBar from '@/routes/anime/AnimeSearchBar.svelte';
-	import { Badge, Checkbox, Spinner } from 'flowbite-svelte';
-	import { InboxSolid } from 'flowbite-svelte-icons';
+	import { Badge, Checkbox, CloseButton, Spinner } from 'flowbite-svelte';
+	import { FilterOutline, InboxSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';
-	import type { AnimeObjectWithStatus, Genre } from '@/lib/myanimelist/common/types';
+	import {
+		animeSeasonSchema,
+		type AnimeObjectWithStatus,
+		type AnimeSeason,
+		type Genre,
+		type WatchStatus,
+		watchStatusSchema
+	} from '@/lib/myanimelist/common/types';
 	import ANIME_GENRES from '@/types/generated/animeGenres.generated';
 	import { onMount } from 'svelte';
 	import Enumerable from 'linq';
@@ -31,6 +41,7 @@
 	import { useZodSearchParams } from '@/hooks/useZodSearchParams';
 	import type { AnimeOrderBy } from './AnimeOrderBySelector.svelte';
 	import AnimeOrderBySelector, { animeOrderBySchema } from './AnimeOrderBySelector.svelte';
+	import FiltersDialog from './AnimeFilterDialog.svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -51,6 +62,7 @@
 	let loadingTimeout: number | undefined;
 	let mounted = false;
 	let isLoadingMore = false;
+	let isFilterOpen = false;
 
 	// genres
 	const genres = Enumerable.from(data.data.userAnimeList?.animeList || [])
@@ -63,6 +75,15 @@
 	let search = '';
 	let nsfw = false;
 	let orderBy: AnimeOrderBy | undefined = undefined;
+	let year: number | undefined = undefined;
+	let season: AnimeSeason | undefined = undefined;
+	let status: WatchStatus | undefined = undefined;
+
+	const releaseYears = Enumerable.from(data.data.userAnimeList?.animeList || [])
+		.select((x) => x.node.start_season!.year)
+		.distinct()
+		.orderByDescending(x => x)
+		.toArray();
 
 	const animeListSorter = () => {
 		return (anime: AnimeObjectWithStatus) => {
@@ -124,6 +145,21 @@
 				const selectedGenreIds = node.genres.map((x) => x.id);
 				return selectedGenres.every((genreId) => selectedGenreIds.includes(genreId));
 			})
+			.where(({ node, list_status }) => {
+				if (year && node.start_season?.year !== year) {
+					return false;
+				}
+
+				if (season && node.start_season?.season !== season) {
+					return false;
+				}
+
+				if (status && list_status.status !== status) {
+					return false;
+				}
+
+				return true;
+			})
 			.orderBy(animeListSorter())
 			.toArray();
 
@@ -161,9 +197,12 @@
 		nsfw = $searchParams.nsfw;
 		selectedGenres = genres.filter((x) => $searchParams.genres.includes(x.id));
 		orderBy = $searchParams.order_by;
+		year = $searchParams.year;
+		season = $searchParams.season;
+		status = $searchParams.status;
 
 		const genresIds = selectedGenres.map((x) => x.id);
-		searchAnime({ search, nsfw, genres: genresIds, order_by: orderBy });
+		searchAnime({ search, nsfw, genres: genresIds, order_by: orderBy, year, season, status });
 
 		// loaded
 		mounted = true;
@@ -174,9 +213,37 @@
 		selectedGenres = event.detail as Genre[];
 	}
 
+	function clearFilters() {
+		year = undefined;
+		season = undefined;
+		status = undefined;
+	}
+
+	function getFiltersText() {
+		const filters: string[] = [];
+	
+		if (year) {
+			filters.push('Year');
+		}
+
+		if (season) {
+			filters.push('Season');
+		}
+
+		if (status) {
+			filters.push('Status');
+		}
+
+		if (filters.length > 0) {
+			return `Filtering by ${filters.join(', ')}`;
+		}
+
+		return null;
+	}
+
 	$: {
 		const genresIds = selectedGenres.map((x) => x.id);
-		handleSearch({ search, nsfw, order_by: orderBy, genres: genresIds });
+		handleSearch({ search, nsfw, order_by: orderBy, genres: genresIds, year, season, status });
 	}
 
 	$: {
@@ -188,15 +255,32 @@
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
+		<div class="flex flex-row mb-1 sm:justify-start justify-end gap-2">
+			<div class="flex flex-row gap-2 items-center">
+				<button
+					on:click={() => (isFilterOpen = !isFilterOpen)}
+					class="text-sm text-pink-500 hover:text-pink-400 py-2 font-medium font-mono
+				flex flex-row items-center gap-1 transition duration-200 active:text-pink-800"
+				>
+					<FilterOutline class="outline-none" />
+					<span>Filters</span>
+				</button>
+
+				<span class="text-pink-500 text-xs italic">{getFiltersText()}</span>
+			</div>
+
+			{#if getFiltersText()}
+				<CloseButton on:click={clearFilters} />
+			{/if}
+		</div>
 		<AnimeSearchBar
 			placeholder="Search in list..."
 			on:search={(e) => handleSearch((x) => ({ ...x, search: e.detail }))}
 			bind:value={search}
 		/>
 
-		<div class="flex flex-row gap-2 w-full mt-2">
+		<div class="flex flex-col sm:flex-row gap-2 w-full mt-2">
 			<AnimeGenreSelector {genres} bind:selected={selectedGenres} on:change={handleGenreChange} />
-
 			<AnimeOrderBySelector bind:selected={orderBy} />
 		</div>
 
@@ -300,6 +384,8 @@
 		{/if}
 	</div>
 </PageTransition>
+
+<FiltersDialog bind:isOpen={isFilterOpen} years={releaseYears} bind:year bind:season bind:status />
 
 <style>
 	:global(body) {

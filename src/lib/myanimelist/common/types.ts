@@ -9,7 +9,8 @@ export type AiringStatus = 'finished_airing' | 'currently_airing' | 'not_yet_air
 
 export type MediaType = "unknown" | "tv" | "ova" | "movie" | "special" | "ona" | "music";
 
-export type WatchStatus = 'watching' | 'completed' | 'on_hold' | 'dropped' | 'plan_to_watch'
+export const watchStatusSchema = z.enum(['watching', 'completed', 'on_hold', 'dropped', 'plan_to_watch'])
+export type WatchStatus = z.infer<typeof watchStatusSchema>;
 
 export type Rating = "g" | "pg" | "pg_13" | "r" | "r+" | "rx";
 

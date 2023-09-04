@@ -37,7 +37,7 @@
 </script>
 
 <div class="w-full flex flex-row items-center">
-	<Listbox bind:value={selected} let:open class="z-30 w-full relative py-4">
+	<Listbox bind:value={selected} let:open class="z-10 w-full relative py-4">
 		<ListboxButton
 			class="text-base flex flex-row text-start text-gray-200 border-b-2 pb-2 border-b-violet-500 w-full"
 		>
