@@ -4,12 +4,11 @@ import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import type { CalculatedStats } from "$lib/types";
-import { MALClient, MalHttpError } from "$lib/myanimelist/api";
 import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
 import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { UserAnimeListCacheService } from "@/lib/services/userAnimeListCacheService";
+import { UserAnimeListService } from "@/lib/services/userAnimeListService";
 import { UserStatsService } from "@/lib/services/userStatsService";
 import { dev } from "$app/environment";
 dayjs.extend(isSameOrAfter);
@@ -24,7 +23,7 @@ export const load = (async ({ locals }) => {
     try {
         const userId = locals.authenticatedUser.user.id;
 
-        const userAnimeList = await UserAnimeListCacheService.getAnimeList(userId);
+        const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
         const userAnimeStats = await UserStatsService.getStats(userId);
 
         if (userAnimeList == null || userAnimeStats == null) {
@@ -82,7 +81,7 @@ export const actions = {
 
 async function calculateUserStats(cookies: Cookies) {
     const { userId } = await getRequiredServerSession(cookies);
-    const animeList = await getUserMyAnimeList(cookies);
+    const animeList = await UserAnimeListService.fetchCurrentUserAnimeList(cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user`);
 
     let userStats = await UserStatsService.getStats(userId);
@@ -105,67 +104,4 @@ async function calculateUserStats(cookies: Cookies) {
     await UserStatsService.setStats(userId, stats);
 
     return { userStats, animeList };
-}
-
-async function getUserMyAnimeList(cookies: Cookies) {
-    const { userId } = await getRequiredServerSession(cookies);
-    // const userAnimeList = await UserAnimeListCacheService.getAnimeList(userId);
-
-    // if (userAnimeList != null) {
-    //     return userAnimeList.animeList as AnimeNodeWithStatus[];
-    // }
-
-    const animeList = await fetchMyAnimeList(cookies);
-    await UserAnimeListCacheService.setAnimeList(userId, animeList);
-    return animeList;
-}
-
-async function fetchMyAnimeList(cookies: Cookies) {
-    const anime: AnimeObjectWithStatus[] = [];
-    const { accessToken } = await getRequiredServerSession(cookies);
-    const limit = 500;
-    let offset = 0;
-
-    const malClient = new MALClient({ accessToken });
-
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-        try {
-            const res = await malClient.getUserAnimeList("@me", {
-                limit,
-                offset,
-                fields: [
-                    'genres',
-                    'start_season',
-                    'studios',
-                    'my_list_status',
-                    'end_date',
-                    'list_status',
-                    'status',
-                    'mean',
-                    'rank'
-                ]
-            });
-
-            const data = res.data;
-            anime.push(...data);
-
-            if (res.paging.next == null) {
-                break;
-            }
-        }
-        catch (err) {
-            console.error(err);
-
-            if (err instanceof MalHttpError) {
-                throw error(err.status, err.message ?? "failed to load myanimelist");
-            }
-
-            throw error(500, err?.toString() ?? "failed to load myanimelist");
-        }
-
-        offset += limit;
-    }
-
-    return anime;
 }
