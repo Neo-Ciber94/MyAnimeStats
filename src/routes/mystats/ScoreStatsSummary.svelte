@@ -72,14 +72,14 @@
 			<span class="text-orange-500">Best scored</span>
 		</div>
 
-		<div class="w-full p-4 flex flex-row flex-wrap justify-center gap-4">
+		<div class="w-full p-2 sm:p-4 flex flex-row flex-wrap justify-center gap-2 sm:gap-4">
 			{#each bestScored as anime, index}
 				<button
 					on:click={() => {
 						selectedBestAnimeIndex = selectedBestAnimeIndex === index ? -1 : index;
 					}}
 					style={`animation-delay: ${index * 100}ms;`}
-					class={`rounded-lg border-4 w-[200px] h-[200px] shadow-lg
+					class={`rounded-lg border-4 w-[max(120px,30vw)] h-[max(120px,30vw)] sm:w-[200px] sm:h-[200px] shadow-lg
 			overflow-hidden hover:rotate-3 rotate-1 transition duration-300
 			hover:scale-110 cursor-pointer animate-fade-left animate-duration-300
 			${selectedBestAnimeIndex === index ? 'border-orange-500' : 'border-violet-500'}`}
