@@ -65,8 +65,10 @@
 			<a
 				href="/anime"
 				class={cx(
-					'text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
-					$page.url.pathname === '/anime' && 'text-pink-400 border-b-pink-500'
+					'relative group text-white hover:text-pink-400 transition duration-300',
+					`after:h-[2px] after:transition-all after:duration-300 after:mx-auto after:w-0 hover:after:w-full 
+						after:absolute after:bg-pink-500 after:bottom-0 after:left-0 after:right-0`,
+					$page.url.pathname === '/anime' && 'text-pink-400 after:w-full'
 				)}
 				>Anime
 			</a>
@@ -75,8 +77,10 @@
 				data-sveltekit-reload={$page.route.id === '/anime/season/[year]/[season]' ? true : 'off'}
 				href={`/anime/season/${year}/${season}`}
 				class={cx(
-					'text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
-					$page.url.pathname.startsWith('/anime/season') && 'text-pink-400 border-b-pink-500'
+					'relative text-white hover:text-pink-400 transition duration-300',
+					`after:h-[2px] after:transition-all after:duration-300 after:mx-auto after:w-0 hover:after:w-full 
+						after:absolute after:bg-pink-500 after:bottom-0 after:left-0 after:right-0`,
+					$page.url.pathname.startsWith('/anime/season') && 'text-pink-400 after:w-full'
 				)}
 			>
 				Season
@@ -87,8 +91,10 @@
 					id={ELEMENT_EMPHASIS_IDS.myStatsLink}
 					href="/mystats"
 					class={cx(
-						'inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
-						$page.url.pathname === '/mystats' && '!text-pink-400 border-b-pink-500'
+						'relative inline-flex text-white hover:text-pink-400 transition duration-300',
+						`after:h-[2px] after:transition-all after:duration-300 after:mx-auto after:w-0 hover:after:w-full 
+							after:absolute after:bg-pink-500 after:bottom-0 after:left-0 after:right-0`,
+						$page.url.pathname === '/mystats' && '!text-pink-400 after:w-full'
 					)}
 				>
 					<span class="text-red-500">My</span>
@@ -100,8 +106,10 @@
 					href="/mylist/@me"
 					on:click={() => elementEmphasis.removeEmphasis(ELEMENT_EMPHASIS_IDS.myListLink)}
 					class={cx(
-						'inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
-						$page.url.pathname === '/mylist/@me' && '!text-pink-400 border-b-pink-500'
+						'relative inline-flex text-white hover:text-pink-400 transition duration-300',
+						`after:h-[2px] after:transition-all after:duration-300 after:mx-auto after:w-0 hover:after:w-full 
+							after:absolute after:bg-pink-500 after:bottom-0 after:left-0 after:right-0`,
+						$page.url.pathname === '/mylist/@me' && '!text-pink-400 after:w-full'
 					)}
 				>
 					<span class="text-red-500">My</span>
