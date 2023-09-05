@@ -45,12 +45,6 @@
 		const image = data.main_picture;
 		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
 	}
-
-	$: {
-		if (typeof window !== 'undefined' && data.id) {
-			invalidateAll();
-		}
-	}
 </script>
 
 {#key data.id}
