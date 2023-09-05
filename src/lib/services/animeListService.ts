@@ -5,11 +5,12 @@ import { z } from "zod";
 import { KV } from "../kv";
 import { MALClient } from "../myanimelist/api";
 import dayjs from "dayjs";
+import type { AnimeObjectWithRanking } from "../myanimelist/common/types";
 
 const POPULAR_ANIME_KEY = 'most_popular_anime';
 
 const popularAnimeListSchema = z.object({
-    animeList: z.array(z.record(z.unknown())),
+    popularAnimeList: z.array(z.record(z.unknown())),
     lastUpdated: z.string().pipe(z.date())
 })
 
@@ -32,29 +33,29 @@ export namespace AnimeListService {
         });
 
         const kv = KV.current();
-        const animeList = result.data;
+        const popularAnimeList = result.data;
         await kv.set(POPULAR_ANIME_KEY, popularAnimeListSchema, {
-            animeList,
+            popularAnimeList,
             lastUpdated: new Date()
         })
 
-        return animeList;
+        return popularAnimeList;
     }
 
     export async function getPopularAnimeList() {
         const kv = KV.current();
-        const popularAnimeList = await kv.get(POPULAR_ANIME_KEY, popularAnimeListSchema);
+        const result = await kv.get(POPULAR_ANIME_KEY, popularAnimeListSchema);
 
-        if (popularAnimeList == null) {
+        if (result == null) {
             return calculatePopularAnimeList();
         }
 
-        const expirationDate = dayjs(popularAnimeList.lastUpdated).add(6, 'hour');
+        const expirationDate = dayjs(result.lastUpdated).add(6, 'hour');
 
         if (dayjs().isSameOrAfter(expirationDate, 'hour')) {
             return calculatePopularAnimeList();
         }
 
-        return popularAnimeList.animeList;
+        return result.popularAnimeList as AnimeObjectWithRanking[];
     }
 }

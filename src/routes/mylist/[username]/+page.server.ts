@@ -21,6 +21,5 @@ export const load: PageServerLoad = async ({ cookies, params: { username } }) =>
             userAnimeList,
             username
         },
-
     }
 };

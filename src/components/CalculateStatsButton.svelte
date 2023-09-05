@@ -1,5 +1,4 @@
 <script lang="ts">
-	import elementEmphasis from '$stores/elementEmphasis';
 	import { Button } from 'flowbite-svelte';
 	import { ChartSolid } from 'flowbite-svelte-icons';
 </script>
@@ -8,7 +7,6 @@
 	method="POST"
 	action="?/calculate"
 	on:submit={() => {
-		elementEmphasis.set({ myListEmphasis: true });
 	}}
 >
 	<Button type="submit" size="lg" color="purple" class="text-xl flex flex-row items-center gap-3">

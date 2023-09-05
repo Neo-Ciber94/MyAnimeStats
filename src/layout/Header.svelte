@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
 	import clsx from 'clsx';
-	import elementEmphasis from '$stores/elementEmphasis';
+	import { ELEMENT_EMPHASIS_IDS } from '$stores/_elementEmphasis';
 
 	const { season, year } = getCurrentAnimeSeason();
 </script>
@@ -86,14 +86,12 @@
 				</a>
 
 				<a
+					id={ELEMENT_EMPHASIS_IDS.myListLink}
 					href="/mylist/@me"
-					on:click={() => elementEmphasis.set({ myListEmphasis: false })}
+					
 					class={clsx(
 						`inline-flex text-white border-b-2 border-b-transparent 
-						hover:border-b-pink-500 hover:text-pink-400 transition duration-300`,
-						{
-							'delay-300 animate-bounce animate-infinite': $elementEmphasis.myListEmphasis
-						}
+						hover:border-b-pink-500 hover:text-pink-400 transition duration-300`
 					)}
 				>
 					<span class="text-red-500">My</span>
