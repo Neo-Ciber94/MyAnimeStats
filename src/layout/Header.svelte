@@ -6,8 +6,8 @@
 	import NavSearchBar from './NavSearchBar.svelte';
 	import { page } from '$app/stores';
 	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
-	import clsx from 'clsx';
 	import elementEmphasis, { ELEMENT_EMPHASIS_IDS } from '$stores/elementEmphasis';
+	import cx from '@/lib/utils/cx';
 
 	const { season, year } = getCurrentAnimeSeason();
 </script>
@@ -64,14 +64,20 @@
 		<div class="flex flex-row items-center text-base gap-5 px-10 bg-violet-800 py-4 h-10">
 			<a
 				href="/anime"
-				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+				class={cx(
+					'text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
+					$page.url.pathname === '/anime' && 'text-pink-400 border-b-pink-500'
+				)}
 				>Anime
 			</a>
 
 			<a
 				data-sveltekit-reload={$page.route.id === '/anime/season/[year]/[season]' ? true : 'off'}
 				href={`/anime/season/${year}/${season}`}
-				class="text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+				class={cx(
+					'text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
+					$page.url.pathname.startsWith('/anime/season') && 'text-pink-400 border-b-pink-500'
+				)}
 			>
 				Season
 			</a>
@@ -80,7 +86,10 @@
 				<a
 					id={ELEMENT_EMPHASIS_IDS.myStatsLink}
 					href="/mystats"
-					class="inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
+					class={cx(
+						'inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
+						$page.url.pathname === '/mystats' && '!text-pink-400 border-b-pink-500'
+					)}
 				>
 					<span class="text-red-500">My</span>
 					<span>Stats</span>
@@ -90,9 +99,9 @@
 					id={ELEMENT_EMPHASIS_IDS.myListLink}
 					href="/mylist/@me"
 					on:click={() => elementEmphasis.removeEmphasis(ELEMENT_EMPHASIS_IDS.myListLink)}
-					class={clsx(
-						`inline-flex text-white border-b-2 border-b-transparent 
-						hover:border-b-pink-500 hover:text-pink-400 transition duration-300`
+					class={cx(
+						'inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300',
+						$page.url.pathname === '/mylist/@me' && '!text-pink-400 border-b-pink-500'
 					)}
 				>
 					<span class="text-red-500">My</span>
