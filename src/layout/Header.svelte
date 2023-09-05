@@ -78,6 +78,7 @@
 
 			{#if $session.user}
 				<a
+					id={ELEMENT_EMPHASIS_IDS.myStatsLink}
 					href="/mystats"
 					class="inline-flex text-white border-b-2 border-b-transparent hover:border-b-pink-500 hover:text-pink-400 transition duration-300"
 				>
