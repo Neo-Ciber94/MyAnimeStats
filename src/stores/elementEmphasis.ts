@@ -1,23 +1,19 @@
 import { browser } from "$app/environment";
 import { parseJson } from "@/lib/utils/parseJson";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { z } from "zod";
 
 const ELEMENT_EMPHASIS_KEY = "element-emphasis-ids";
 
 export const ELEMENT_EMPHASIS_IDS = Object.freeze({
-    myListLink: "my-link-link",
+    myListLink: "my-list-link",
+    myStatsLink: "my-stats-link",
 });
 
 type _ElementEmphasisID = typeof ELEMENT_EMPHASIS_IDS;
 type ElementEmphasisID = (typeof ELEMENT_EMPHASIS_IDS)[keyof _ElementEmphasisID]
 
 const elementEmphasisStore = writable<Set<string>>(new Set());
-elementEmphasisStore.subscribe(ids => {
-    if (!browser) {
-        sessionStorage.setItem(ELEMENT_EMPHASIS_KEY, JSON.stringify([...ids]));
-    }
-})
 
 function setEmphasis(id: ElementEmphasisID) {
     if (!browser) {
@@ -29,7 +25,8 @@ function setEmphasis(id: ElementEmphasisID) {
 
     if (element) {
         element.classList.add('animate-bounce', 'animate-infinite');
-        window.setTimeout(() => removeEmphasis(id), 1000 * 60); // remove after 1min
+        sessionStorage.setItem(ELEMENT_EMPHASIS_KEY, JSON.stringify([...get(elementEmphasisStore)]));
+        window.setTimeout(() => removeEmphasis(id), 1000 * 60);
     }
 }
 
@@ -43,13 +40,13 @@ function removeEmphasis(id: ElementEmphasisID) {
         return prev;
     });
 
+    sessionStorage.setItem(ELEMENT_EMPHASIS_KEY, JSON.stringify([...get(elementEmphasisStore)]));
     const element = document.getElementById(id);
 
     if (element) {
         element.classList.remove('animate-bounce', 'animate-infinite');
     }
 }
-
 
 function initialize() {
     if (!browser) {
@@ -60,8 +57,8 @@ function initialize() {
 
     if (elementsString) {
         const validElementIds = Object.values(ELEMENT_EMPHASIS_IDS) as string[];
-        const schema = z.set(z.string());
-        const elementsIds = parseJson(schema, elementsString, { returnNullOnFailure: true }) || new Set();
+        const schema = z.array(z.string());
+        const elementsIds = parseJson(schema, elementsString, { returnNullOnFailure: true }) || [];
 
         for (const id of elementsIds) {
             if (validElementIds.includes(id)) {

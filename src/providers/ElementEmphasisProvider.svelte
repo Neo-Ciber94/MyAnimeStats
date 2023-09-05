@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import elementEmphasis from '$stores/elementEmphasis';
+	import { onMount } from 'svelte';
 
-
-onMount(() => {
-
-})
-
+	onMount(() => {
+		elementEmphasis.initialize();
+	});
 </script>

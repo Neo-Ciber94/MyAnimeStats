@@ -5,7 +5,8 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import type { LayoutServerData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
-	
+	import ElementEmphasisProvider from '@/providers/ElementEmphasisProvider.svelte';
+
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
 </script>
@@ -32,3 +33,4 @@
 	</SessionProvider>
 </QueryClientProvider>
 <Toaster />
+<ElementEmphasisProvider />
