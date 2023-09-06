@@ -316,7 +316,7 @@
 		{#if data.data.userAnimeList?.lastUpdated}
 			{@const lastUpdated = data.data.userAnimeList.lastUpdated}
 			<div class="flex flex-row justify-end text-white text-xs mx-2 sm:mx-10 mb-4 gap-1">
-				<span class="cursor-pointer">
+				<span class="cursor-pointer" title="Update by recalculating your stats">
 					Last updated <span class="text-pink-500"> {dayjs(lastUpdated).format('LL')}</span>
 				</span>
 			</div>

@@ -172,16 +172,17 @@ export class MALClient {
     }
 
     async getAnimeList(options: GetAnimeListOptions): Promise<AnimeApiResponse> {
-        const { fields = [], ...rest } = options;
+        const { fields = [], limit, offset, q, ...rest } = options;
 
         const result = await this.sendRequest<AnimeApiResponse>({
             method: 'GET',
             resource: '/anime',
             params: {
-                q: rest.q,
-                limit: rest.limit,
-                offset: rest.offset,
-                fields: fields.length === 0 ? undefined : fields.join(",")
+                q,
+                limit,
+                offset,
+                fields: fields.length === 0 ? undefined : fields.join(","),
+                ...rest
             }
         });
 
