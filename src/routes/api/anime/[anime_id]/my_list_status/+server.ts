@@ -11,7 +11,7 @@ const updateMyAnimeListStatusSchema = z.object({
     num_watched_episodes: z.string().pipe(z.coerce.number().min(0)),
 })
 
-export const PATCH: RequestHandler = async ({ request, params, cookies }) => {
+export const PATCH: RequestHandler = async ({ request, params, cookies, locals }) => {
     const { userId, accessToken } = await getRequiredServerSession(cookies);
     const formData = Object.fromEntries(await request.formData());
     const result = updateMyAnimeListStatusSchema.safeParse(formData);
@@ -32,18 +32,44 @@ export const PATCH: RequestHandler = async ({ request, params, cookies }) => {
         num_watched_episodes: data.num_watched_episodes
     });
 
+    const userName = locals.authenticatedUser?.user.name || '<unknown>';
+
     // Update the cache, we don't care if it fails
     try {
-        console.log(`🕑 Updating cache for user: '${userId}' and anime '${animeId}'`);
+        console.log(`🕑 Updating anime '${animeId}' from user '${userId}' (${userName}) cache`);
+
         const result = await UserAnimeListService.updateMyUserAnimeList(userId, animeId, data);
 
         if (result) {
-            console.log(`User '${userId}' cache was updated for anime '${animeId}'`)
+            console.log(`Anime '${animeId}' was updated for user '${userId}' cache`)
         }
     }
     catch (err) {
-        console.error(`Failed to update user anime cache`, err);
+        console.error(`Failed to update anime cache for user '${userId}' (${userName}`, err);
     }
 
     return Response.json(updateResult)
+}
+
+export const DELETE: RequestHandler = async ({ params, cookies, locals }) => {
+    const { userId, accessToken } = await getRequiredServerSession(cookies);
+    const malClient = new MALClient({ accessToken });
+    const animeId = Number(params.anime_id);
+
+    const deletedResult = await malClient.deleteMyAnimeListStatus(animeId);
+    const userName = locals.authenticatedUser?.user.name || '<unknown>';
+
+    // Delete anime from cache
+    try {
+        console.log(`🕑 Deleting anime '${animeId}' from user '${userId}' (${userName}) cache`);
+        
+        await UserAnimeListService.deleteUserAnime(userId, animeId);
+
+        console.log(`Anime '${animeId}' was deleted for user '${userId}' cache`)
+    }
+    catch (err) {
+        console.error(`Failed to delete anime '${animeId}' for user ${userId} (${userName}) cache`, err)
+    }
+
+    return Response.json(deletedResult);
 }

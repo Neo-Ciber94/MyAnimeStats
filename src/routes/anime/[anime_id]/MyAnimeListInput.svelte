@@ -144,7 +144,7 @@
 		try {
 			const malClient = new MALClient({
 				accessToken: $session.accessToken,
-				proxyUrl: '/api/myanimelist'
+				proxyUrl: '/api'
 			});
 
 			await malClient.deleteMyAnimeListStatus(anime.node.id);

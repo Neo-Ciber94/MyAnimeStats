@@ -55,7 +55,7 @@ export namespace UserAnimeListService {
         animeList.map(anime => {
             if (anime.node.id === animeId) {
                 anime.list_status = { ...anime.list_status, ...data }
-                
+
                 if (anime.node.my_list_status) {
                     anime.node.my_list_status = { ...anime.node.my_list_status, ...data }
                 }
@@ -72,6 +72,27 @@ export namespace UserAnimeListService {
 
         await kv.set(getKey(userId), userAnimeListSchema, { ...userAnimeList, animeList });
         return updated;
+    }
+
+    export async function deleteUserAnime(userId: number, animeId: number) {
+        const kv = KV.current();
+        const userAnimeList = await kv.get(getKey(userId), userAnimeListSchema);
+
+        if (userAnimeList == null) {
+            return null;
+        }
+
+        const animeList = userAnimeList.animeList as AnimeObjectWithStatus[];
+        const toDelete = animeList.find(anime => anime.node.id === animeId);
+        const result = animeList.filter(anime => anime.node.id !== animeId);
+
+        // Nothing was deleted
+        if (toDelete == null) {
+            return null;
+        }
+
+        await kv.set(getKey(userId), userAnimeListSchema, { ...userAnimeList, animeList: result });
+        return toDelete;
     }
 }
 
