@@ -47,7 +47,6 @@ export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialV
     return {
         set,
         update,
-        initialize,
         subscribe: searchParamStore.subscribe,
     }
 }
@@ -104,7 +103,7 @@ function replaceWindowSearchParams(obj: Record<string, unknown>, opts?: UseZodSe
     const newUrl = new URL(window.location.href);
 
     // clean up current params
-    const keys = newUrl.searchParams.keys();
+    const keys = Array.from(newUrl.searchParams.keys());
     for (const k of keys) {
         newUrl.searchParams.delete(k);
     }

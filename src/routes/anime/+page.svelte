@@ -1,8 +1,10 @@
 <script context="module" lang="ts">
-	type Query = {
-		q: string | undefined;
-		nsfw?: boolean;
-	};
+	const querySchema = z.object({
+		q: z.string().default('').catch(''),
+		nsfw: z.coerce.boolean().default(false).catch(false)
+	});
+
+	type Query = z.infer<typeof querySchema>;
 </script>
 
 <script lang="ts">
@@ -13,61 +15,67 @@
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
 	import { useInterceptionObserver } from '@/hooks/useInterceptionObserver';
 	import DotLoader from '$components/loaders/DotLoader.svelte';
-	import { useSearchParams } from '@/hooks/useSearchParams';
 	import AnimeCardGrid from '$components/AnimeListGrid.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
+	import { useZodSearchParams } from '@/hooks/useZodSearchParams';
+	import { z } from 'zod';
+	import type { SetValue } from '@/lib/utils/types';
+	import { identity } from '@/lib/utils/helpers';
+	import { browser } from '$app/environment';
 
-	let search: string = '';
+	let q: string = '';
 	let nsfw = false;
 	let timeout: number | undefined;
 	let loadMoreMarkerElement: Element | undefined;
 	let searchError: string | undefined;
-	let isInit = false;
 
 	const animeQuery = useAnimeListQuery<Query>('/api/anime/search');
-	const searchParams = useSearchParams<Query>();
+	const searchParams = useZodSearchParams(querySchema, undefined, {
+		ignoreEmptyArray: true,
+		ignoreEmptyStrings: true,
+		ignoreFalse: true
+	});
+
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
-	const triggerSearch = async () => {
-		const s = search?.trim();
+	async function handleSearchAnime(query: Query) {
+		const searchString = q.trim();
+		searchParams.set(query);
 
-		// We need 3 or more character of an empty string for a search
-		if (s && s != '' && s.length < 3) {
+		if (searchString != '' && searchString.length < 3) {
 			return;
 		}
 
 		searchError = undefined;
-		await $animeQuery.refetch($searchParams);
-	};
-
-	function handleSearch(e: CustomEvent) {
-		const target = e.currentTarget as HTMLInputElement;
-		search = target.value;
+		await $animeQuery.refetch(query);
 	}
 
-	async function onSearchBarSearch() {
-		await triggerSearch();
-	}
-
-	function refetchAnime(query: Query) {
-		if (!isInit || typeof window === 'undefined') {
+	function searchAnime(newQuery: SetValue<Query>, { immediate = false } = {}) {
+		if (!browser) {
 			return;
 		}
 
-		searchParams.set(query);
-
-		// refetch
+		const query = typeof newQuery === 'function' ? newQuery({ q, nsfw }) : newQuery;
 		clearTimeout(timeout);
-		timeout = window.setTimeout(() => triggerSearch(), 500);
+
+		const delay = immediate ? 0 : 500;
+		timeout = window.setTimeout(() => handleSearchAnime(query), delay);
+	}
+
+	// We only validate the input when the user click the search button
+	function handleOnSearch() {
+		const searchString = q.trim();
+		if (searchString != '' && searchString.length < 3) {
+			searchError = '3 or more characters are required';
+			return;
+		}
+
+		searchAnime(identity, { immediate: true });
 	}
 
 	onMount(async () => {
-		// init
-		search = $searchParams.q || '';
-		nsfw = $searchParams.nsfw === true;
-
-		await triggerSearch();
-		isInit = true;
+		q = $searchParams.q;
+		nsfw = $searchParams.nsfw;
 	});
 
 	onDestroy(async () => {
@@ -76,7 +84,7 @@
 	});
 
 	$: {
-		refetchAnime({ q: search, nsfw });
+		searchAnime({ q, nsfw });
 	}
 
 	$: {
@@ -88,19 +96,14 @@
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
-		<AnimeSearchBar
-			placeholder="Search anime..."
-			on:input={handleSearch}
-			on:search={onSearchBarSearch}
-			bind:value={search}
-		/>
+		<AnimeSearchBar placeholder="Search anime..." on:search={handleOnSearch} bind:value={q} />
 
 		{#if searchError}
 			<small class="text-red-600 mt-2">{searchError}</small>
 		{/if}
 
 		<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
-			<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
+			<Checkbox class="text-white" color="purple" bind:checked={nsfw}>nsfw</Checkbox>
 		</div>
 	</div>
 
