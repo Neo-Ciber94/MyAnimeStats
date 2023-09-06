@@ -1,4 +1,6 @@
 <script lang="ts" generics="TAnime extends AnimeObject">
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
+
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 
 	import type { SwiperModule } from 'swiper/types/shared';
@@ -13,6 +15,7 @@
 	export let animeList: TAnime[];
 	export let initialSlide = 1;
 	export let autoPlay = true;
+	export let showNsfw = true;
 	export let mapTitle: (anime: TAnime) => string = (anime) => {
 		return anime.node.title;
 	};
@@ -97,9 +100,11 @@
 					<img
 						width={0}
 						height={0}
-						class="object-cover w-full h-full"
 						alt={anime.node.title}
 						src={getImage(anime)}
+						class={`object-cover w-full h-full ${
+							AnimeHelper.shouldCensor(anime) && !showNsfw ? 'blur-md' : ''
+						}`}
 					/>
 
 					<!-- Title -->

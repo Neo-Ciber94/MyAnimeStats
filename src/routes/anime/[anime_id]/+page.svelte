@@ -32,7 +32,7 @@
 		// https://www.reddit.com/r/sveltejs/comments/y70acq/sveltekit_routing_to_another_id_page_not_working/
 
 		data = $page.data as PageServerData;
-	
+
 		if (data) {
 			anime = data.anime;
 			popularAnimeList = data.popularAnimeList;
@@ -56,7 +56,7 @@
 	});
 
 	const isNsfw = anime.nsfw === 'black' || anime.nsfw === 'gray';
-	const shouldCensor = anime.nsfw === 'black';
+	const shouldCensor = AnimeHelper.shouldCensor({ node: anime });
 	let showUncensored = false;
 	let openMyAnimeList = anime.my_list_status != null;
 	let isInMyList = anime.my_list_status != null;
@@ -394,6 +394,7 @@
 									<AnimeCarousel
 										animeList={anime.related_anime}
 										autoPlay={anime.related_anime.length >= 10}
+										showNsfw={showUncensored}
 										mapTitle={(anime) => {
 											return `${anime.node.title} (${anime.relation_type_formatted})`;
 										}}
@@ -426,7 +427,9 @@
 									<img
 										alt={anime.title}
 										src={picture.large}
-										class="object-contain w-[300px] h-[500px]"
+										class={`object-contain w-[300px] h-[500px] overflow-hidden ${
+											shouldCensor && !showUncensored ? 'blur-lg' : 'blur-0'
+										}`}
 									/>
 								{/each}
 							</div>

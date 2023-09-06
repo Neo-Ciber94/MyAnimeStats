@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import type { AiringStatus, AnimeRelationType, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
+import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import type { AiringStatus, AnimeObject, AnimeRelationType, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
 
 export namespace AnimeHelper {
     export function mediaTypeToString(mediaType: MediaType) {
@@ -156,5 +157,14 @@ export namespace AnimeHelper {
             default:
                 return null;
         }
+    }
+
+    export function hasGenre(anime: AnimeObject, genreId: number) {
+        const genres = anime.node.genres || []; // we don't trust anything returned by the API.
+        return genres.some((x) => x.id === genreId);
+    }
+
+    export function shouldCensor(anime: AnimeObject) {
+        return anime.node.nsfw === 'black' || hasGenre(anime, ANIME_GENRES.Hentai.ID);
     }
 }
