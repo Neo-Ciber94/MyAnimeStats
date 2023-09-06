@@ -21,7 +21,7 @@
 		if (!$session.user) {
 			signIn();
 		} else {
-			goto('/stats');
+			goto('/mystats');
 		}
 	};
 </script>

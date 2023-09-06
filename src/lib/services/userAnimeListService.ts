@@ -61,7 +61,8 @@ async function fetchCurrentUserAnimeListInternal(accessToken: string) {
             'list_status',
             'status',
             'mean',
-            'rank'
+            'rank',
+            'num_scoring_users'
         ]
     });
 

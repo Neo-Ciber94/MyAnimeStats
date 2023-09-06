@@ -3,6 +3,8 @@ import type { PageServerLoad } from "./$types";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { error } from "@sveltejs/kit";
 import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
+import { AnimeListService } from "@/lib/services/animeListService";
+import { dev } from "$app/environment";
 
 export const load: PageServerLoad = async (event) => {
     const malClient = new MALClient({
@@ -41,11 +43,18 @@ export const load: PageServerLoad = async (event) => {
         ]
     });
 
-    const result = await runAndRetryOnThrow(getAnime, Retry.exponential({ attends: 10 }));
+    const anime = await runAndRetryOnThrow(getAnime, Retry.exponential({ attends: 10 }));
 
-    if (result == null) {
+    if (anime == null) {
         throw error(404, "Anime not found");
     }
 
-    return result
+    const popularAnimeList = await AnimeListService.getPopularAnimeList({ force: dev })
+        .then(animeList => animeList.sort((a, b) => a.ranking.rank - b.ranking.rank))
+        .then(animeList => animeList.slice(0, 10));
+
+    return {
+        anime,
+        popularAnimeList
+    }
 };

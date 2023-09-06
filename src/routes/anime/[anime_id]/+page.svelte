@@ -18,15 +18,17 @@
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
 	import dayjs from 'dayjs';
+	import PopularAnimeBubbleGraph from '$components/graphs/PopularAnimeBubbleGraph.svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
+	const { anime, popularAnimeList } = data;
 
-	const isNsfw = data.nsfw === 'black' || data.nsfw === 'gray';
-	const shouldCensor = data.nsfw === 'black';
+	const isNsfw = anime.nsfw === 'black' || anime.nsfw === 'gray';
+	const shouldCensor = anime.nsfw === 'black';
 	let showUncensored = false;
-	let openMyAnimeList = data.my_list_status != null;
-	let isInMyList = data.my_list_status != null;
+	let openMyAnimeList = anime.my_list_status != null;
+	let isInMyList = anime.my_list_status != null;
 
 	function getDurationFormatted(durationSeconds: number) {
 		const durationMinutes = Math.ceil(durationSeconds / 60);
@@ -42,12 +44,12 @@
 	}
 
 	function getImage() {
-		const image = data.main_picture;
+		const image = anime.main_picture;
 		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
 	}
 </script>
 
-{#key data.id}
+{#key anime.id}
 	<PageTransition>
 		<div class="px-4 sm:px-20 pt-10 lg:container mx-auto mb-10">
 			<!-- <pre class="text-white">{JSON.stringify(data, null, 2)}</pre> -->
@@ -66,18 +68,18 @@
 							</div>
 						{/if}
 
-						{#if data.status}
-							<AnimeStatusBadge status={data.status} />
+						{#if anime.status}
+							<AnimeStatusBadge status={anime.status} />
 						{/if}
 
-						{#if data.media_type}
-							<AnimeMediaTypeBadge mediaType={data.media_type} />
+						{#if anime.media_type}
+							<AnimeMediaTypeBadge mediaType={anime.media_type} />
 						{/if}
 
-						{#if data.start_season}
+						{#if anime.start_season}
 							<SeasonAndYearIndicator
-								season={data.start_season.season}
-								year={data.start_season.year}
+								season={anime.start_season.season}
+								year={anime.start_season.year}
 							/>
 						{/if}
 					</div>
@@ -86,7 +88,7 @@
 						<h1
 							class="text-xl mb-2 sm:mb-0 md:text-3xl !leading-[1.3em] sm:!leading-[2em] text-white text-center lg:text-left"
 						>
-							{data.title}
+							{anime.title}
 						</h1>
 					</div>
 				</div>
@@ -96,7 +98,7 @@
 				<div class="w-full md:w-1/3 overflow-hidden">
 					<img
 						src={getImage()}
-						alt={data.title}
+						alt={anime.title}
 						class={`w-full mx-auto md:w-auto h-[300px] md:h-[400px] object-contain transition duration-200 ${
 							shouldCensor && !showUncensored ? 'blur-lg' : 'blur-0'
 						}`}
@@ -127,8 +129,8 @@
 						>
 							<AnimeStatBadge class="bg-gradient-to-br from-pink-500 to-pink-600">
 								<svelte:fragment slot="left">
-									{#if data.mean != null && data.mean > 0}
-										<AnimatedNumber value={data.mean} decimalPlaces={2} />
+									{#if anime.mean != null && anime.mean > 0}
+										<AnimatedNumber value={anime.mean} decimalPlaces={2} />
 									{:else}
 										N/A
 									{/if}
@@ -136,14 +138,14 @@
 
 								<svelte:fragment slot="right">
 									<span class="text-sm md:text-2xl">Score</span>
-									<span class="text-xs">{`${data.num_scoring_users.toLocaleString()} users`}</span>
+									<span class="text-xs">{`${anime.num_scoring_users.toLocaleString()} users`}</span>
 								</svelte:fragment>
 							</AnimeStatBadge>
 
 							<AnimeStatBadge class="bg-gradient-to-br from-orange-500 to-orange-600">
 								<svelte:fragment slot="left">
-									{#if data.rank != null && data.rank > 0}
-										#<AnimatedNumber value={data.rank} />
+									{#if anime.rank != null && anime.rank > 0}
+										#<AnimatedNumber value={anime.rank} />
 									{:else}
 										N/A
 									{/if}
@@ -155,8 +157,8 @@
 
 							<AnimeStatBadge class="bg-gradient-to-br from-violet-500 to-violet-600">
 								<svelte:fragment slot="left">
-									{#if data.popularity}
-										#<AnimatedNumber value={data.popularity} />
+									{#if anime.popularity}
+										#<AnimatedNumber value={anime.popularity} />
 									{:else}
 										N/A
 									{/if}
@@ -172,14 +174,14 @@
 					<div class="pb-5">
 						<h3 class="text-orange-500 text-2xl mb-2">Synopsis</h3>
 						<p class="text-white text-sm text-justify">
-							{`${data.synopsis || 'N/A'}`}
+							{`${anime.synopsis || 'N/A'}`}
 						</p>
 					</div>
 
 					<div class="pb-5">
 						<h3 class="text-orange-500 text-2xl mb-2">Genres</h3>
 						<div class="flex flex-row flex-wrap gap-4">
-							{#each data.genres as genre}
+							{#each anime.genres as genre}
 								<button
 									class="text-white px-4 py-1 min-w-[50px] hover:bg-violet-800 rounded-lg text-xs bg-violet-600"
 								>
@@ -192,30 +194,30 @@
 					<div class="pb-5">
 						<h3 class="text-orange-500 text-2xl mb-2">Calendar</h3>
 						<div class="text-white text-sm">
-							{#if data.status == 'not_yet_aired'}
+							{#if anime.status == 'not_yet_aired'}
 								<span>{`Release date `}</span>
 								<span class="text-orange-500">
-									{#if data.start_date}
-										{dayjs(data.start_date).format('LL')}
+									{#if anime.start_date}
+										{dayjs(anime.start_date).format('LL')}
 									{:else}
 										Unknown
 									{/if}
 								</span>
-							{:else if data.status == 'currently_airing'}
+							{:else if anime.status == 'currently_airing'}
 								<span>{`Airing since `}</span>
-								<span class="text-orange-500">{dayjs(data.start_date).format('LL')}</span>
-							{:else if data.start_date == data.end_date}
+								<span class="text-orange-500">{dayjs(anime.start_date).format('LL')}</span>
+							{:else if anime.start_date == anime.end_date}
 								<span>{`Aired on `}</span>
-								<span class="text-orange-500">{dayjs(data.start_date).format('LL')}</span>
+								<span class="text-orange-500">{dayjs(anime.start_date).format('LL')}</span>
 							{:else}
-								{#if data.start_date}
+								{#if anime.start_date}
 									<span>{`Aired from `}</span>
-									<span class="text-orange-500">{dayjs(data.start_date).format('LL')}</span>
+									<span class="text-orange-500">{dayjs(anime.start_date).format('LL')}</span>
 								{/if}
 
-								{#if data.end_date}
+								{#if anime.end_date}
 									<span>{` to `}</span>
-									<span class="text-orange-500">{dayjs(data.end_date).format('LL')}</span>
+									<span class="text-orange-500">{dayjs(anime.end_date).format('LL')}</span>
 								{/if}
 							{/if}
 						</div>
@@ -230,11 +232,11 @@
 							<h1 class="text-white mb-12 mt-4 text-3xl">My List Status</h1>
 							<div in:slide>
 								<MyAnimeListInput
-									anime={{ node: data }}
-									episodesSeen={data.my_list_status?.num_episodes_watched}
-									numEpisodes={data.num_episodes}
-									myScore={data.my_list_status?.score}
-									status={data.my_list_status?.status}
+									anime={{ node: anime }}
+									episodesSeen={anime.my_list_status?.num_episodes_watched}
+									numEpisodes={anime.num_episodes}
+									myScore={anime.my_list_status?.score}
+									status={anime.my_list_status?.status}
 									canDelete={isInMyList}
 									on:delete={() => {
 										isInMyList = false;
@@ -269,26 +271,26 @@
 					defaultClass="text-indigo-500 mt-5 flex flex-row w-full flex-wrap border-b-2 gap-2 border-b-violet-500"
 				>
 					<TabItem open title="General">
-						{#if data.alternative_titles}
+						{#if anime.alternative_titles}
 							<h3 class="text-white font-bold text-xl mb-1">Alternative Titles</h3>
 
-							{#if data.alternative_titles.en}
+							{#if anime.alternative_titles.en}
 								<AnimeInfoRow title="English">
-									<span slot="content">{data.alternative_titles.en}</span>
+									<span slot="content">{anime.alternative_titles.en}</span>
 								</AnimeInfoRow>
 							{/if}
 
-							{#if data.alternative_titles.ja}
+							{#if anime.alternative_titles.ja}
 								<AnimeInfoRow title="Japanese">
-									<span slot="content">{data.alternative_titles.ja}</span>
+									<span slot="content">{anime.alternative_titles.ja}</span>
 								</AnimeInfoRow>
 							{/if}
 
-							{#if data.alternative_titles.synonyms && data.alternative_titles.synonyms.length > 0}
+							{#if anime.alternative_titles.synonyms && anime.alternative_titles.synonyms.length > 0}
 								<AnimeInfoRow title="Synonyms">
 									<svelte:fragment slot="content">
-										{#if data.alternative_titles.synonyms}
-											{#each data.alternative_titles.synonyms as synonym}
+										{#if anime.alternative_titles.synonyms}
+											{#each anime.alternative_titles.synonyms as synonym}
 												<span>{synonym}</span>
 											{/each}
 										{/if}
@@ -300,67 +302,67 @@
 						<h3 class="text-white text-xl mt-8 mb-1 font-bold">Information</h3>
 						<AnimeInfoRow title="Type">
 							<svelte:fragment slot="content">
-								{AnimeHelper.mediaTypeToString(data.media_type)}
+								{AnimeHelper.mediaTypeToString(anime.media_type)}
 							</svelte:fragment>
 						</AnimeInfoRow>
 
 						<AnimeInfoRow title="Episodes">
-							<span slot="content">{data.num_episodes || 'Unknown'}</span>
+							<span slot="content">{anime.num_episodes || 'Unknown'}</span>
 						</AnimeInfoRow>
 
 						<AnimeInfoRow title="Status">
-							<span slot="content"> {AnimeHelper.airingStatusToString(data.status)}</span>
+							<span slot="content"> {AnimeHelper.airingStatusToString(anime.status)}</span>
 						</AnimeInfoRow>
 
-						{#if data.average_episode_duration}
+						{#if anime.average_episode_duration}
 							<AnimeInfoRow title="Episode Duration">
-								<span slot="content">{getDurationFormatted(data.average_episode_duration)}</span>
+								<span slot="content">{getDurationFormatted(anime.average_episode_duration)}</span>
 							</AnimeInfoRow>
 						{/if}
 
-						{#if data.source}
+						{#if anime.source}
 							<AnimeInfoRow title="Source">
-								<span slot="content">{AnimeHelper.sourceTypeToString(data.source)}</span>
+								<span slot="content">{AnimeHelper.sourceTypeToString(anime.source)}</span>
 							</AnimeInfoRow>
 						{/if}
 
-						{#if data.studios && data.studios.length > 0}
+						{#if anime.studios && anime.studios.length > 0}
 							<AnimeInfoRow title="Studios">
 								<svelte:fragment slot="content">
-									{#each data.studios as studio}
+									{#each anime.studios as studio}
 										<span>{studio.name}</span>
 									{/each}
 								</svelte:fragment>
 							</AnimeInfoRow>
 						{/if}
 
-						{#if data.rating}
+						{#if anime.rating}
 							<AnimeInfoRow title="Rating">
-								<span slot="content">{AnimeHelper.ratingToString(data.rating)}</span>
+								<span slot="content">{AnimeHelper.ratingToString(anime.rating)}</span>
 							</AnimeInfoRow>
 						{/if}
 
-						{#if data.nsfw}
+						{#if anime.nsfw}
 							<AnimeInfoRow title="NSFW">
 								<svelte:fragment slot="content">
-									{#if data.nsfw === 'black'}
+									{#if anime.nsfw === 'black'}
 										<span class="text-pink-600">This work is not safe for work</span>
-									{:else if data.nsfw === 'gray'}
+									{:else if anime.nsfw === 'gray'}
 										<span class="text-pink-300">This work may be not safe for work</span>
-									{:else if data.nsfw === 'white'}
+									{:else if anime.nsfw === 'white'}
 										<span class="text-yellow-50">This work is safe for work</span>
 									{/if}
 								</svelte:fragment>
 							</AnimeInfoRow>
 						{/if}
 
-						{#if data.related_anime && data.related_anime.length > 0}
+						{#if anime.related_anime && anime.related_anime.length > 0}
 							<div>
 								<h3 class="text-white text-xl mt-8 mb-3 font-bold">Related Anime</h3>
 								<div class="bg-black/20 p-2 rounded-lg">
 									<AnimeCarousel
-										animeList={data.related_anime}
-										autoPlay={data.related_anime.length >= 10}
+										animeList={anime.related_anime}
+										autoPlay={anime.related_anime.length >= 10}
 										mapTitle={(anime) => {
 											return `${anime.node.title} (${anime.relation_type_formatted})`;
 										}}
@@ -369,25 +371,29 @@
 							</div>
 						{/if}
 
-						{#if data.recommendations && data.recommendations.length > 0}
+						{#if anime.recommendations && anime.recommendations.length > 0}
 							<div>
 								<h3 class="text-white text-xl mt-8 mb-3 font-bold">Recommendations</h3>
 								<div class="bg-black/20 p-2 rounded-lg">
 									<AnimeCarousel
-										animeList={data.recommendations}
-										autoPlay={data.recommendations.length >= 10}
+										animeList={anime.recommendations}
+										autoPlay={anime.recommendations.length >= 10}
 									/>
 								</div>
 							</div>
 						{/if}
 					</TabItem>
 
+					<TabItem title="Stats">
+						<PopularAnimeBubbleGraph {popularAnimeList} referenceAnime={{ node: anime }} />
+					</TabItem>
+
 					<TabItem title="Pictures">
-						{#if data.pictures}
+						{#if anime.pictures}
 							<div class="flex flex-row justify-center flex-wrap gap-4">
-								{#each data.pictures as picture}
+								{#each anime.pictures as picture}
 									<img
-										alt={data.title}
+										alt={anime.title}
 										src={picture.large}
 										class="object-contain w-[300px] h-[500px]"
 									/>
