@@ -10,7 +10,7 @@ type UseZodSearchParamsOptions = {
 export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialValue?: z.infer<S>, opts?: UseZodSearchParamsOptions) {
     type TValue = z.infer<S>;
 
-    const searchParamStore = writable<TValue>(initialValue);
+    const searchParamStore = writable<TValue>(initialValue || {});
 
     function set(value: TValue) {
         const result = schema.safeParse(value);
@@ -47,6 +47,7 @@ export function useZodSearchParams<S extends z.AnyZodObject>(schema: S, initialV
     return {
         set,
         update,
+        initialize,
         subscribe: searchParamStore.subscribe,
     }
 }
@@ -68,7 +69,13 @@ export function parseSearchParams<SchemaType extends z.ZodRawShape>(
         }
     }
 
-    return schema.parse(rawValues)
+    const result = schema.safeParse(rawValues);
+    if (result.success) {
+        return result.data;
+    }
+
+    console.error(result.error);
+    return null;
 }
 
 function isExpectingArray(schema?: z.ZodTypeAny): boolean {
