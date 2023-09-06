@@ -32,36 +32,46 @@
 		</div>
 
 		<div class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-1 gap-4 w-full mt-5">
-			<StatIndicator color="rgb(49 196 141)">
-				<span slot="count" class="text-white"
-					>{$session.user.anime_statistics?.num_items_watching ?? 0}</span
-				>
-				<span slot="text" class="text-white text-base lg:text-xl">Watching</span>
-			</StatIndicator>
+			<a href="/mylist/@me?status=watching">
+				<StatIndicator color="rgb(49 196 141)">
+					<span slot="count" class="text-white">
+						{$session.user.anime_statistics?.num_items_watching ?? 0}
+					</span>
+					<span slot="text" class="text-white text-base lg:text-xl">Watching</span>
+				</StatIndicator>
+			</a>
 
-			<StatIndicator color="#FF8A40">
-				<span slot="count" class="text-white"
-					>{$session.user.anime_statistics?.num_items_completed ?? 0}</span
-				>
-				<span slot="text" class="text-white text-base lg:text-xl">Completed</span>
-			</StatIndicator>
+			<a href="/mylist/@me?status=completed">
+				<StatIndicator color="#FF8A40">
+					<span slot="count" class="text-white">
+						{$session.user.anime_statistics?.num_items_completed ?? 0}
+					</span>
+					<span slot="text" class="text-white text-base lg:text-xl">Completed</span>
+				</StatIndicator>
+			</a>
 
-			<StatIndicator color="#ffff00">
-				<span slot="count">{$session.user.anime_statistics?.num_items_on_hold ?? 0}</span>
-				<span slot="text" class="text-white text-base lg:text-xl">On Hold</span>
-			</StatIndicator>
+			<a href="/mylist/@me?status=on_hold">
+				<StatIndicator color="#ffff00">
+					<span slot="count">{$session.user.anime_statistics?.num_items_on_hold ?? 0}</span>
+					<span slot="text" class="text-white text-base lg:text-xl">On Hold</span>
+				</StatIndicator>
+			</a>
 
-			<StatIndicator color="#ff0000">
-				<span slot="count" class="text-white"
-					>{$session.user.anime_statistics?.num_items_dropped ?? 0}</span
-				>
-				<span slot="text" class="text-white text-base lg:text-xl">Dropped</span>
-			</StatIndicator>
+			<a href="/mylist/@me?status=dropped">
+				<StatIndicator color="#ff0000">
+					<span slot="count" class="text-white">
+						{$session.user.anime_statistics?.num_items_dropped ?? 0}
+					</span>
+					<span slot="text" class="text-white text-base lg:text-xl">Dropped</span>
+				</StatIndicator>
+			</a>
 
-			<StatIndicator color="#cfcfcf">
-				<span slot="count">{$session.user.anime_statistics?.num_items_plan_to_watch ?? 0}</span>
-				<span slot="text" class="text-white text-base lg:text-xl">Plan To Watch</span>
-			</StatIndicator>
+			<a href="/mylist/@me?status=plan_to_watch">
+				<StatIndicator color="#cfcfcf">
+					<span slot="count">{$session.user.anime_statistics?.num_items_plan_to_watch ?? 0}</span>
+					<span slot="text" class="text-white text-base lg:text-xl">Plan To Watch</span>
+				</StatIndicator>
+			</a>
 		</div>
 	{/if}
 </div>
