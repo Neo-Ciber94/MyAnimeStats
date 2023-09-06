@@ -14,6 +14,7 @@
 
 <div class="flex flex-col sm:flex-row gap-2">
 	<input
+		on:input
 		bind:value
 		required
 		name="q"
