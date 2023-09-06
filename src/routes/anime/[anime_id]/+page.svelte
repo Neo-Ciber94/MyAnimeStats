@@ -19,6 +19,8 @@
 	import dayjs from 'dayjs';
 	import PopularAnimeBubbleGraph from '$components/graphs/PopularAnimeBubbleGraph.svelte';
 	import { page } from '$app/stores';
+	import { invalidate } from '$app/navigation';
+	import { onMount } from 'svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -30,9 +32,28 @@
 		// https://www.reddit.com/r/sveltejs/comments/y70acq/sveltekit_routing_to_another_id_page_not_working/
 
 		data = $page.data as PageServerData;
-		anime = data.anime;
-		popularAnimeList = data.popularAnimeList;
+	
+		if (data) {
+			anime = data.anime;
+			popularAnimeList = data.popularAnimeList;
+		}
 	}
+
+	// This is a weird workaround because is not navigating back, so we invalidate the route
+	onMount(() => {
+		let invalidatedPath: string | null = null;
+
+		const unsubscribe = page.subscribe(async (data) => {
+			if (invalidatedPath != data.url.pathname) {
+				await invalidate(data.url.pathname);
+				invalidatedPath = data.url.pathname;
+			}
+		});
+
+		return () => {
+			unsubscribe();
+		};
+	});
 
 	const isNsfw = anime.nsfw === 'black' || anime.nsfw === 'gray';
 	const shouldCensor = anime.nsfw === 'black';

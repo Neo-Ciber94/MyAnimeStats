@@ -4,7 +4,6 @@ import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { error } from "@sveltejs/kit";
 import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
 import { AnimeListService } from "@/lib/services/animeListService";
-import { dev } from "$app/environment";
 
 export const load: PageServerLoad = async (event) => {
     const malClient = new MALClient({
@@ -49,7 +48,7 @@ export const load: PageServerLoad = async (event) => {
         throw error(404, "Anime not found");
     }
 
-    const popularAnimeList = await AnimeListService.getPopularAnimeList({ force: dev })
+    const popularAnimeList = await AnimeListService.getPopularAnimeList({ force: false })
         .then(animeList => animeList.sort((a, b) => a.ranking.rank - b.ranking.rank))
         .then(animeList => animeList.slice(0, 10));
 
