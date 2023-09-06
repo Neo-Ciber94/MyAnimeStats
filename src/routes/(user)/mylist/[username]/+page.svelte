@@ -85,6 +85,14 @@
 		.orderByDescending((x) => x)
 		.toArray();
 
+	const formatSearch = (s: string) => {
+		if (s == null) {
+			return '';
+		}
+
+		return s.toLowerCase().replace(/\s/g, '');
+	};
+
 	const animeListSorter = () => {
 		return (anime: AnimeObjectWithStatus) => {
 			if (orderBy == null) {
@@ -126,7 +134,6 @@
 		}
 
 		const animeList = data.data.userAnimeList?.animeList || [];
-		const term = query.search.toLowerCase().replace(/\s/g, '');
 		currentPages = Enumerable.from(animeList)
 			.where(({ node }) => {
 				if (query.nsfw) {
@@ -135,7 +142,18 @@
 
 				return !node.genres.some((s) => s.id === ANIME_GENRES.Hentai.ID);
 			})
-			.where((anime) => anime.node.title.toLowerCase().replace(/\s/g, '').includes(term))
+			.where((anime) => {
+				// We group all the search terms of the anime
+				const synonyms = anime.node.alternative_titles?.synonyms || [];
+				const animeSearchTerms = [
+					formatSearch(anime.node.title),
+					formatSearch(anime.node.alternative_titles?.en || ''),
+					formatSearch(anime.node.alternative_titles?.ja || ''),
+					...synonyms.map((s) => formatSearch(s))
+				];
+
+				return animeSearchTerms.join('').includes(formatSearch(query.search));
+			})
 			.where(({ node }) => {
 				const selectedGenres = query.genres || [];
 				if (selectedGenres.length == 0) {

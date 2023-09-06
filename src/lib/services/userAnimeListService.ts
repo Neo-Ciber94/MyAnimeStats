@@ -109,6 +109,7 @@ async function fetchCurrentUserAnimeListInternal(accessToken: string) {
         fields: [
             'genres',
             'start_season',
+            'end_date',
             'studios',
             'my_list_status',
             'end_date',
@@ -116,7 +117,9 @@ async function fetchCurrentUserAnimeListInternal(accessToken: string) {
             'status',
             'mean',
             'rank',
-            'num_scoring_users'
+            'num_scoring_users',
+            'alternative_titles',
+            'num_episodes',
         ]
     });
 
