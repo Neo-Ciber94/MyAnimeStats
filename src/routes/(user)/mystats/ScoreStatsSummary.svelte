@@ -2,7 +2,7 @@
 	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
 	import { ChartSolid, CheckSolid, ChevronDoubleRightOutline } from 'flowbite-svelte-icons';
 	import Enumerable from 'linq';
-	import AnimatedNumber from '../../components/AnimatedNumber.svelte';
+	import AnimatedNumber from '$components/AnimatedNumber.svelte';
 
 	export let animeList: AnimeObjectWithStatus[];
 
