@@ -54,7 +54,7 @@ export interface UpdateMyAnimeListStatusOptions {
     priority?: number;
     num_times_rewatched?: number;
     rewatch_value?: number;
-    tags?: string;
+    tags?: string[];
     comments?: string;
 }
 

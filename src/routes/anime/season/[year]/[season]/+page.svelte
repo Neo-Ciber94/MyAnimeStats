@@ -26,7 +26,7 @@
 
 	let nsfw = false;
 	let loadMoreMarkerElement: Element | undefined;
-	const animeQuery = useAnimeListQuery<Query>('/api/anime');
+	const animeQuery = useAnimeListQuery<Query>('/api/anime/season');
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
 	onMount(async () => {

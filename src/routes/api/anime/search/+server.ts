@@ -3,7 +3,7 @@ import type { RequestHandler } from "./$types";
 import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
-import { _getSeasonalAnime } from "../+server";
+import { _getSeasonalAnime } from "../season/+server";
 
 const LIMIT = 100;
 

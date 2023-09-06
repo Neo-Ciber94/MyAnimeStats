@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { error, type Cookies } from "@sveltejs/kit";
 import { KV } from "../kv";
-import { MALClient, MalHttpError } from "../myanimelist/api";
+import { MALClient, MalHttpError, type UpdateMyAnimeListStatusOptions } from "../myanimelist/api";
 import type { AnimeObjectWithStatus } from "../myanimelist/common/types";
 import { userAnimeListSchema } from "../types";
 import { Retry, runAndRetryOnThrow } from "../utils/retry";
@@ -39,6 +39,39 @@ export namespace UserAnimeListService {
         const kv = KV.current();
         await kv.set(getKey(userId), userAnimeListSchema, userAnimeList);
         return animeList;
+    }
+
+    export async function updateMyUserAnimeList(userId: number, animeId: number, data: UpdateMyAnimeListStatusOptions) {
+        const kv = KV.current();
+        const userAnimeList = await kv.get(getKey(userId), userAnimeListSchema);
+
+        if (userAnimeList == null) {
+            return null;
+        }
+
+        let updated: AnimeObjectWithStatus | null = null;
+        const animeList = userAnimeList.animeList as AnimeObjectWithStatus[];
+
+        animeList.map(anime => {
+            if (anime.node.id === animeId) {
+                anime.list_status = { ...anime.list_status, ...data }
+                
+                if (anime.node.my_list_status) {
+                    anime.node.my_list_status = { ...anime.node.my_list_status, ...data }
+                }
+
+                updated = anime;
+            }
+
+            return anime;
+        });
+
+        if (!updated) {
+            return null;
+        }
+
+        await kv.set(getKey(userId), userAnimeListSchema, { ...userAnimeList, animeList });
+        return updated;
     }
 }
 
