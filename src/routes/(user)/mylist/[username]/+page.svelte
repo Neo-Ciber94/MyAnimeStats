@@ -146,13 +146,13 @@
 				// We group all the search terms of the anime
 				const synonyms = anime.node.alternative_titles?.synonyms || [];
 				const animeSearchTerms = [
-					formatSearch(anime.node.title),
-					formatSearch(anime.node.alternative_titles?.en || ''),
-					formatSearch(anime.node.alternative_titles?.ja || ''),
-					...synonyms.map((s) => formatSearch(s))
-				];
+					anime.node.title,
+					anime.node.alternative_titles?.en || '',
+					anime.node.alternative_titles?.ja || '',
+					...synonyms
+				].join('');
 
-				return animeSearchTerms.join('').includes(formatSearch(query.search));
+				return formatSearch(animeSearchTerms).includes(formatSearch(query.search));
 			})
 			.where(({ node }) => {
 				const selectedGenres = query.genres || [];
