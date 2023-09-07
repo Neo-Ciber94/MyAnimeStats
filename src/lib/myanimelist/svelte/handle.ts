@@ -132,6 +132,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
                 path: "/",
+                sameSite: 'strict',
                 httpOnly: true,
                 maxAge: sessionDurationSeconds
             });

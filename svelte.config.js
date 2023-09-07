@@ -18,14 +18,18 @@ const config = {
 				exclude: ['<all>']
 			}
 		}),
+		
+		serviceWorker: {
+			register: false
+		},
 
 		alias: {
 			'$stores/*': 'src/stores/*',
 			'$components/*': 'src/components/*',
 			'$assets/*': 'src/assets/*',
 			'@/*': 'src/*'
-		},
-	},
+		}
+	}
 };
 
 export default config;

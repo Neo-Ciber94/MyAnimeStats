@@ -28,6 +28,7 @@
 		"@types/fs-extra": "^11.0.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
+		"@vite-pwa/sveltekit": "^0.2.5",
 		"autoprefixer": "^10.4.14",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.28.0",
@@ -71,6 +72,7 @@
 		"swiper": "^10.1.0",
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animated": "^1.0.1",
+		"vite-plugin-pwa": "^0.16.4",
 		"webcrypto-core": "^1.7.7",
 		"zod": "^3.21.4"
 	}

@@ -6,9 +6,12 @@
 	import type { LayoutServerData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
 	import ElementEmphasisProvider from '@/providers/ElementEmphasisProvider.svelte';
+	import { pwaInfo } from 'virtual:pwa-info';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
+
+	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 </script>
 
 <svelte:head>
@@ -23,6 +26,8 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>MyAnimeStats</title>
+
+	{@html webManifestLink}
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
@@ -34,3 +39,7 @@
 </QueryClientProvider>
 <Toaster />
 <ElementEmphasisProvider />
+
+{#await import('$components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
+	<ReloadPrompt />
+{/await}
