@@ -61,7 +61,10 @@
 			<NavSearchBar />
 		</div>
 
-		<div class="flex flex-row items-center text-base gap-5 px-10 bg-violet-800 py-4 h-10">
+		<div
+			class="flex flex-row items-center justify-center xs:justify-start flex-wrap
+				text-base gap-5 px-10 bg-violet-800 py-2"
+		>
 			<a
 				href="/anime"
 				class={cx(
