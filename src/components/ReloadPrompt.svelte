@@ -34,50 +34,39 @@
 </script>
 
 {#if toast}
-	<div class="pwa-toast" role="alert">
-		<div class="message">
+	<div
+		class="fixed right-0 mx-auto sm:mx-0 left-0 max-w-fit bottom-4 sm:right-4 sm:left-auto shadow-md border-2 border-violet-500
+		bg-gray-900/90 backdrop-blur-md text-white z-50 p-4 rounded-lg
+		text-sm sm:text-base"
+		role="alert"
+	>
+		<div class="">
 			{#if $offlineReady}
 				<span> App ready to work offline </span>
 			{:else}
-				<span> New content available, click on reload button to update. </span>
+				<span> A new update is available, click on reload to update. </span>
 			{/if}
 		</div>
-		{#if $needRefresh}
-			<button on:click={() => updateServiceWorker(true)}> Reload </button>
-		{/if}
-		<button on:click={close}> Close </button>
+
+		<div class="mt-4 text-bold">
+			{#if $needRefresh}
+				<button
+					class="text-pink-400 bg-violet-600/20 hover:bg-violet-600/30 px-8 py-1 rounded-md"
+					on:click={() => updateServiceWorker(true)}
+				>
+					Reload
+				</button>
+			{/if}
+			<button
+				class="text-pink-400 bg-violet-600/20 hover:bg-violet-600/30 px-8 py-1 rounded-md"
+				on:click={close}
+			>
+				Close
+			</button>
+		</div>
 	</div>
 {/if}
 
-<div class="pwa-date">
+<div class="invisible">
 	{buildDate}
 </div>
-
-<style>
-	.pwa-date {
-		visibility: hidden;
-	}
-	.pwa-toast {
-		position: fixed;
-		right: 0;
-		bottom: 0;
-		margin: 16px;
-		padding: 12px;
-		border: 1px solid #8885;
-		border-radius: 4px;
-		z-index: 2;
-		text-align: left;
-		box-shadow: 3px 4px 5px 0 #8885;
-		background-color: white;
-	}
-	.pwa-toast .message {
-		margin-bottom: 8px;
-	}
-	.pwa-toast button {
-		border: 1px solid #8885;
-		outline: none;
-		margin-right: 5px;
-		border-radius: 2px;
-		padding: 3px 10px;
-	}
-</style>
