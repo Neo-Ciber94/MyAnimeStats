@@ -1,6 +1,6 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { RequestHandler } from "./$types";
-import { getCurrentAnimeSeason, type AiringStatus, type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
+import { getCurrentAnimeSeason, type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
@@ -44,7 +44,6 @@ export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
 
     const currentSeason = getCurrentAnimeSeason();
     const { offset, allowNsfw, season = currentSeason.season, year = currentSeason.year } = query;
-    const AVAILABLE_STATUSES = ['currently_airing', 'finished_airing'] as AiringStatus[];
 
     const result = await malClient.getSeasonalAnime({
         season,
@@ -66,7 +65,6 @@ export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
         return node.start_season.season === season
             && node.start_season.year === year
             && node.broadcast?.start_time != null
-            && AVAILABLE_STATUSES.includes(node.status)
             && (allowNsfw || !isNsfw)
     });
 
