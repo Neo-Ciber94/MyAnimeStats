@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
-import type { AiringStatus, AnimeObject, AnimeRelationType, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
+import type { AiringStatus, AnimeObject, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
 
 export namespace AnimeHelper {
     export function mediaTypeToString(mediaType: MediaType) {
@@ -156,6 +156,16 @@ export namespace AnimeHelper {
                 return 'Full Story';
             default:
                 return null;
+        }
+    }
+
+    export function seasonOrder(season: AnimeSeason) {
+        const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
+        const idx = seasonOrder.indexOf(season);
+        if (idx >= 0) {
+            return idx + 1;
+        } else {
+            throw new Error(`Invalid season: ${season}`);
         }
     }
 

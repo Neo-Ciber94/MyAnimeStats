@@ -19,6 +19,7 @@
 	import type { AutocompleteItem } from '../Autocomplete.svelte';
 	import { CalendarMonthSolid, ListSolid } from 'flowbite-svelte-icons';
 	import TagInput from '../TagInput.svelte';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	export let animeList: AnimeObject[];
 
@@ -89,7 +90,7 @@
 
 			const entries = Enumerable.from(watchedBySeason.entries())
 				.orderBy(([_, x]) => x.year)
-				.thenBy(([_, x]) => seasonToNumber(x.season as AnimeSeason))
+				.thenBy(([_, x]) => AnimeHelper.seasonOrder(x.season as AnimeSeason))
 				.toArray();
 
 			// Set the graph labels once

@@ -222,18 +222,3 @@ export function getNextAnimeSeason() {
 
     return { season, year }
 }
-
-export function seasonToNumber(season: AnimeSeason) {
-    switch (season) {
-        case 'winter':
-            return 1;
-        case 'spring':
-            return 2;
-        case 'summer':
-            return 3;
-        case 'fall':
-            return 4;
-        default:
-            throw new Error(`Invalid season: ${season}`);
-    }
-}

@@ -1,5 +1,6 @@
 import { capitalize } from "@/lib/utils/helpers";
 import { getCurrentAnimeSeason, type AnimeSeason } from "./types";
+import { AnimeHelper } from "./helper";
 
 export class AnimeSeasonDate {
     private readonly _season: AnimeSeason;
@@ -31,7 +32,7 @@ export class AnimeSeasonDate {
         let season = this._season;
         let year = this._year;
 
-        if (season === 'spring') {
+        if (season === 'winter') {
             year -= 1;
         }
 
@@ -57,7 +58,7 @@ export class AnimeSeasonDate {
         let season = this._season;
         let year = this._year;
 
-        if (season === 'winter') {
+        if (season === 'fall') {
             year += 1;
         }
 
@@ -77,6 +78,18 @@ export class AnimeSeasonDate {
         }
 
         return new AnimeSeasonDate(season, year);
+    }
+
+    compare(other: AnimeSeasonDate): number {
+        // Same year, compare season
+        if (this._year === other._year) {
+            const thisSeasonIndex = AnimeHelper.seasonOrder(this._season);
+            const otherSeasonIndex = AnimeHelper.seasonOrder(other._season);
+            return thisSeasonIndex - otherSeasonIndex;
+        } else {
+            // If years are different, compare based on years
+            return this._year - other._year;
+        }
     }
 
     toString() {

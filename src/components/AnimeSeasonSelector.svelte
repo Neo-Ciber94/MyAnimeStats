@@ -6,9 +6,33 @@
 	import { scale } from 'svelte/transition';
 
 	export let current: AnimeSeasonDate;
+	export let min: AnimeSeasonDate | undefined = undefined;
+	export let max: AnimeSeasonDate | undefined = undefined;
 
 	function getSeasons() {
-		return [current.prev.prev, current.prev, current.next, current.next.next];
+		const length = 4;
+		const seasons = Array<AnimeSeasonDate | undefined>();
+		let cur = current.prev.prev;
+
+		for (let i = 0; i < length; i++) {
+			if (cur.compare(current) === 0) {
+				cur = cur.next;
+			}
+
+			if (min && cur.compare(min) < 0) {
+				seasons.push(undefined);
+			}
+			if (max && cur.compare(max) > 0) {
+				seasons.push(undefined);
+			} else {
+				seasons.push(cur);
+			}
+
+			// seasons.push(cur);
+			cur = cur.next;
+		}
+
+		return seasons;
 	}
 
 	const dispatch = createEventDispatcher<{
@@ -24,18 +48,28 @@
 <div class="flex flex-col md:flex-row gap-2 justify-between">
 	<div class="flex flex-col xs:flex-row gap-2 justify-between w-full">
 		{#each seasons.slice(0, 2) as season}
-			<div in:scale class="w-full">
-				<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
-			</div>
+			{#if season != null}
+				{@const s = season}
+				<div in:scale class="w-full">
+					<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(s)} />
+				</div>
+			{:else}
+				<div class="w-full" />
+			{/if}
 		{/each}
 	</div>
 
 	<div class="flex flex-col xs:flex-row gap-2 justify-between w-full">
 		{#each seasons.slice(2, 4) as season}
 			{#key [season]}
-				<div in:scale={{ start: 0.5 }} class="w-full">
-					<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(season)} />
-				</div>
+				{#if season != null}
+					{@const s = season}
+					<div in:scale class="w-full">
+						<AnimeSeasonSelectorButton {season} on:click={() => onSeasonClick(s)} />
+					</div>
+				{:else}
+					<div class="w-full" />
+				{/if}
 			{/key}
 		{/each}
 	</div>

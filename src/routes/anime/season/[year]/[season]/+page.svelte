@@ -15,7 +15,7 @@
 	import DotLoader from '$components/loaders/DotLoader.svelte';
 	import AnimeCardGrid from '$components/AnimeListGrid.svelte';
 	import AnimeSeasonSelector from '$components/AnimeSeasonSelector.svelte';
-	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
+	import { getCurrentAnimeSeason, type AnimeSeason } from '@/lib/myanimelist/common/types';
 	import { goto } from '$app/navigation';
 	import { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
 	import type { PageData } from './$types';
@@ -44,7 +44,20 @@
 		}
 	}
 
+	function getMaxSeason() {
+		const currentSeason = getCurrentAnimeSeason();
+		return AnimeSeasonDate.from(currentSeason.season, currentSeason.year).next;
+	}
+
+	function getMinSeason() {
+		return AnimeSeasonDate.from('winter', 1900);
+	}
+
 	async function goToSeason(season: AnimeSeason, year: number) {
+		if (season === data.season && year === data.year) {
+			return;
+		}
+
 		$animeQuery.remove();
 		await goto(`/anime/season/${year}/${season}`);
 		await $animeQuery.refetch({ season, year, nsfw });
@@ -71,6 +84,8 @@
 					{#key [data.season, data.year]}
 						<AnimeSeasonSelector
 							current={AnimeSeasonDate.from(data.season, data.year)}
+							min={getMinSeason()}
+							max={getMaxSeason()}
 							on:click={(e) => {
 								const { season, year } = e.detail;
 								goToSeason(season, year);
