@@ -11,7 +11,7 @@ const POPULAR_ANIME_KEY = 'most_popular_anime';
 
 const popularAnimeListSchema = z.object({
     popularAnimeList: z.array(z.record(z.unknown())),
-    lastUpdated: z.string().pipe(z.date())
+    lastUpdated: z.coerce.date()
 })
 
 export namespace AnimeListService {
@@ -39,6 +39,7 @@ export namespace AnimeListService {
 
         const kv = KV.current();
         const popularAnimeList = result.data;
+
         await kv.set(POPULAR_ANIME_KEY, popularAnimeListSchema, {
             popularAnimeList,
             lastUpdated: new Date()
@@ -50,8 +51,8 @@ export namespace AnimeListService {
 
     export async function getPopularAnimeList(opts?: { force?: boolean }) {
         const { force = false } = opts || {};
-        
-        if (force) {
+
+        if (force === true) {
             return calculatePopularAnimeList();
         }
 

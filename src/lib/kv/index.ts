@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { dev } from "$app/environment";
 import type { z } from "zod";
 
 
@@ -27,13 +28,25 @@ export class KV {
             const result = schema.parse(parsed);
             return result as z.infer<S>;
         }
-        catch {
+        catch (err) {
+            if (dev) {
+                console.error(err);
+            }
             return null;
         }
     }
 
     async set<S extends z.ZodObject<any>>(key: string, schema: S, value: z.infer<S>) {
-        const json = JSON.stringify(value);
+        const result = schema.safeParse(value);
+        if (result.success === false) {
+            if (dev) {
+                console.error(result.error);
+            }
+
+            return;
+        }
+
+        const json = JSON.stringify(result.data);
         await this.kv.put(key, json);
     }
 
