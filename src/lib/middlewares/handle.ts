@@ -3,7 +3,7 @@ import { combineMiddlewares, type Middleware } from ".";
 import { initializeKv } from "../kv";
 import { MALClient } from "../myanimelist/api";
 import { getServerSession } from "../myanimelist/svelte/auth";
-import { MyAnimeListHandler } from "../myanimelist/svelte/handle";
+import { createMyAnimeListHandler } from "../myanimelist/svelte/handle";
 
 function miniflareMiddleware(): Middleware {
     return async (event, next) => {
@@ -21,7 +21,7 @@ function miniflareMiddleware(): Middleware {
 
 function myAnimeListMiddleware(): Middleware {
     return (event, next) => {
-        const myAnimeListHandler = MyAnimeListHandler();
+        const myAnimeListHandler = createMyAnimeListHandler();
         const pathname = event.url.pathname;
 
         if (pathname.startsWith("/api/myanimelist")) {
