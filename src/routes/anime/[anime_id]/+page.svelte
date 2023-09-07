@@ -17,7 +17,6 @@
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
 	import dayjs from 'dayjs';
-	import PopularAnimeBubbleGraph from '$components/graphs/PopularAnimeBubbleGraph.svelte';
 	import { page } from '$app/stores';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -414,10 +413,6 @@
 								</div>
 							</div>
 						{/if}
-					</TabItem>
-
-					<TabItem title="Stats">
-						<PopularAnimeBubbleGraph {popularAnimeList} referenceAnime={{ node: anime }} />
 					</TabItem>
 
 					<TabItem title="Pictures">

@@ -23,7 +23,7 @@
 
 		const rFactor = maxNumScoringUsers / 50;
 
-        let i = 1;
+		let i = 1;
 		for (const anime of popularAnimeList) {
 			datasets.push({
 				label: anime.node.title,
@@ -74,7 +74,7 @@
 					x: {
 						ticks: {
 							color: 'lightgray',
-							autoSkip: true,
+							autoSkip: true
 						}
 					},
 					y: {
