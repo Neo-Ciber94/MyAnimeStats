@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
+import { z } from "zod";
 import { KV } from "../kv";
-import { userAnimeStatsSchema, type CalculatedStats } from "../types";
+import { calculatedStatsSchema, type CalculatedStats } from "../utils/calculatePersonalStats.server";
+
+export const userAnimeStatsSchema = z.object({
+    lastUpdated: z.string().pipe(z.coerce.date()),
+    stats: calculatedStatsSchema,
+});
+
+export type UserAnimeStats = z.infer<typeof userAnimeStatsSchema>;
 
 function getKey(userId: number) {
     return `userStats/${userId}`;

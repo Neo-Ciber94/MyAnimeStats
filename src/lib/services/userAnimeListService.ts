@@ -3,9 +3,16 @@ import { error, type Cookies } from "@sveltejs/kit";
 import { KV } from "../kv";
 import { MALClient, MalHttpError, type UpdateMyAnimeListStatusOptions } from "../myanimelist/api";
 import type { AnimeObjectWithStatus } from "../myanimelist/common/types";
-import { userAnimeListSchema } from "../types";
 import { Retry, runAndRetryOnThrow } from "../utils/retry";
 import { getRequiredServerSession } from "../myanimelist/svelte/auth";
+import { z } from "zod";
+
+export const userAnimeListSchema = z.object({
+    animeList: z.array(z.record(z.unknown())),
+    lastUpdated: z.string().pipe(z.coerce.date()),
+});
+
+export type UserAnimeList = z.infer<typeof userAnimeListSchema>;
 
 function getKey(userId: number) {
     return `userAnimeList/${userId}`;

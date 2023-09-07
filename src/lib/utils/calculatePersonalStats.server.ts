@@ -1,9 +1,17 @@
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
-import type { calculatedStatsSchema } from "$lib/types";
-import type { z } from "zod";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import Enumerable from "linq";
 import { PERSONAL_STATS } from "@/common/constants";
+import { z } from "zod";
+
+export const calculatedStatsSchema = z.object({
+    strength: z.number(),
+    charisma: z.number(),
+    intelligence: z.number(),
+    vitality: z.number(),
+});
+
+export type CalculatedStats = z.infer<typeof calculatedStatsSchema>;
 
 type PersonalStats = z.infer<typeof calculatedStatsSchema>;
 
