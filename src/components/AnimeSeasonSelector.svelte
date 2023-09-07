@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
+	import type { AnimeSeasonYear } from '@/lib/myanimelist/common/AnimeSeasonYear';
 	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
 	import { createEventDispatcher } from 'svelte';
 	import AnimeSeasonSelectorButton from './AnimeSeasonSelectorButton.svelte';
 	import { scale } from 'svelte/transition';
 
-	export let current: AnimeSeasonDate;
-	export let min: AnimeSeasonDate | undefined = undefined;
-	export let max: AnimeSeasonDate | undefined = undefined;
+	export let current: AnimeSeasonYear;
+	export let min: AnimeSeasonYear | undefined = undefined;
+	export let max: AnimeSeasonYear | undefined = undefined;
 
 	function getSeasons() {
 		const length = 4;
-		const seasons = Array<AnimeSeasonDate | undefined>();
+		const seasons = Array<AnimeSeasonYear | undefined>();
 		let cur = current.prev.prev;
 
 		for (let i = 0; i < length; i++) {
@@ -40,7 +40,7 @@
 	}>();
 	const seasons = getSeasons();
 
-	function onSeasonClick({ season, year }: AnimeSeasonDate) {
+	function onSeasonClick({ season, year }: AnimeSeasonYear) {
 		dispatch('click', { season, year });
 	}
 </script>

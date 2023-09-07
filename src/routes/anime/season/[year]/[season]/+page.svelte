@@ -17,7 +17,7 @@
 	import AnimeSeasonSelector from '$components/AnimeSeasonSelector.svelte';
 	import { getCurrentAnimeSeason, type AnimeSeason } from '@/lib/myanimelist/common/types';
 	import { goto } from '$app/navigation';
-	import { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
+	import { AnimeSeasonYear } from '@/lib/myanimelist/common/AnimeSeasonYear';
 	import type { PageData } from './$types';
 	import PageTransition from '$components/PageTransition.svelte';
 	import { capitalize } from '@/lib/utils/helpers';
@@ -46,11 +46,11 @@
 
 	function getMaxSeason() {
 		const currentSeason = getCurrentAnimeSeason();
-		return AnimeSeasonDate.from(currentSeason.season, currentSeason.year).next;
+		return AnimeSeasonYear.from(currentSeason.season, currentSeason.year).next;
 	}
 
 	function getMinSeason() {
-		return AnimeSeasonDate.from('winter', 1900);
+		return AnimeSeasonYear.from('winter', 1900);
 	}
 
 	async function goToSeason(season: AnimeSeason, year: number) {
@@ -83,7 +83,7 @@
 				<div class="mt-4 mb-3 flex flex-col">
 					{#key [data.season, data.year]}
 						<AnimeSeasonSelector
-							current={AnimeSeasonDate.from(data.season, data.year)}
+							current={AnimeSeasonYear.from(data.season, data.year)}
 							min={getMinSeason()}
 							max={getMaxSeason()}
 							on:click={(e) => {

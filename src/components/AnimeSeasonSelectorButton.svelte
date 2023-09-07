@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { AnimeSeasonDate } from '@/lib/myanimelist/common/AnimeSeasonDate';
+	import type { AnimeSeasonYear } from '@/lib/myanimelist/common/AnimeSeasonYear';
 	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
 	import SeasonWinter from './seasons/SeasonWinter.svelte';
 	import SeasonSpring from './seasons/SeasonSpring.svelte';
 	import SeasonSummer from './seasons/SeasonSummer.svelte';
 	import SeasonFall from './seasons/SeasonFall.svelte';
 
-	export let season: AnimeSeasonDate;
+	export let season: AnimeSeasonYear;
 	const SEASONS: Record<AnimeSeason, { icon: any; name: string }> = {
 		winter: {
 			icon: SeasonWinter,
