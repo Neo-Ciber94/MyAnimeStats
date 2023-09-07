@@ -61,7 +61,7 @@ export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: str
 
         async function refetch(q: Q | undefined) {
             query = q;
-            await $animeQuery.refetch();
+            return await $animeQuery.refetch();
         }
 
         return {

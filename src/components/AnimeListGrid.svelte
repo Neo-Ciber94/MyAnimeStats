@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="items-center mx-2 sm:mx-10 mb-4 gap-2 grid
+	class="items-center mb-4 gap-2 grid
         grid-cols-[repeat(auto-fill,minmax(120px,1fr))]
         sm:grid-cols-[repeat(auto-fill,minmax(180px,1fr))]"
 >

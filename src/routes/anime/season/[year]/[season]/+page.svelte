@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-	import { Alert, Checkbox, Spinner } from 'flowbite-svelte';
+	import { Alert, Checkbox, Spinner, TabItem, Tabs } from 'flowbite-svelte';
 	import { InboxSolid, InfoCircleSolid } from 'flowbite-svelte-icons';
 	import { onDestroy, onMount } from 'svelte';
 	import { useAnimeListQuery } from '@/hooks/useAnimeListQuery';
@@ -21,6 +21,7 @@
 	import type { PageData } from './$types';
 	import PageTransition from '$components/PageTransition.svelte';
 	import { capitalize } from '@/lib/utils/helpers';
+	import AnimeGenreDistributionGraph from '$components/graphs/AnimeGenreDistributionGraph.svelte';
 
 	export let data: PageData;
 
@@ -57,55 +58,79 @@
 		</h1>
 	</div>
 
-	<div class="mx-2 sm:mx-10 mt-4 mb-3 flex flex-col">
-		{#key [data.season, data.year]}
-			<AnimeSeasonSelector
-				current={AnimeSeasonDate.from(data.season, data.year)}
-				on:click={(e) => {
-					const { season, year } = e.detail;
-					goToSeason(season, year);
-				}}
-			/>
-		{/key}
+	<div class="mx-2 sm:mx-10">
+		<Tabs
+			divider={false}
+			contentClass="bg-transparent py-4"
+			activeClasses="p-4 text-white bg-violet-500 rounded-t-lg"
+			inactiveClasses="p-4 text-violet-300 rounded-t-lg hover:text-white hover:bg-violet-500"
+			defaultClass="text-indigo-500 mt-5 flex flex-row w-full flex-wrap border-b-2 gap-2 border-b-violet-500"
+		>
+			<TabItem open title="Seasonal Anime">
+				<div class="mt-4 mb-3 flex flex-col">
+					{#key [data.season, data.year]}
+						<AnimeSeasonSelector
+							current={AnimeSeasonDate.from(data.season, data.year)}
+							on:click={(e) => {
+								const { season, year } = e.detail;
+								goToSeason(season, year);
+							}}
+						/>
+					{/key}
 
-		<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
-			<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
-		</div>
-	</div>
-
-	<div class="w-full">
-		{#if $animeQuery.isError && $animeQuery.error}
-			<div class="mb-4 mx-2 sm:mx-10">
-				<Alert dismissable border color="red">
-					<InfoCircleSolid />
-					<span class="font-medium">Error</span>
-					{$animeQuery.error.message}
-				</Alert>
-			</div>
-		{/if}
-
-		{#if $animeQuery.isLoading}
-			<div class="w-full flex flex-row justify-center">
-				<Spinner size={'12'} bg="bg-transparent" />
-			</div>
-		{:else if $animeQuery.data.length === 0}
-			<div
-				class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
-			>
-				<InboxSolid size={'xl'} />
-				<span>No anime found</span>
-			</div>
-		{:else}
-			<AnimeCardGrid animeList={$animeQuery.data} />
-
-			<div bind:this={loadMoreMarkerElement} />
-
-			{#if $animeQuery.isFetching}
-				<div class="w-full text-center">
-					<DotLoader class="bg-orange-500/80" />
+					<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
+						<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
+					</div>
 				</div>
-			{/if}
-		{/if}
+
+				<div class="w-full">
+					{#if $animeQuery.isError && $animeQuery.error}
+						<div class="mb-4">
+							<Alert dismissable border color="red">
+								<InfoCircleSolid />
+								<span class="font-medium">Error</span>
+								{$animeQuery.error.message}
+							</Alert>
+						</div>
+					{/if}
+
+					{#if $animeQuery.isLoading}
+						<div class="w-full flex flex-row justify-center">
+							<Spinner size={'12'} bg="bg-transparent" />
+						</div>
+					{:else if $animeQuery.data.length === 0}
+						<div
+							class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
+						>
+							<InboxSolid size={'xl'} />
+							<span>No anime found</span>
+						</div>
+					{:else}
+						<AnimeCardGrid animeList={$animeQuery.data} />
+
+						<div bind:this={loadMoreMarkerElement} />
+
+						{#if $animeQuery.isFetching}
+							<div class="w-full text-center">
+								<DotLoader class="bg-orange-500/80" />
+							</div>
+						{/if}
+					{/if}
+				</div>
+			</TabItem>
+
+			<TabItem title="Genre Distribution">
+				{@const pageSize = Math.min($animeQuery.data.length, 30)}
+
+				<AnimeGenreDistributionGraph
+					maxSize={30}
+					animeList={$animeQuery.data || []}
+					graphTitle={`Top ${pageSize} ${capitalize(data.season)} ${
+						data.year
+					} Genre/Theme Distribution`}
+				/>
+			</TabItem>
+		</Tabs>
 	</div>
 </PageTransition>
 

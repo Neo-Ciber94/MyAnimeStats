@@ -130,7 +130,9 @@
 				<span>No anime found</span>
 			</div>
 		{:else}
-			<AnimeCardGrid animeList={$animeQuery.data} />
+			<div class="mx-2 sm:mx-10">
+				<AnimeCardGrid animeList={$animeQuery.data} />
+			</div>
 
 			<div bind:this={loadMoreMarkerElement} />
 
