@@ -4,8 +4,10 @@ import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { z } from "zod";
 import { KV } from "../kv";
 import { MALClient } from "../myanimelist/api";
-import dayjs from "dayjs";
 import type { AnimeObjectWithRanking } from "../myanimelist/common/types";
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import dayjs from 'dayjs';
+dayjs.extend(isSameOrAfter);
 
 const POPULAR_ANIME_KEY = 'most_popular_anime';
 

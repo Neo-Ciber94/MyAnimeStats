@@ -3,11 +3,10 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
-import type { CalculatedStats } from "$lib/types";
-import { calculatePersonalStats } from "$lib/utils/calculatePersonalStats.server";
+import { calculatePersonalStats, type CalculatedStats } from "$lib/utils/calculatePersonalStats.server";
 import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
-import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import dayjs from 'dayjs';
 import { UserAnimeListService } from "@/lib/services/userAnimeListService";
 import { UserStatsService } from "@/lib/services/userStatsService";
 import { dev } from "$app/environment";
