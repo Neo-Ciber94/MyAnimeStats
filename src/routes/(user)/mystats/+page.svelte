@@ -34,7 +34,9 @@
 						class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
 							h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
 					>
-						<CalculateStatsButton>Re-Calculate Stats</CalculateStatsButton>
+						<CalculateStatsButton>
+							<span class="text-sm md:text-lg">Re-Calculate Stats</span>
+						</CalculateStatsButton>
 					</div>
 				{/if}
 
@@ -42,7 +44,7 @@
 			</StatTabs>
 		{:else}
 			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
-				<CalculateStatsButton>Calculate Stats</CalculateStatsButton>
+				<span class="text-sm md:text-lg">Calculate Stats</span>
 			</div>
 		{/if}
 	</div>
