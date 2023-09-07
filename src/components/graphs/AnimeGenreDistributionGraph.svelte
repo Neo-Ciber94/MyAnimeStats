@@ -3,6 +3,7 @@
 	import { Chart, registerables, type ChartDataset } from 'chart.js';
 	import type { AnimeObject, Genre } from '@/lib/myanimelist/common/types';
 	import Enumerable from 'linq';
+	import Color from 'color';
 
 	export let animeList: AnimeObject[];
 	export let graphTitle: string;
@@ -32,12 +33,20 @@
 		const labels = animeGroupByGenre.map((x) => x.key);
 		const data = animeGroupByGenre.map((x) => x.value.length);
 
+		const borderColors = [...Array(10).keys()].map((x) =>
+			Color('rgb(153, 102, 255)')
+				.darken(Math.random() * 0.3)
+				.lighten(Math.random() * 0.2)
+				.fade(0.2)
+		);
+		const backgroundColors = borderColors.map((x) => x.fade(0.7));
+
 		const datasets: ChartDataset<'bar'>[] = [
 			{
 				label: 'Count',
 				data: data,
-				backgroundColor: ['rgba(153, 102, 255, 0.2)'],
-				borderColor: ['rgb(153, 102, 255)'],
+				backgroundColor: backgroundColors.map((x) => x.toString()),
+				borderColor: borderColors.map((x) => x.toString()),
 				borderWidth: 1
 			}
 		];
