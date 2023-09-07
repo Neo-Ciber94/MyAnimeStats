@@ -1,10 +1,10 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
-import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
 import { getCurrentAnimeSeason, type AiringStatus, getNextAnimeSeason } from "@/lib/myanimelist/common/types";
 import { invariant } from "@/lib/utils/invariant";
 import ANIME_GENRES from "@/types/generated/animeGenres.generated";
 import { shuffleArray } from "@/lib/utils/helpers";
+import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 
 const ANIME_LIMIT = 50;
 
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async (event) => {
 
 async function getCurrentSeasonAnimeList({ limit }: { limit: number }) {
     const malClient = new MALClient({
-        clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID
+        clientId: MY_ANIME_LIST_CLIENT_ID 
     });
 
     const { season, year } = getCurrentAnimeSeason();
@@ -65,7 +65,7 @@ async function getSuggestedAnimeList({ limit, accessToken }: { limit: number, ac
 }
 
 async function getMostPopularAnimeList({ limit }: { limit: number }) {
-    const malClient = new MALClient({ clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID });
+    const malClient = new MALClient({ clientId: MY_ANIME_LIST_CLIENT_ID  });
 
     const result = await malClient.getAnimeRanking({
         limit,
@@ -77,7 +77,7 @@ async function getMostPopularAnimeList({ limit }: { limit: number }) {
 }
 
 async function getUpcomingAnimeList({ limit }: { limit: number }) {
-    const malClient = new MALClient({ clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID });
+    const malClient = new MALClient({ clientId: MY_ANIME_LIST_CLIENT_ID  });
     const { season, year } = getNextAnimeSeason();
 
     const result = await malClient.getSeasonalAnime({

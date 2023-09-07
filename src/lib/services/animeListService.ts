@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { PUBLIC_MY_ANIME_LIST_CLIENT_ID } from "$env/static/public";
+import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 import { z } from "zod";
 import { KV } from "../kv";
 import { MALClient } from "../myanimelist/api";
@@ -20,7 +20,7 @@ export namespace AnimeListService {
     export async function calculatePopularAnimeList() {
         console.log("🕑 Fetching most popular anime");
 
-        const malClient = new MALClient({ clientId: PUBLIC_MY_ANIME_LIST_CLIENT_ID });
+        const malClient = new MALClient({ clientId: MY_ANIME_LIST_CLIENT_ID });
         const result = await malClient.getAnimeRanking({
             limit: 50,
             ranking_type: 'tv',
