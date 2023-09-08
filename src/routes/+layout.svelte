@@ -13,12 +13,10 @@
 	const queryClient = new QueryClient();
 
 	onNavigate((navigation) => {
-		// @ts-ignore
 		if (!document.startViewTransition) return;
 
 		return new Promise((resolve) => {
-			// @ts-ignore
-			document.startViewTransition(async () => {
+			document.startViewTransition!(async () => {
 				resolve();
 				await navigation.complete;
 			});

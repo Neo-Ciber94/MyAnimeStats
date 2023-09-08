@@ -87,6 +87,9 @@
 					href={`/anime/${anime.node.id}`}
 					class="group/image block overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
 					on:click={(e) => {
+						// We need to set the name here because we could have multiple carousels
+						// causing the transition-name to be repeated, setting the name this way
+						// also will provoke to loss the animation when navigating back
 						const img = e.currentTarget.querySelector('img');
 						if (img && typeof img.style.viewTransitionName !== 'undefined') {
 							img.style.viewTransitionName = `anime-${anime.node.id}`;

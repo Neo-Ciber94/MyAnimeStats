@@ -9,7 +9,7 @@
 	// @ts-ignore
 	let reloadSW = __RELOAD_SW__;
 
-	const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
+	const { needRefresh, updateServiceWorker } = useRegisterSW({
 		onRegistered(registration) {
 			if (reloadSW) {
 				registration &&
@@ -25,12 +25,12 @@
 			console.log('SW registration error', error);
 		}
 	});
+
 	const close = () => {
-		offlineReady.set(false);
 		needRefresh.set(false);
 	};
 
-	$: toast = $offlineReady || $needRefresh;
+	$: toast = $needRefresh;
 </script>
 
 {#if toast}
@@ -40,12 +40,8 @@
 		text-sm sm:text-base"
 		role="alert"
 	>
-		<div class="">
-			{#if $offlineReady}
-				<span> App ready to work offline </span>
-			{:else}
-				<span> A new update is available, click on reload to update. </span>
-			{/if}
+		<div>
+			<span> A new update is available, click on reload to update. </span>
 		</div>
 
 		<div class="mt-4 text-bold">
