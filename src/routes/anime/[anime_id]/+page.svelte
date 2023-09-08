@@ -12,7 +12,7 @@
 	import { EyeSlashSolid, EyeSolid, StarSolid } from 'flowbite-svelte-icons';
 	import MyAnimeListInput from './MyAnimeListInput.svelte';
 	import session from '$stores/session';
-	import { slide } from 'svelte/transition';
+	import { fade, fly, slide } from 'svelte/transition';
 	import PageTransition from '$components/PageTransition.svelte';
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -297,129 +297,134 @@
 			<section class="flex flex-col">
 				<Tabs
 					divider={false}
-					contentClass="bg-transparent py-4"
+					contentClass="bg-transparent py-4 overflow-hidden"
 					activeClasses="p-4 text-white bg-violet-500 rounded-t-lg"
 					inactiveClasses="p-4 text-violet-300 rounded-t-lg hover:text-white hover:bg-violet-500"
 					defaultClass="text-indigo-500 mt-5 flex flex-row w-full flex-wrap border-b-2 gap-2 border-b-violet-500"
 				>
 					<TabItem open title="General">
-						{#if anime.alternative_titles}
-							<h3 class="text-white font-bold text-xl mb-1">Alternative Titles</h3>
+						<div in:fly|global={{ duration: 200, x: -100 }}>
+							{#if anime.alternative_titles}
+								<h3 class="text-white font-bold text-xl mb-1">Alternative Titles</h3>
 
-							{#if anime.alternative_titles.en}
-								<AnimeInfoRow title="English">
-									<span slot="content">{anime.alternative_titles.en}</span>
+								{#if anime.alternative_titles.en}
+									<AnimeInfoRow title="English">
+										<span slot="content">{anime.alternative_titles.en}</span>
+									</AnimeInfoRow>
+								{/if}
+
+								{#if anime.alternative_titles.ja}
+									<AnimeInfoRow title="Japanese">
+										<span slot="content">{anime.alternative_titles.ja}</span>
+									</AnimeInfoRow>
+								{/if}
+
+								{#if anime.alternative_titles.synonyms && anime.alternative_titles.synonyms.length > 0}
+									<AnimeInfoRow title="Synonyms">
+										<svelte:fragment slot="content">
+											{#if anime.alternative_titles.synonyms}
+												{#each anime.alternative_titles.synonyms as synonym}
+													<span>{synonym}</span>
+												{/each}
+											{/if}
+										</svelte:fragment>
+									</AnimeInfoRow>
+								{/if}
+							{/if}
+
+							<h3 class="text-white text-xl mt-8 mb-1 font-bold">Information</h3>
+							<AnimeInfoRow title="Type">
+								<svelte:fragment slot="content">
+									{AnimeHelper.mediaTypeToString(anime.media_type)}
+								</svelte:fragment>
+							</AnimeInfoRow>
+
+							<AnimeInfoRow title="Episodes">
+								<span slot="content">{anime.num_episodes || 'Unknown'}</span>
+							</AnimeInfoRow>
+
+							<AnimeInfoRow title="Status">
+								<span slot="content"> {AnimeHelper.airingStatusToString(anime.status)}</span>
+							</AnimeInfoRow>
+
+							{#if anime.average_episode_duration}
+								<AnimeInfoRow title="Episode Duration">
+									<span slot="content">{getDurationFormatted(anime.average_episode_duration)}</span>
 								</AnimeInfoRow>
 							{/if}
 
-							{#if anime.alternative_titles.ja}
-								<AnimeInfoRow title="Japanese">
-									<span slot="content">{anime.alternative_titles.ja}</span>
+							{#if anime.source}
+								<AnimeInfoRow title="Source">
+									<span slot="content">{AnimeHelper.sourceTypeToString(anime.source)}</span>
 								</AnimeInfoRow>
 							{/if}
 
-							{#if anime.alternative_titles.synonyms && anime.alternative_titles.synonyms.length > 0}
-								<AnimeInfoRow title="Synonyms">
+							{#if anime.studios && anime.studios.length > 0}
+								<AnimeInfoRow title="Studios">
 									<svelte:fragment slot="content">
-										{#if anime.alternative_titles.synonyms}
-											{#each anime.alternative_titles.synonyms as synonym}
-												<span>{synonym}</span>
-											{/each}
+										{#each anime.studios as studio}
+											<span>{studio.name}</span>
+										{/each}
+									</svelte:fragment>
+								</AnimeInfoRow>
+							{/if}
+
+							{#if anime.rating}
+								<AnimeInfoRow title="Rating">
+									<span slot="content">{AnimeHelper.ratingToString(anime.rating)}</span>
+								</AnimeInfoRow>
+							{/if}
+
+							{#if anime.nsfw}
+								<AnimeInfoRow title="NSFW">
+									<svelte:fragment slot="content">
+										{#if anime.nsfw === 'black'}
+											<span class="text-pink-600">This work is not safe for work</span>
+										{:else if anime.nsfw === 'gray'}
+											<span class="text-pink-300">This work may be not safe for work</span>
+										{:else if anime.nsfw === 'white'}
+											<span class="text-yellow-50">This work is safe for work</span>
 										{/if}
 									</svelte:fragment>
 								</AnimeInfoRow>
 							{/if}
-						{/if}
 
-						<h3 class="text-white text-xl mt-8 mb-1 font-bold">Information</h3>
-						<AnimeInfoRow title="Type">
-							<svelte:fragment slot="content">
-								{AnimeHelper.mediaTypeToString(anime.media_type)}
-							</svelte:fragment>
-						</AnimeInfoRow>
-
-						<AnimeInfoRow title="Episodes">
-							<span slot="content">{anime.num_episodes || 'Unknown'}</span>
-						</AnimeInfoRow>
-
-						<AnimeInfoRow title="Status">
-							<span slot="content"> {AnimeHelper.airingStatusToString(anime.status)}</span>
-						</AnimeInfoRow>
-
-						{#if anime.average_episode_duration}
-							<AnimeInfoRow title="Episode Duration">
-								<span slot="content">{getDurationFormatted(anime.average_episode_duration)}</span>
-							</AnimeInfoRow>
-						{/if}
-
-						{#if anime.source}
-							<AnimeInfoRow title="Source">
-								<span slot="content">{AnimeHelper.sourceTypeToString(anime.source)}</span>
-							</AnimeInfoRow>
-						{/if}
-
-						{#if anime.studios && anime.studios.length > 0}
-							<AnimeInfoRow title="Studios">
-								<svelte:fragment slot="content">
-									{#each anime.studios as studio}
-										<span>{studio.name}</span>
-									{/each}
-								</svelte:fragment>
-							</AnimeInfoRow>
-						{/if}
-
-						{#if anime.rating}
-							<AnimeInfoRow title="Rating">
-								<span slot="content">{AnimeHelper.ratingToString(anime.rating)}</span>
-							</AnimeInfoRow>
-						{/if}
-
-						{#if anime.nsfw}
-							<AnimeInfoRow title="NSFW">
-								<svelte:fragment slot="content">
-									{#if anime.nsfw === 'black'}
-										<span class="text-pink-600">This work is not safe for work</span>
-									{:else if anime.nsfw === 'gray'}
-										<span class="text-pink-300">This work may be not safe for work</span>
-									{:else if anime.nsfw === 'white'}
-										<span class="text-yellow-50">This work is safe for work</span>
-									{/if}
-								</svelte:fragment>
-							</AnimeInfoRow>
-						{/if}
-
-						{#if anime.related_anime && anime.related_anime.length > 0}
-							<div>
-								<h3 class="text-white text-xl mt-8 mb-3 font-bold">Related Anime</h3>
-								<div class="bg-black/20 p-2 rounded-lg">
-									<AnimeCarousel
-										animeList={anime.related_anime}
-										autoPlay={anime.related_anime.length >= 10}
-										showNsfw={showUncensored}
-										mapTitle={(anime) => {
-											return `${anime.node.title} (${anime.relation_type_formatted})`;
-										}}
-									/>
+							{#if anime.related_anime && anime.related_anime.length > 0}
+								<div>
+									<h3 class="text-white text-xl mt-8 mb-3 font-bold">Related Anime</h3>
+									<div class="bg-black/20 p-2 rounded-lg">
+										<AnimeCarousel
+											animeList={anime.related_anime}
+											autoPlay={anime.related_anime.length >= 10}
+											showNsfw={showUncensored}
+											mapTitle={(anime) => {
+												return `${anime.node.title} (${anime.relation_type_formatted})`;
+											}}
+										/>
+									</div>
 								</div>
-							</div>
-						{/if}
+							{/if}
 
-						{#if anime.recommendations && anime.recommendations.length > 0}
-							<div>
-								<h3 class="text-white text-xl mt-8 mb-3 font-bold">Recommendations</h3>
-								<div class="bg-black/20 p-2 rounded-lg">
-									<AnimeCarousel
-										animeList={anime.recommendations}
-										autoPlay={anime.recommendations.length >= 10}
-									/>
+							{#if anime.recommendations && anime.recommendations.length > 0}
+								<div>
+									<h3 class="text-white text-xl mt-8 mb-3 font-bold">Recommendations</h3>
+									<div class="bg-black/20 p-2 rounded-lg">
+										<AnimeCarousel
+											animeList={anime.recommendations}
+											autoPlay={anime.recommendations.length >= 10}
+										/>
+									</div>
 								</div>
-							</div>
-						{/if}
+							{/if}
+						</div>
 					</TabItem>
 
 					<TabItem title="Pictures">
 						{#if anime.pictures}
-							<div class="flex flex-row justify-center flex-wrap gap-4">
+							<div
+								class="flex flex-row justify-center flex-wrap gap-4"
+								in:fly|global={{ duration: 200, x: 100 }}
+							>
 								{#each anime.pictures as picture}
 									<img
 										alt={anime.title}
