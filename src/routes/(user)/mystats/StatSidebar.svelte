@@ -1,7 +1,7 @@
 <script lang="ts">
 	import session from '$stores/session';
 	import { Spinner } from 'flowbite-svelte';
-	import StatIndicator from '$components/StatIndicator.svelte';
+	import StatIndicator from '@/routes/(user)/mystats/StatIndicator.svelte';
 
 	let open = false;
 </script>

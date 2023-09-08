@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ActionData, PageServerData } from './$types';
-	import CalculateStatsButton from '$components/CalculateStatsButton.svelte';
+	import CalculateStatsButton from '@/routes/(user)/mystats/CalculateStatsButton.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
 	import CubesLoader from '$components/loaders/CubesLoader.svelte';
 	import StatSidebar from './StatSidebar.svelte';

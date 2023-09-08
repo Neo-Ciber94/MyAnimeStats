@@ -5,15 +5,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import {
-		seasonToNumber,
-		type AnimeObject,
-		type AnimeSeason
-	} from '$lib/myanimelist/common/types';
+	import type { AnimeObject, AnimeSeason } from '$lib/myanimelist/common/types';
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
-	import { Input } from 'flowbite-svelte';
 	import Color from 'color';
 	import { capitalize, hash, numberToColor } from '$lib/utils/helpers';
 	import type { AutocompleteItem } from '../Autocomplete.svelte';

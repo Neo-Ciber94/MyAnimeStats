@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AnimatedNumber from '$components/AnimatedNumber.svelte';
-	import SeasonAndYearIndicator from '$components/SeasonAndYearIndicator.svelte';
+	import SeasonAndYearIndicator from '@/routes/anime/[anime_id]/SeasonAndYearIndicator.svelte';
 	import type { PageServerData } from './$types';
 	import AnimeStatBadge from './AnimeStatBadge.svelte';
 	import AnimeStatusBadge from './AnimeStatusBadge.svelte';
