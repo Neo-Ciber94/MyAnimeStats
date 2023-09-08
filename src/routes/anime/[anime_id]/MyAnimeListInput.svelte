@@ -3,7 +3,9 @@
 	import session from '$stores/session';
 	import { MALClient } from '@/lib/myanimelist/api';
 	import type { AnimeObject, WatchStatus } from '@/lib/myanimelist/common/types';
+	import cx from '@/lib/utils/cx';
 	import { numberRange } from '@/lib/utils/helpers';
+	import Color from 'color';
 	import { Select, Spinner } from 'flowbite-svelte';
 	import { CheckSolid, ChevronRightSolid, EyeSolid, TrashBinSolid } from 'flowbite-svelte-icons';
 	import { createEventDispatcher, onMount } from 'svelte';
@@ -41,7 +43,6 @@
 	let loading = false;
 	let isSubmitting = false;
 	let isDeleting = false;
-	let mounted = false;
 
 	onMount(() => {
 		switch (anime.node.status) {
@@ -157,6 +158,19 @@
 			loading = false;
 		}
 	}
+
+	$: episodeRangeColor = (function () {
+		const factor = numEpisodes > 0 ? (episodesSeen / numEpisodes) * 0.3 : 0;
+		return Color('#c084fc').darken(factor).toString();
+	})();
+
+	$: scoreRangeColor = (function () {
+		const factor = (myScore / 10) * 0.2;
+		return Color('#fb923c')
+			.darken(factor)
+			.rotate(factor * -45)
+			.toString();
+	})();
 </script>
 
 <ConfirmDialog
@@ -219,7 +233,7 @@
 								min={1}
 								max={numEpisodes}
 								bind:value={episodesSeen}
-								style={`--range-color: #7e22ce;`}
+								style={`--range-color: ${episodeRangeColor};`}
 							/>
 
 							<div class="flex flex-row justify-between text-violet-300 mx-1 text-[4px]">
@@ -261,7 +275,12 @@
 					</span>
 
 					<span
-						class="flex flex-row items-center justify-center text-base px-2 w-[110px] text-orange-500"
+						class={cx(
+							'flex flex-row items-center font-semibold justify-center text-base px-2 w-[110px] text-orange-500',
+							{
+								'masterpiece-background': myScore === 10
+							}
+						)}
 					>
 						{scoreText[myScore - 1]}
 					</span>
@@ -278,7 +297,7 @@
 							min={1}
 							max={10}
 							bind:value={myScore}
-							style={'--range-color: #f97316;'}
+							style={`--range-color: ${scoreRangeColor};`}
 						/>
 
 						<div class="flex flex-row justify-between text-amber-500 mx-1 text-[4px] mt-1">
@@ -378,5 +397,24 @@
 		border-radius: 50%;
 		border: 1px solid var(--range-color, #f50);
 		box-shadow: -1007px 0 0 1000px var(--range-color, #f50);
+	}
+
+	.masterpiece-background {
+		background: linear-gradient(-45deg, #f97316, #ec4899, #c084fc, #2dd4bf);
+		background-size: 400% 400%;
+		animation: gradient 5s ease infinite;
+		@apply text-transparent bg-clip-text;
+	}
+
+	@keyframes gradient {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 </style>
