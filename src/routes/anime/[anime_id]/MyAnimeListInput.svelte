@@ -214,14 +214,15 @@
 						{#if numEpisodes > 0}
 							<input
 								type="range"
-								class="w-full rounded-lg accent-violet-500 mt-2"
+								class="custom-range"
 								step={1}
 								min={1}
 								max={numEpisodes}
 								bind:value={episodesSeen}
+								style={`--range-color: #7e22ce;`}
 							/>
 
-							<div class="flex flex-row justify-between text-violet-300 mx-1 text-[6px]">
+							<div class="flex flex-row justify-between text-violet-300 mx-1 text-[4px]">
 								{#each numberRange(numEpisodes) as i}
 									<span>|</span>
 								{/each}
@@ -259,13 +260,6 @@
 						Score
 					</span>
 
-					<!-- <div
-					data-score={myScore}
-					class="flex flex-row items-center justify-center rounded-md text-[10px] 
-							transition duration-300 shadow-lg min-w-[110px] max-w-fit"
-				>
-					{scoreText[myScore - 1]}
-				</div> -->
 					<span
 						class="flex flex-row items-center justify-center text-base px-2 w-[110px] text-orange-500"
 					>
@@ -279,14 +273,15 @@
 					<div class="flex flex-col w-full">
 						<input
 							type="range"
-							class="w-full rounded-lg accent-orange-500 mt-2"
+							class="custom-range"
 							step={1}
 							min={1}
 							max={10}
 							bind:value={myScore}
+							style={'--range-color: #f97316;'}
 						/>
 
-						<div class="flex flex-row justify-between text-amber-500 mx-1 text-[6px]">
+						<div class="flex flex-row justify-between text-amber-500 mx-1 text-[4px] mt-1">
 							{#each numberRange(10) as _i}
 								<span>|</span>
 							{/each}
@@ -342,44 +337,46 @@
 	</div>
 </div>
 
-<!-- <style lang="postcss">
-	[data-score='10'] {
-		@apply bg-violet-600 text-white;
+<style lang="postcss">
+	input[type='range'].custom-range {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		cursor: pointer;
+		outline: none;
+		overflow: hidden;
+		border-radius: 16px;
 	}
 
-	[data-score='9'] {
-		@apply bg-violet-800 text-white;
+	input[type='range'].custom-range::-webkit-slider-runnable-track {
+		height: 15px;
+		background: #ccc;
+		border-radius: 16px;
 	}
 
-	[data-score='8'] {
-		@apply bg-indigo-500 text-white;
+	input[type='range'].custom-range::-moz-range-track {
+		height: 15px;
+		background: #ccc;
+		border-radius: 16px;
 	}
 
-	[data-score='7'] {
-		@apply bg-indigo-700 text-white;
+	input[type='range'].custom-range::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		height: 15px;
+		width: 15px;
+		background-color: #fff;
+		border-radius: 50%;
+		border: 2px solid var(--range-color, #f50);
+		box-shadow: -1007px 0 0 1000px var(--range-color, #f50);
 	}
 
-	[data-score='6'] {
-		@apply bg-amber-400 text-black;
+	input[type='range'].custom-range::-moz-range-thumb {
+		height: 15px;
+		width: 15px;
+		background-color: #fff;
+		border-radius: 50%;
+		border: 1px solid var(--range-color, #f50);
+		box-shadow: -1007px 0 0 1000px var(--range-color, #f50);
 	}
-
-	[data-score='5'] {
-		@apply bg-amber-500 text-black;
-	}
-
-	[data-score='4'] {
-		@apply bg-amber-700 text-white;
-	}
-
-	[data-score='3'] {
-		@apply bg-orange-500 text-white;
-	}
-
-	[data-score='2'] {
-		@apply bg-red-700 text-white;
-	}
-
-	[data-score='1'] {
-		@apply bg-red-800 text-white;
-	}
-</style> -->
+</style>
