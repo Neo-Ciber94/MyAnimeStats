@@ -5,12 +5,7 @@
 	import type { AnimeObject, WatchStatus } from '@/lib/myanimelist/common/types';
 	import { numberRange } from '@/lib/utils/helpers';
 	import { Select, Spinner } from 'flowbite-svelte';
-	import {
-		CheckSolid,
-		ChevronRightSolid,
-		EyeSolid,
-		TrashBinSolid
-	} from 'flowbite-svelte-icons';
+	import { CheckSolid, ChevronRightSolid, EyeSolid, TrashBinSolid } from 'flowbite-svelte-icons';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 
@@ -39,13 +34,14 @@
 	}>();
 
 	// User status
-	export let status: WatchStatus | undefined = undefined;
+	export let status: WatchStatus | undefined = 'plan_to_watch';
 	export let episodesSeen: number = 1;
 	export let myScore: number = 6;
 
 	let loading = false;
 	let isSubmitting = false;
 	let isDeleting = false;
+	let mounted = false;
 
 	onMount(() => {
 		switch (anime.node.status) {
@@ -191,7 +187,7 @@
 	<div class="flex flex-col gap-1 sm:gap-2">
 		<div class="basis-3/12 text-orange-500">
 			<span class="flex flex-row gap-2">
-				<ChevronRightSolid />
+				<ChevronRightSolid class="outline-none" />
 				Status
 			</span>
 		</div>
@@ -203,108 +199,112 @@
 		/>
 	</div>
 
-	<div class="flex flex-col mt-4">
-		<div class="basis-3/12 text-orange-500">
-			<span class="flex flex-row gap-2">
-				<EyeSolid />
-				Episodes
-			</span>
-		</div>
+	{#if status !== 'plan_to_watch'}
+		<div class="flex flex-col mt-4">
+			<div class="basis-3/12 text-orange-500">
+				<span class="flex flex-row gap-2">
+					<EyeSolid class="outline-none" />
+					Episodes
+				</span>
+			</div>
 
-		<div class="flex flex-col w-full">
-			<div class="flex flex-col xs:flex-row w-full gap-2 items-center">
-				<div class="w-full flex-flex-col">
-					{#if numEpisodes > 0}
-						<input
-							type="range"
-							class="w-full rounded-lg accent-violet-500 mt-2"
-							step={1}
-							min={1}
-							max={numEpisodes}
-							bind:value={episodesSeen}
-						/>
+			<div class="flex flex-col w-full">
+				<div class="flex flex-col xs:flex-row w-full gap-2 items-center">
+					<div class="w-full flex-flex-col">
+						{#if numEpisodes > 0}
+							<input
+								type="range"
+								class="w-full rounded-lg accent-violet-500 mt-2"
+								step={1}
+								min={1}
+								max={numEpisodes}
+								bind:value={episodesSeen}
+							/>
 
-						<div class="flex flex-row justify-between text-violet-300 mx-1 text-[6px]">
-							{#each numberRange(numEpisodes) as i}
-								<span>|</span>
-							{/each}
-						</div>
-					{:else}
-						<input
-							type="range"
-							class="w-full rounded-lg accent-violet-500 mt-2"
-							step={1}
-							min={0}
-							max={1}
-							value={1}
-							on:input|preventDefault
-						/>
-					{/if}
+							<div class="flex flex-row justify-between text-violet-300 mx-1 text-[6px]">
+								{#each numberRange(numEpisodes) as i}
+									<span>|</span>
+								{/each}
+							</div>
+						{:else}
+							<input
+								type="range"
+								class="w-full rounded-lg accent-violet-500 mt-2"
+								step={1}
+								min={0}
+								max={1}
+								value={1}
+								on:input|preventDefault
+							/>
+						{/if}
+					</div>
+
+					<input
+						type="number"
+						class="rounded-lg h-8 w-full xs:w-auto text-white bg-gray-900 text-md"
+						step={1}
+						min={1}
+						max={numEpisodes == 0 ? 10_000 : numEpisodes}
+						bind:value={episodesSeen}
+					/>
 				</div>
-
-				<input
-					type="number"
-					class="rounded-lg h-8 w-full xs:w-auto text-white bg-gray-900 text-md"
-					step={1}
-					min={1}
-					max={numEpisodes == 0 ? 10_000 : numEpisodes}
-					bind:value={episodesSeen}
-				/>
 			</div>
 		</div>
-	</div>
 
-	<div class="flex flex-col mt-4">
-		<div class="basis-3/12 text-orange-500">
-			<div class="flex flex-row gap-2 justify-between mb-2">
-				<span class="flex flex-row gap-2">
-					<CheckSolid />
-					Score
-				</span>
+		<div class="flex flex-col mt-4">
+			<div class="basis-3/12 text-orange-500">
+				<div class="flex flex-row gap-2 justify-between mb-2">
+					<span class="flex flex-row gap-2">
+						<CheckSolid class="outline-none" />
+						Score
+					</span>
 
-				<!-- <div
+					<!-- <div
 					data-score={myScore}
 					class="flex flex-row items-center justify-center rounded-md text-[10px] 
 							transition duration-300 shadow-lg min-w-[110px] max-w-fit"
 				>
 					{scoreText[myScore - 1]}
 				</div> -->
-				<span class="flex flex-row items-center justify-center text-base px-2 w-[110px] text-orange-500">
-					{scoreText[myScore - 1]}
-				</span>
+					<span
+						class="flex flex-row items-center justify-center text-base px-2 w-[110px] text-orange-500"
+					>
+						{scoreText[myScore - 1]}
+					</span>
+				</div>
 			</div>
-		</div>
 
-		<div class="flex flex-col w-full">
-			<div class="flex flex-col xs:flex-row w-full items-center gap-2">
-				<div class="flex flex-col w-full">
+			<div class="flex flex-col w-full">
+				<div class="flex flex-col xs:flex-row w-full items-center gap-2">
+					<div class="flex flex-col w-full">
+						<input
+							type="range"
+							class="w-full rounded-lg accent-orange-500 mt-2"
+							step={1}
+							min={1}
+							max={10}
+							bind:value={myScore}
+						/>
+
+						<div class="flex flex-row justify-between text-amber-500 mx-1 text-[6px]">
+							{#each numberRange(10) as _i}
+								<span>|</span>
+							{/each}
+						</div>
+					</div>
+
 					<input
-						type="range"
-						class="w-full rounded-lg accent-orange-500 mt-2"
+						type="number"
+						class="rounded-lg h-8 w-full xs:w-auto text-white bg-gray-900 text-md"
 						step={1}
 						min={1}
 						max={10}
 						bind:value={myScore}
 					/>
-
-					<div class="flex flex-row justify-between text-amber-500 mx-1 text-[6px]">
-						{#each numberRange(10) as _i}
-							<span>|</span>
-						{/each}
-					</div>
 				</div>
-
-				<input
-					type="number"
-					class="rounded-lg h-8 w-full xs:w-auto text-white bg-gray-900 text-md"
-					step={1}
-					min={1}
-					max={10}
-					bind:value={myScore}
-				/>
 			</div>
 		</div>
-	</div>
+	{/if}
 
 	<div class="w-full flex flex-col-reverse sm:flex-row gap-2 text-center mt-6">
 		<button

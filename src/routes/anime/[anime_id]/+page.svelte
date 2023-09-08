@@ -286,7 +286,7 @@
 							<div class="w-full justify-center">
 								<Button on:click={addToFavorites} class="flex flex-row gap-2 w-full">
 									<StarSolid />
-									<span>Add to favorites</span>
+									<span>Add to List</span>
 								</Button>
 							</div>
 						</div>
