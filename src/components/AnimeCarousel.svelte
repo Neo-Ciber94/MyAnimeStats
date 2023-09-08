@@ -1,16 +1,11 @@
 <script lang="ts" generics="TAnime extends AnimeObject">
-	import { goto } from '$app/navigation';
-
-	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
-
-	import { PLACEHOLDER_IMAGE } from '@/common/constants';
-
-	import type { SwiperModule } from 'swiper/types/shared';
-
 	import 'swiper/css/bundle';
+	import Swiper from 'swiper';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
+	import { PLACEHOLDER_IMAGE } from '@/common/constants';
+	import type { SwiperModule } from 'swiper/types/shared';
 	import { ChevronLeft, ChevronRight } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-	import Swiper from 'swiper';
 	import { Autoplay } from 'swiper/modules';
 	import type { AnimeObject } from '@/lib/myanimelist/common/types';
 
