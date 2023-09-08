@@ -66,7 +66,7 @@
 
 	// genres
 	const genres = Enumerable.from(data.data.userAnimeList?.animeList || [])
-		.selectMany((x) => x.node.genres)
+		.selectMany((x) => x.node.genres as Genre[])
 		.distinct((x) => x.id)
 		.toArray();
 
@@ -140,7 +140,8 @@
 					return true;
 				}
 
-				return !node.genres.some((s) => s.id === ANIME_GENRES.Hentai.ID);
+				const genres: Genre[] = node.genres || [];
+				return !genres.some((s) => s.id === ANIME_GENRES.Hentai.ID);
 			})
 			.where((anime) => {
 				// We group all the search terms of the anime

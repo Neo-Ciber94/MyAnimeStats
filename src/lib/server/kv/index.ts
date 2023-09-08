@@ -2,7 +2,6 @@
 import { dev } from "$app/environment";
 import type { z } from "zod";
 
-
 let GLOBAL_KV: KVNamespace | null;
 
 export class KV {

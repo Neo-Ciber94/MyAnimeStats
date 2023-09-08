@@ -1,14 +1,14 @@
 import { dev } from "$app/environment";
 import { combineMiddlewares, type Middleware } from ".";
 import { initializeKv } from "../kv";
-import { MALClient } from "../myanimelist/api";
-import { getServerSession } from "../myanimelist/svelte/auth";
-import { createMyAnimeListHandler } from "../myanimelist/svelte/handle";
+import { MALClient } from "../../myanimelist/api";
+import { getServerSession } from "../../myanimelist/svelte/auth";
+import { createMyAnimeListHandler } from "$lib/myanimelist/svelte/handle";
 
 function miniflareMiddleware(): Middleware {
     return async (event, next) => {
         if (dev) {
-            const { fallBackPlatformToMiniFlareInDev } = await import('$lib/miniflare');
+            const { fallBackPlatformToMiniFlareInDev } = await import('@/lib/server/miniflare');
             event.platform = await fallBackPlatformToMiniFlareInDev(event.platform);
         }
 

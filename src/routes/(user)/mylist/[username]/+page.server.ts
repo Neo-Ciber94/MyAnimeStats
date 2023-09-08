@@ -1,6 +1,6 @@
 import { getRequiredServerSession } from "@/lib/myanimelist/svelte/auth";
 import type { PageServerLoad } from "./$types";
-import { UserAnimeListService } from "@/lib/services/userAnimeListService";
+import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
 
 export const load: PageServerLoad = async ({ cookies, params: { username } }) => {
     // Currently we only support displaying the current user anime list
