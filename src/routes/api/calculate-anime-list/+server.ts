@@ -2,7 +2,7 @@ import { error, type RequestHandler } from "@sveltejs/kit";
 import { env } from '$env/dynamic/private';
 import { z } from 'zod';
 import { parseJson } from "@/lib/utils/parseJson";
-import { AnimeListService } from "@/lib/services/animeListService";
+import { AnimeListService } from "@/lib/server/services/animeListService";
 
 const authTokensSchema = z.array(z.string().min(8));
 

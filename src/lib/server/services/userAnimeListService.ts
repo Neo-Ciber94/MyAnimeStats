@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { error, type Cookies } from "@sveltejs/kit";
-import { KV } from "../kv";
-import { MALClient, MalHttpError, type UpdateMyAnimeListStatusOptions } from "../myanimelist/api";
-import type { AnimeObjectWithStatus } from "../myanimelist/common/types";
-import { Retry, runAndRetryOnThrow } from "../utils/retry";
-import { getRequiredServerSession } from "../myanimelist/svelte/auth";
+import { KV } from "$lib/server/kv";
+import { MALClient, MalHttpError, type UpdateMyAnimeListStatusOptions } from "$lib/myanimelist/api";
+import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
+import { Retry, runAndRetryOnThrow } from "$lib/utils/retry";
+import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
 import { z } from "zod";
 
 export const userAnimeListSchema = z.object({

@@ -2,7 +2,7 @@ import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
-import { AnimeListService } from "@/lib/services/animeListService";
+import { AnimeListService } from "@/lib/server/services/animeListService";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 
 export const load: PageServerLoad = async (event) => {

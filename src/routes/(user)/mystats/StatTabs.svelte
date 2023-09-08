@@ -13,7 +13,7 @@
 	import StatScores from './StatScores.svelte';
 	import UserBadgeList from '$components/UserBadgeList.svelte';
 	import { useUserBadges } from '$stores/userBadges';
-	import type { CalculatedStats } from '@/lib/utils/calculatePersonalStats.server';
+	import type { CalculatedStats } from '$lib/utils/calculatePersonalStats.server';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeObjectWithStatus[];

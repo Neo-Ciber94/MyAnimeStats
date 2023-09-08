@@ -7,8 +7,8 @@ import { calculatePersonalStats, type CalculatedStats } from "$lib/utils/calcula
 import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
-import { UserAnimeListService } from "@/lib/services/userAnimeListService";
-import { UserStatsService } from "@/lib/services/userStatsService";
+import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
+import { UserStatsService } from "@/lib/server/services/userStatsService";
 import { dev } from "$app/environment";
 dayjs.extend(isSameOrAfter);
 

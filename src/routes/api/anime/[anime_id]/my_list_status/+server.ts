@@ -1,7 +1,7 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import { watchStatusSchema } from "@/lib/myanimelist/common/types";
 import { getRequiredServerSession } from "@/lib/myanimelist/svelte/auth";
-import { UserAnimeListService } from "@/lib/services/userAnimeListService";
+import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
 import { error, type RequestHandler } from "@sveltejs/kit";
 import { z } from 'zod';
 

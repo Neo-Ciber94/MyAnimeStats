@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { KV } from "../kv";
-import { calculatedStatsSchema, type CalculatedStats } from "../utils/calculatePersonalStats.server";
+import { calculatedStatsSchema, type CalculatedStats } from "$lib/utils/calculatePersonalStats.server";
 
 export const userAnimeStatsSchema = z.object({
     lastUpdated: z.string().pipe(z.coerce.date()),

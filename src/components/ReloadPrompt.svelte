@@ -67,6 +67,6 @@
 	</div>
 {/if}
 
-<div class="invisible">
+<div class="hidden">
 	{buildDate}
 </div>

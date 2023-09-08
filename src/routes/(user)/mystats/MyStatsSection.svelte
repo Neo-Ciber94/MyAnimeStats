@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CalculatedStats } from '@/lib/utils/calculatePersonalStats.server';
+	import type { CalculatedStats } from '$lib/utils/calculatePersonalStats.server';
 	import { PERSONAL_STATS } from '@/common/constants';
 	import StatProgress from '@/routes/(user)/mystats/StatProgress.svelte';
 	import { Tooltip } from 'flowbite-svelte';

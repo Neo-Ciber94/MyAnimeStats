@@ -2,9 +2,9 @@
 
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 import { z } from "zod";
-import { KV } from "../kv";
-import { MALClient } from "../myanimelist/api";
-import type { AnimeObjectWithRanking } from "../myanimelist/common/types";
+import { KV } from "$lib/server/kv";
+import { MALClient } from "$lib/myanimelist/api";
+import type { AnimeObjectWithRanking } from "$lib/myanimelist/common/types";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
 dayjs.extend(isSameOrAfter);
