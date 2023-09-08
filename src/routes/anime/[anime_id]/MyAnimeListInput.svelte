@@ -114,7 +114,7 @@
 				num_watched_episodes: episodesSeen
 			});
 
-			toast.success('Your anime list updated successfully');
+			toast.success('Your anime list was updated');
 			dispatch('save');
 		} catch (err: any) {
 			const message = typeof err.message === 'string' ? err.message : 'Something went wrong';
@@ -145,7 +145,7 @@
 			});
 
 			await malClient.deleteMyAnimeListStatus(anime.node.id);
-			toast.success('Anime was deleted from your list successfully');
+			toast.success('Anime was deleted from your list');
 			dispatch('delete');
 			isDeleting = false;
 			event.detail.close();
