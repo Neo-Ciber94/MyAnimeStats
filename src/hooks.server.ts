@@ -1,5 +1,5 @@
 import type { Handle } from "@sveltejs/kit";
-import { createMiddlewareHandler } from "./lib/server/middlewares/handle";
+import { createMiddlewareHandler } from "./lib/server/middlewares";
 
 const middlewareHandle = createMiddlewareHandler();
 

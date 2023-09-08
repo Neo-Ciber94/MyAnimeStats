@@ -1,7 +1,7 @@
 import { dev } from "$app/environment";
-import { initializeKv } from "../kv";
-import { MALClient } from "../../myanimelist/api";
-import { getServerSession } from "../../myanimelist/svelte/auth";
+import { initializeKv } from "$lib/server/kv";
+import { MALClient } from "$lib/myanimelist/api";
+import { getServerSession } from "$lib/myanimelist/svelte/auth";
 import { createMyAnimeListHandler } from "$lib/myanimelist/svelte/handle";
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
