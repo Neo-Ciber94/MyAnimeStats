@@ -10,15 +10,15 @@
 	let reloadSW = __RELOAD_SW__;
 
 	const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
-		onRegistered(r) {
+		onRegistered(registration) {
 			if (reloadSW) {
-				r &&
+				registration &&
 					setInterval(() => {
 						console.log('Checking for sw update');
-						r.update();
+						registration.update();
 					}, 20000 /* 20s for testing purposes */);
 			} else {
-				console.log(`SW Registered: ${r}`);
+				console.log(`SW Registered: ${registration}`);
 			}
 		},
 		onRegisterError(error) {
