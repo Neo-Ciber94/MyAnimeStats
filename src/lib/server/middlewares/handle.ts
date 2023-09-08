@@ -1,12 +1,13 @@
 import { dev } from "$app/environment";
-import { combineMiddlewares, type Middleware } from ".";
 import { initializeKv } from "../kv";
 import { MALClient } from "../../myanimelist/api";
 import { getServerSession } from "../../myanimelist/svelte/auth";
 import { createMyAnimeListHandler } from "$lib/myanimelist/svelte/handle";
+import type { Handle } from "@sveltejs/kit";
+import { sequence } from "@sveltejs/kit/hooks";
 
-function miniflareMiddleware(): Middleware {
-    return async (event, next) => {
+function miniflareMiddleware(): Handle {
+    return async ({ event, resolve }) => {
         if (dev) {
             const { fallBackPlatformToMiniFlareInDev } = await import('@/lib/server/miniflare');
             event.platform = await fallBackPlatformToMiniFlareInDev(event.platform);
@@ -14,13 +15,13 @@ function miniflareMiddleware(): Middleware {
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
         initializeKv(event.platform?.env.KV_STORE!);
-        const res = await next(event);
+        const res = await resolve(event);
         return res;
     }
 }
 
-function myAnimeListMiddleware(): Middleware {
-    return (event, next) => {
+function myAnimeListMiddleware(): Handle {
+    return ({ event, resolve }) => {
         const myAnimeListHandler = createMyAnimeListHandler();
         const pathname = event.url.pathname;
 
@@ -28,12 +29,12 @@ function myAnimeListMiddleware(): Middleware {
             return myAnimeListHandler(event);
         }
 
-        return next(event);
+        return resolve(event);
     }
 }
 
-function authMiddleware(): Middleware {
-    return async (event, next) => {
+function authMiddleware(): Handle {
+    return async ({ event, resolve }) => {
         const session = await getServerSession(event.cookies);
 
         if (session) {
@@ -48,14 +49,14 @@ function authMiddleware(): Middleware {
             }
         }
 
-        return next(event);
+        return resolve(event);
     }
 }
 
-function loggerMiddleware(): Middleware {
-    return async (event, next) => {
+function loggerMiddleware(): Handle {
+    return async ({ event, resolve }) => {
         const startMs = Date.now();
-        const response = await next(event);
+        const response = await resolve(event);
         const elapsedMs = Date.now() - startMs;
 
         const icon = response.ok ? "✅" : "❌";
@@ -72,11 +73,10 @@ function loggerMiddleware(): Middleware {
 }
 
 export function createMiddlewareHandler() {
-    const handle = combineMiddlewares([
+    return sequence(
         loggerMiddleware(),
         miniflareMiddleware(),
         authMiddleware(),
         myAnimeListMiddleware()
-    ]);
-    return handle;
+    )
 }
