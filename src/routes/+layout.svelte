@@ -7,9 +7,23 @@
 	import { Toaster } from 'svelte-french-toast';
 	import ElementEmphasisProvider from '@/providers/ElementEmphasisProvider.svelte';
 	import { pwaInfo } from 'virtual:pwa-info';
+	import { onNavigate } from '$app/navigation';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
+
+	onNavigate((navigation) => {
+		// @ts-ignore
+		if (!document.startViewTransition) return;
+
+		return new Promise((resolve) => {
+			// @ts-ignore
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 </script>

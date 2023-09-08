@@ -132,6 +132,8 @@
 						class={`w-full mx-auto md:w-auto h-[300px] md:h-[400px] object-contain transition duration-200 ${
 							shouldCensor && !showUncensored ? 'blur-lg' : 'blur-0'
 						}`}
+						data-anime-image
+						style={`--anime-id: anime-${anime.id};`}
 					/>
 
 					{#if shouldCensor}

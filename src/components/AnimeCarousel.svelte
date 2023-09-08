@@ -1,4 +1,6 @@
 <script lang="ts" generics="TAnime extends AnimeObject">
+	import { goto } from '$app/navigation';
+
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
@@ -84,6 +86,12 @@
 				<a
 					href={`/anime/${anime.node.id}`}
 					class="group/image block overflow-hidden relative border border-gray-500/20 rounded-sm w-full h-full mx-auto"
+					on:click={(e) => {
+						const img = e.currentTarget.querySelector('img');
+						if (img && typeof img.style.viewTransitionName !== 'undefined') {
+							img.style.viewTransitionName = `anime-${anime.node.id}`;
+						}
+					}}
 				>
 					<!-- Hover gradient -->
 					<!-- <div
@@ -105,6 +113,7 @@
 						class={`object-cover w-full h-full ${
 							AnimeHelper.shouldCensor(anime) && !showNsfw ? 'blur-md' : ''
 						}`}
+						data-anime-image
 					/>
 
 					<!-- Title -->

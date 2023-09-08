@@ -20,3 +20,10 @@
 		hover:from-violet-950 hover:via-violet-800 hover:to-violet-900;
 	}
 }
+
+@layer utilities {
+	img[data-anime-image] {
+		view-transition-name: var(--anime-id);
+		overflow: clip;
+	}
+}
