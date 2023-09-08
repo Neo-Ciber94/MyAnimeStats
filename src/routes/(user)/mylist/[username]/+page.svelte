@@ -313,99 +313,101 @@
 		</div>
 	</div>
 
-	<div class="w-full mt-4">
-		{#if data.data.userAnimeList?.lastUpdated}
-			{@const lastUpdated = data.data.userAnimeList.lastUpdated}
-			<div class="flex flex-row justify-end text-white text-xs mx-2 sm:mx-10 mb-4 gap-1">
-				<span class="cursor-pointer" title="Update by recalculating your stats">
-					Last updated <span class="text-pink-500"> {dayjs(lastUpdated).format('LL')}</span>
-				</span>
-			</div>
-		{/if}
-
-		{#if !mounted}
-			<div class="w-full flex flex-row justify-center">
-				<Spinner size={'12'} bg="bg-transparent" />
-			</div>
-		{:else if data.data == null}
-			<div
-				class="w-full items-center flex flex-row text-violet-500/60 text-2xl px-4 py-8 justify-center gap-4"
-			>
-				<InboxSolid size={'xl'} />
-				<span>Currently is not possible cannot watch anime list from other users</span>
-			</div>
-		{:else if data.data.userAnimeList == null}
-			<div
-				class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
-			>
-				<InboxSolid size={'xl'} />
-				<span>Calculate your stats</span>
-			</div>
-		{:else if currentAnimeList.length === 0}
-			<div
-				class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
-			>
-				<InboxSolid size={'xl'} />
-				<span>No anime found</span>
-			</div>
-		{:else}
-			<AnimeListGrid animeList={currentAnimeList}>
-				<slot slot="anime" let:anime>
-					<AnimeCard {anime}>
-						<slot slot="header">
-							{#if anime.node.my_list_status}
-								{@const my_list = anime.node.my_list_status}
-
-								{#if my_list.status}
-									<Badge rounded color="dark" class="font-bold text-[10px]">
-										{AnimeHelper.watchStatusToString(my_list.status)}
-									</Badge>
-								{/if}
-
-								{#if my_list.score}
-									<Badge rounded color="yellow" class="font-bold text-[10px]" title="My score">
-										{my_list.score.toFixed(2)}
-									</Badge>
-								{/if}
-							{/if}
-						</slot>
-
-						<slot slot="footer">
-							<div class="flex flex-row justify-center gap-2">
-								{#if anime.node.mean}
-									<Badge
-										border
-										rounded
-										color="purple"
-										class="font-bold text-[10px]"
-										title="User score"
-									>
-										User score
-										<span class="text-gray-950 ml-1">
-											{anime.node.mean.toFixed(2)}
-										</span>
-									</Badge>
-								{/if}
-
-								{#if anime.node.rank}
-									<Badge border rounded color="pink" class="font-bold text-[10px]">
-										{`Rank #${anime.node.rank}`}
-									</Badge>
-								{/if}
-							</div>
-						</slot>
-					</AnimeCard>
-				</slot>
-			</AnimeListGrid>
-
-			<div bind:this={loadMoreMarkerElement} />
-
-			{#if isLoadingMore}
-				<div class="w-full text-center">
-					<DotLoader class="bg-orange-500/80" />
+	<div class="mx-2 sm:mx-10">
+		<div class="w-full mt-4">
+			{#if data.data.userAnimeList?.lastUpdated}
+				{@const lastUpdated = data.data.userAnimeList.lastUpdated}
+				<div class="flex flex-row justify-end text-white text-xs mb-4 gap-1">
+					<span class="cursor-pointer" title="Update by recalculating your stats">
+						Last updated <span class="text-pink-500"> {dayjs(lastUpdated).format('LL')}</span>
+					</span>
 				</div>
 			{/if}
-		{/if}
+
+			{#if !mounted}
+				<div class="w-full flex flex-row justify-center">
+					<Spinner size={'12'} bg="bg-transparent" />
+				</div>
+			{:else if data.data == null}
+				<div
+					class="w-full items-center flex flex-row text-violet-500/60 text-2xl px-4 py-8 justify-center gap-4"
+				>
+					<InboxSolid size={'xl'} />
+					<span>Currently is not possible cannot watch anime list from other users</span>
+				</div>
+			{:else if data.data.userAnimeList == null}
+				<div
+					class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
+				>
+					<InboxSolid size={'xl'} />
+					<span>Calculate your stats</span>
+				</div>
+			{:else if currentAnimeList.length === 0}
+				<div
+					class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
+				>
+					<InboxSolid size={'xl'} />
+					<span>No anime found</span>
+				</div>
+			{:else}
+				<AnimeListGrid animeList={currentAnimeList}>
+					<slot slot="anime" let:anime>
+						<AnimeCard {anime}>
+							<slot slot="header">
+								{#if anime.node.my_list_status}
+									{@const my_list = anime.node.my_list_status}
+
+									{#if my_list.status}
+										<Badge rounded color="dark" class="font-bold text-[10px]">
+											{AnimeHelper.watchStatusToString(my_list.status)}
+										</Badge>
+									{/if}
+
+									{#if my_list.score}
+										<Badge rounded color="yellow" class="font-bold text-[10px]" title="My score">
+											{my_list.score.toFixed(2)}
+										</Badge>
+									{/if}
+								{/if}
+							</slot>
+
+							<slot slot="footer">
+								<div class="flex flex-row justify-center gap-2">
+									{#if anime.node.mean}
+										<Badge
+											border
+											rounded
+											color="purple"
+											class="font-bold text-[10px]"
+											title="User score"
+										>
+											User score
+											<span class="text-gray-950 ml-1">
+												{anime.node.mean.toFixed(2)}
+											</span>
+										</Badge>
+									{/if}
+
+									{#if anime.node.rank}
+										<Badge border rounded color="pink" class="font-bold text-[10px]">
+											{`Rank #${anime.node.rank}`}
+										</Badge>
+									{/if}
+								</div>
+							</slot>
+						</AnimeCard>
+					</slot>
+				</AnimeListGrid>
+
+				<div bind:this={loadMoreMarkerElement} />
+
+				{#if isLoadingMore}
+					<div class="w-full text-center">
+						<DotLoader class="bg-orange-500/80" />
+					</div>
+				{/if}
+			{/if}
+		</div>
 	</div>
 </PageTransition>
 
