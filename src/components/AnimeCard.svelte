@@ -38,11 +38,12 @@
 		<img
 			height={0}
 			width={0}
-			class="object-contain h-[200px] w-full sm:h-[280px] scale-100 hover:scale-110 transition duration-500 origin-center"
+			class="will-change-transform object-contain h-[200px] w-full sm:h-[280px] scale-100 hover:scale-110 transition duration-500 origin-center"
 			src={getImage()}
 			alt={anime.node.title}
-			style={'will-change: transform;'}
 			on:error={handleImgError}
+			data-anime-image
+			style={`--anime-id: anime-${anime.node.id};`}
 		/>
 	</div>
 
