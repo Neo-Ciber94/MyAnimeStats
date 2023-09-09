@@ -1,7 +1,11 @@
-import { COOKIE_MY_LIST_CACHE_KEY } from "@/common/constants";
+import { COOKIE_MY_LIST_TIMESTAMP } from "@/common/constants";
 import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
+function getCacheKey(timestamp: string | undefined, format: 'json' | 'csv') {
+    const base64 = btoa(`${timestamp}-${format}`);
+    return base64;
+}
 
 export async function exportUserAnimeList(event: RequestEvent, format: 'json' | 'csv') {
     const userId = event.locals.authenticatedUser?.user.id;
@@ -10,7 +14,8 @@ export async function exportUserAnimeList(event: RequestEvent, format: 'json' | 
         throw error(401);
     }
 
-    let cacheKey = event.cookies.get(COOKIE_MY_LIST_CACHE_KEY);
+    const timestamp = event.cookies.get(COOKIE_MY_LIST_TIMESTAMP);
+    let cacheKey = getCacheKey(timestamp, format);
 
     if (cacheKey && event.request.headers.get('if-none-match') === cacheKey) {
         return new Response(undefined, { status: 304 });
@@ -18,8 +23,9 @@ export async function exportUserAnimeList(event: RequestEvent, format: 'json' | 
 
     // We set a new cache-key
     if (cacheKey == null) {
-        cacheKey = String(Date.now());
-        event.cookies.set(COOKIE_MY_LIST_CACHE_KEY, cacheKey);
+        const timestamp = String(Date.now());
+        cacheKey = getCacheKey(timestamp, format);
+        event.cookies.set(COOKIE_MY_LIST_TIMESTAMP, timestamp);
     }
 
     const cacheControl: Record<string, string> = {

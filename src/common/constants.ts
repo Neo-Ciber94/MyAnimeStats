@@ -34,6 +34,6 @@ export const PERSONAL_STATS = {
 export const PLACEHOLDER_IMAGE = 'https://placehold.co/300x400/fbcfe8/db2777?text=Not+Found';
 
 /**
- * Cookie used as cache key for the user anime list.
+ * Cookie used to store a timestamp of the user my anime list.
  */
-export const COOKIE_MY_LIST_CACHE_KEY = 'my-anime-stats-key';
+export const COOKIE_MY_LIST_TIMESTAMP = 'my-anime-stats-timestamp';

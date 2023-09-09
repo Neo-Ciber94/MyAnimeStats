@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
 import { UserStatsService } from "@/lib/server/services/userStatsService";
 import { dev } from "$app/environment";
-import { COOKIE_MY_LIST_CACHE_KEY } from "@/common/constants";
+import { COOKIE_MY_LIST_TIMESTAMP } from "@/common/constants";
 dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
@@ -61,8 +61,8 @@ export const actions = {
             const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
             const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
-            // set cookie cache key
-            cookies.set(COOKIE_MY_LIST_CACHE_KEY, String(Date.now()));
+            // set a timestamp cookie
+            cookies.set(COOKIE_MY_LIST_TIMESTAMP, String(Date.now()));
 
             return {
                 data: {
