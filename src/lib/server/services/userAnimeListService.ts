@@ -2,10 +2,11 @@
 import { error, type Cookies } from "@sveltejs/kit";
 import { KV } from "$lib/server/kv";
 import { MALClient, MalHttpError, type UpdateMyAnimeListStatusOptions } from "$lib/myanimelist/api";
-import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
+import type { AnimeNode, AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import { Retry, runAndRetryOnThrow } from "$lib/utils/retry";
 import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
 import { z } from "zod";
+import { Parser as CSVParser } from '@json2csv/plainjs';
 
 export const userAnimeListSchema = z.object({
     animeList: z.array(z.record(z.unknown())),
@@ -100,6 +101,102 @@ export namespace UserAnimeListService {
 
         await kv.set(getKey(userId), userAnimeListSchema, { ...userAnimeList, animeList: result });
         return toDelete;
+    }
+
+    export async function getUserListAsJSON(userId: number) {
+        const data = await UserAnimeListService.getUserAnimeList(userId);
+
+        if (data == null) {
+            return null;
+        }
+
+        const { animeList } = data;
+        return JSON.stringify(animeList);
+    }
+
+    export async function getUserListAsCSV(userId: number) {
+        const data = await UserAnimeListService.getUserAnimeList(userId);
+        if (data == null) {
+            return null;
+        }
+
+        const { animeList } = data;
+
+        const parser = new CSVParser<AnimeNode, AnimeNode>({
+            fields: [
+                'id',
+                'title',
+                'main_picture.medium',
+                'main_picture.large',
+                'media_type',
+                'status',
+                'nsfw',
+                {
+                    label: 'genres',
+                    value: (row: AnimeNode) => row.genres.map(x => x.name).join(',')
+                },
+                'mean',
+                'alternative_titles.synonyms',
+                'alternative_titles.en',
+                'alternative_titles.ja',
+                'start_date',
+                'end_date',
+                'synopsis',
+                'rank',
+                'popularity',
+                'num_list_users',
+                'num_scoring_users',
+                'num_episodes',
+                'start_season.year',
+                'start_season.season',
+                'average_episode_duration',
+                {
+                    label: 'studios',
+                    value: (row: AnimeNode) => row.studios?.map(x => x.name).join(',')
+                },
+                'broadcast.day_of_the_week',
+                'broadcast.start_time',
+                'my_list_status.status',
+                'my_list_status.score',
+                'my_list_status.num_episodes_watched',
+                'my_list_status.is_rewatching',
+                'my_list_status.start_date',
+                'my_list_status.finish_date',
+                'my_list_status.priority',
+                'my_list_status.rewatch_value',
+                'my_list_status.tags',
+                'my_list_status.updated_at',
+                'background',
+                'source',
+                'related_anime',
+                {
+                    label: 'related_anime',
+                    value: (row: AnimeNode) => row.related_anime?.map(x => x.node?.title)
+                },
+                'related_anime',
+                {
+                    label: 'related_manga',
+                    value: (row: AnimeNode) => row.related_manga?.map(x => x.node?.title)
+                },
+                'rating',
+                'pictures.medium',
+                'pictures.large',
+                {
+                    label: 'recommendations',
+                    value: (row: AnimeNode) => row.recommendations?.map(x => x.node?.title)
+                },
+                'statistics.num_list_users',
+                'statistics.status.watching',
+                'statistics.status.completed',
+                'statistics.status.on_hold',
+                'statistics.status.dropped',
+                'statistics.status.plan_to_watch',
+            ],
+        });
+
+        const nodes = animeList.map(x => x.node);
+        const csv = parser.parse(nodes);
+        return csv;
     }
 }
 
