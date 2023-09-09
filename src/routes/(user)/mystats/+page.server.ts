@@ -126,7 +126,7 @@ export const actions = {
 async function calculateUserStats(cookies: Cookies) {
     const { userId } = await getRequiredServerSession(cookies);
     const animeList = await UserAnimeListService.fetchCurrentUserAnimeList(cookies);
-    console.log(`🍙 ${animeList.length} anime loaded from user`);
+    console.log(`🍙 ${animeList.length} anime loaded from user ${userId}`);
 
     let userStats = await UserStatsService.getStats(userId);
 
