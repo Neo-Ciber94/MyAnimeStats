@@ -10,7 +10,7 @@ import { Parser as CSVParser } from '@json2csv/plainjs';
 
 export const userAnimeListSchema = z.object({
     animeList: z.array(z.record(z.unknown())),
-    lastUpdated: z.string().pipe(z.coerce.date()),
+    lastUpdated: z.coerce.date(),
 });
 
 export type UserAnimeList = z.infer<typeof userAnimeListSchema>;
