@@ -29,18 +29,20 @@
 			</div>
 		{:else if result}
 			<StatTabs stats={result.stats} animeList={result.animeList}>
-				{#if result.canRecalculate}
-					<div
-						class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
+				<div slot="me-footer">
+					{#if result.canRecalculate}
+						<div
+							class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
 							h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
-					>
-						<CalculateStatsButton>
-							<span class="text-sm md:text-lg">Re-Calculate Stats</span>
-						</CalculateStatsButton>
-					</div>
-				{/if}
+						>
+							<CalculateStatsButton>
+								<span class="text-sm md:text-lg">Re-Calculate Stats</span>
+							</CalculateStatsButton>
+						</div>
+					{/if}
 
-				<div class="mb-10" />
+					<div class="mb-10" />
+				</div>
 			</StatTabs>
 		{:else}
 			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
