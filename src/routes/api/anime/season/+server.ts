@@ -1,7 +1,7 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { RequestHandler } from "./$types";
 import { getCurrentAnimeSeason, type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
-import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import ANIME_GENRES from "@/generated/animeGenres";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 

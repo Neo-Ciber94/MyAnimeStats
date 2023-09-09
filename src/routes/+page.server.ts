@@ -2,7 +2,7 @@ import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
 import { getCurrentAnimeSeason, type AiringStatus, getNextAnimeSeason } from "@/lib/myanimelist/common/types";
 import { invariant } from "@/lib/utils/invariant";
-import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import ANIME_GENRES from "@/generated/animeGenres";
 import { shuffleArray } from "@/lib/utils/helpers";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 

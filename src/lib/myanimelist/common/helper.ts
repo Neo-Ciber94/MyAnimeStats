@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import ANIME_GENRES from "@/generated/animeGenres";
 import type { AiringStatus, AnimeObject, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
 
 export namespace AnimeHelper {

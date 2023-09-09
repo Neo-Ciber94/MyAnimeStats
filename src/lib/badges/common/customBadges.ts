@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import ANIME_GENRES from "@/generated/animeGenres";
 import type { AnimeBadge } from "../AnimeBadge";
 import { badgeIconText, badgeImage, hadWatchedAnime } from "../utils";
 import narutoSvg from "../icons/naruto";

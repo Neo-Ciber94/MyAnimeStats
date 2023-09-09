@@ -1,5 +1,5 @@
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
-import ANIME_GENRES from "@/types/generated/animeGenres.generated";
+import ANIME_GENRES from "@/generated/animeGenres";
 import Enumerable from "linq";
 import { PERSONAL_STATS } from "@/common/constants";
 import { z } from "zod";
