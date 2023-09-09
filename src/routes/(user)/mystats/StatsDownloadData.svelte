@@ -1,10 +1,38 @@
 <script lang="ts">
 	import { Button } from 'flowbite-svelte';
-	import { ChartSolid } from 'flowbite-svelte-icons';
+
+	const downloadFile = (fileName: string, url: string) => {
+		const downloadLink = document.createElement('a');
+
+		try {
+			const extension = url.slice(url.lastIndexOf('.') + 1);
+			downloadLink.href = url;
+			downloadLink.download = `${fileName}-${Date.now()}.${extension}`;
+			downloadLink.click();
+		} finally {
+			downloadLink.remove();
+		}
+	};
+
+	function downloadMyListAsJson() {
+		console.log('json');
+		downloadFile('mylist', '/mylist.json');
+	}
+
+	function downloadMyListAsCsv() {
+		console.log('csv');
+		downloadFile('mylist', '/mylist.csv');
+	}
 </script>
 
 <div class="flex flex-col gap-4 px-4">
-	<Button type="submit" size="lg" color="purple" class="text-lg flex flex-row items-center gap-3">
+	<Button
+		type="submit"
+		size="lg"
+		color="purple"
+		class="text-lg flex flex-row items-center gap-3"
+		on:click={downloadMyListAsJson}
+	>
 		<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 16 16">
 			<path
 				fill="currentColor"
@@ -16,7 +44,13 @@
 		<span> Download as JSON </span>
 	</Button>
 
-	<Button type="submit" size="lg" color="purple" class="text-lg flex flex-row items-center gap-3">
+	<Button
+		type="submit"
+		size="lg"
+		color="purple"
+		class="text-lg flex flex-row items-center gap-3"
+		on:click={downloadMyListAsCsv}
+	>
 		<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 15 15">
 			<path
 				fill="currentColor"
