@@ -16,15 +16,15 @@ export async function exportUserAnimeList(event: RequestEvent, format: 'json' | 
         return new Response(undefined, { status: 304 });
     }
 
-    const cacheControl: Record<string, string> = {
-        'cache-control': 'max-age=3600',
-    }
-
     // We set a new cache-key
     if (cacheKey == null) {
         cacheKey = String(Date.now());
-        cacheControl.etag = cacheKey;
         event.cookies.set(COOKIE_MY_LIST_CACHE_KEY, cacheKey);
+    }
+
+    const cacheControl: Record<string, string> = {
+        'cache-control': 'max-age=3600',
+        'etag': cacheKey
     }
 
     switch (format) {
