@@ -59,12 +59,13 @@ function loggerMiddleware(): Handle {
         const response = await resolve(event);
         const elapsedMs = Date.now() - startMs;
 
-        const icon = response.ok ? "✅" : "❌";
         const request = event.request;
         const method = request.method;
         const status = response.status;
         const url = request.url;
         const now = new Date().toISOString();
+        const icon = status >= 400 ? "❌" : status >= 300 ? "🔁" : "✅";
+
         // ❌ 2023-09-01T23:13:48.386Z - GET 200 [230ms] /api/users/ 
         console.log(`${icon} ${now} - ${method} ${status} [${elapsedMs}ms] ${url}`);
 
