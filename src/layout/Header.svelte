@@ -30,7 +30,7 @@
 							<Avatar src={$session.user.picture} class="object-cover" />
 						</div>
 
-						<Dropdown triggeredBy="#user-avatar" headerClass="z-40" class="min-w-[150px] gap-2">
+						<Dropdown triggeredBy="#user-avatar" headerClass="z-[100]" class="min-w-[150px] gap-2">
 							<DropdownItem class="flex flex-row items-center gap-3" on:click={() => signOut()}>
 								<svg
 									class="w-[14px] h-[14px] text-gray-800 dark:text-white"
@@ -122,3 +122,9 @@
 		</div>
 	</div>
 </header>
+
+<style>
+	:global(#user-avatar + div[role='tooltip']) {
+		z-index: 50;
+	}
+</style>

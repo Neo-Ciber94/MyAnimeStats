@@ -132,7 +132,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
                 path: "/",
-                sameSite: 'strict',
+                sameSite: 'lax',
                 httpOnly: true,
                 maxAge: sessionDurationSeconds
             });
@@ -163,7 +163,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             }
 
             const csrf = event.cookies.get(AUTH_CSRF_COOKIE);
-
+            
             if (state == null || state != csrf) {
                 throw error(401, "Invalid auth state");
             }
