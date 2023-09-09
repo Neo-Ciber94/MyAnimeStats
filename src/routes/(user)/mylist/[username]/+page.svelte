@@ -27,7 +27,7 @@
 		type WatchStatus,
 		watchStatusSchema
 	} from '@/lib/myanimelist/common/types';
-	import ANIME_GENRES from '@/types/generated/animeGenres.generated';
+	import ANIME_GENRES from '@/generated/animeGenres';
 	import { onMount } from 'svelte';
 	import Enumerable from 'linq';
 	import AnimeCard from '$components/AnimeCard.svelte';
