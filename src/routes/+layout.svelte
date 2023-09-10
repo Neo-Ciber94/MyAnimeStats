@@ -8,6 +8,7 @@
 	import ElementEmphasisProvider from '@/providers/ElementEmphasisProvider.svelte';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { onNavigate } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
@@ -45,7 +46,13 @@
 <QueryClientProvider client={queryClient}>
 	<SessionProvider userSession={data.session ?? undefined}>
 		<Layout>
-			<slot />
+			<!-- 
+				We use a key here to ensure the anime/[anime_id] route is reloaded: 
+				https://github.com/sveltejs/kit/issues/4941#issuecomment-1227758791
+			-->
+			{#key $page.url.pathname}
+				<slot />
+			{/key}
 		</Layout>
 	</SessionProvider>
 </QueryClientProvider>

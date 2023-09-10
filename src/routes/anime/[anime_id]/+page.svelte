@@ -17,41 +17,16 @@
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
 	import dayjs from 'dayjs';
-	import { page } from '$app/stores';
-	import { invalidate } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
+	import { onDestroy } from 'svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
 	let { anime, popularAnimeList } = data;
 
-	$: {
-		// I don't know other way to do this, we need to get the data again but when navigating
-		// between the same route the data is stale, so we do it manually.
-		// https://www.reddit.com/r/sveltejs/comments/y70acq/sveltekit_routing_to_another_id_page_not_working/
-
-		data = $page.data as PageServerData;
-
-		if (data) {
-			anime = data.anime;
-			popularAnimeList = data.popularAnimeList;
-		}
-	}
-
-	// This is a weird workaround because is not navigating back, so we invalidate the route
-	onMount(() => {
-		let invalidatedPath: string | null = null;
-
-		const unsubscribe = page.subscribe(async (data) => {
-			if (invalidatedPath != data.url.pathname) {
-				await invalidate(data.url.pathname);
-				invalidatedPath = data.url.pathname;
-			}
-		});
-
-		return () => {
-			unsubscribe();
-		};
+	onDestroy(() => {
+		console.log('destroy anime details');
+		invalidateAll();
 	});
 
 	const isNsfw = anime.nsfw === 'black' || anime.nsfw === 'gray';
@@ -80,7 +55,7 @@
 </script>
 
 <svelte:head>
-	<title>{`MyAnimeStats | ${data.anime.title}`}</title>
+	<title>{`MyAnimeStats | ${anime.title}`}</title>
 </svelte:head>
 
 {#key anime.id}
@@ -96,7 +71,7 @@
 						{#if isNsfw}
 							<div
 								class="rounded-lg text-white uppercase flex flex-row items-center justify-center h-7 text-xs px-4
-							bg-gradient-to-b from-pink-500 to-pink-600"
+					bg-gradient-to-b from-pink-500 to-pink-600"
 							>
 								nsfw
 							</div>
@@ -144,7 +119,7 @@
 						<button
 							on:click={toggleCensor}
 							class="w-full flex flex-row items-center gap-2 justify-center p-1 mt-4
-					text-xs text-pink-500 opacity-50 hover:opacity-100"
+			text-xs text-pink-500 opacity-50 hover:opacity-100"
 						>
 							{#if showUncensored}
 								<span class="font-semibold">Hide</span>
