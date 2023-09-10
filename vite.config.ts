@@ -40,7 +40,7 @@ export default defineConfig({
 				name: 'MyAnimeStats',
 				start_url: '/',
 				scope: '/',
-				display: 'standalone',
+				display: 'fullscreen',
 				theme_color: "#9333ea",
 				background_color: "#111827",
 				icons: [
