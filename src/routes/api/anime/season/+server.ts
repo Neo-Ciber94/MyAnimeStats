@@ -29,7 +29,6 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
     return Response.json({ data: animeList, next });
 }
 
-
 type SeasonalAnimeQuery = {
     offset: number,
     season?: AnimeSeason,
