@@ -1,15 +1,11 @@
 <script lang="ts" generics="TAnime extends AnimeObject">
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 	import type { AnimeObject } from '$lib/myanimelist/common/types';
 	import { Badge } from 'flowbite-svelte';
 	import AiringStatusBadge from './AiringStatusBadge.svelte';
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 
 	export let anime: TAnime;
-
-	function getImage() {
-		const image = anime.node.main_picture;
-		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
-	}
 
 	function handleImgError(event: Event & { currentTarget: EventTarget & Element }) {
 		const el = event.currentTarget as HTMLImageElement;
@@ -39,7 +35,7 @@
 			height={0}
 			width={0}
 			class="will-change-transform object-contain h-[200px] w-full sm:h-[280px] scale-100 hover:scale-110 transition duration-500 origin-center"
-			src={getImage()}
+			src={AnimeHelper.getImage(anime)}
 			alt={anime.node.title}
 			on:error={handleImgError}
 			data-anime-image

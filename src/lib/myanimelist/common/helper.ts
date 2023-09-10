@@ -3,6 +3,7 @@
 import ANIME_GENRES from "@/generated/animeGenres";
 import type { AiringStatus, AnimeObject, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
 import dayjs from "dayjs";
+import { PLACEHOLDER_IMAGE } from "@/common/constants";
 
 export namespace AnimeHelper {
     export function mediaTypeToString(mediaType: MediaType) {
@@ -164,9 +165,9 @@ export namespace AnimeHelper {
         const now = dayjs();
         const month = now.month();
         const year = now.year();
-    
+
         let season: AnimeSeason;
-    
+
         if ([0, 1, 2].includes(month)) {
             season = 'winter';
         } else if ([3, 4, 5].includes(month)) {
@@ -176,17 +177,17 @@ export namespace AnimeHelper {
         } else {
             season = 'fall';
         }
-    
+
         return { season, year }
     }
-    
+
     export function getNextAnimeSeason() {
         let { season, year } = getCurrentAnimeSeason();
-    
+
         if (season === 'winter') {
             year += 1;
         }
-    
+
         switch (season) {
             case 'winter':
                 season = 'spring';
@@ -201,10 +202,10 @@ export namespace AnimeHelper {
                 season = 'winter';
                 break;
         }
-    
+
         return { season, year }
     }
-    
+
     export function seasonOrder(season: AnimeSeason) {
         const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
         const idx = seasonOrder.indexOf(season);
@@ -222,5 +223,26 @@ export namespace AnimeHelper {
 
     export function shouldCensor(anime: AnimeObject) {
         return anime.node.nsfw === 'black' || hasGenre(anime, ANIME_GENRES.Hentai.ID);
+    }
+
+    export function getImage(anime: AnimeObject, opts?: {
+        /**
+         * Prioritize the large image.
+         */
+        large?: boolean,
+
+        /**
+         * Fallback image.
+         */
+        placeholder?: string
+    }) {
+        const { large = true, placeholder = PLACEHOLDER_IMAGE } = opts || {};
+        const image = anime.node.main_picture;
+
+        if (large) {
+            return image?.large || image?.medium || placeholder;
+        } else {
+            return image?.medium || image?.large || placeholder;
+        }
     }
 }

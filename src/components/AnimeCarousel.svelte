@@ -2,7 +2,6 @@
 	import 'swiper/css/bundle';
 	import Swiper from 'swiper';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
-	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	import type { SwiperModule } from 'swiper/types/shared';
 	import { ChevronLeft, ChevronRight } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -43,11 +42,6 @@
 			}
 		});
 	});
-
-	function getImage(anime: TAnime) {
-		const image = anime.node.main_picture;
-		return image?.large || image?.medium || PLACEHOLDER_IMAGE;
-	}
 
 	function handleSlideNext() {
 		if (swiper) {
@@ -107,7 +101,7 @@
 						width={0}
 						height={0}
 						alt={anime.node.title}
-						src={getImage(anime)}
+						src={AnimeHelper.getImage(anime)}
 						class={`object-cover w-full h-full ${
 							AnimeHelper.shouldCensor(anime) && !showNsfw ? 'blur-md' : ''
 						}`}
