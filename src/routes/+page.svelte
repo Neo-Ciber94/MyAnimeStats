@@ -9,6 +9,7 @@
 	import { capitalize } from '@/lib/utils/helpers';
 	import AnimeCarousel from '$components/AnimeCarousel.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
+	import SEO from '$components/SEO.svelte';
 
 	export let data: PageServerData;
 	const animeSeason = getCurrentAnimeSeason();
@@ -26,9 +27,7 @@
 	};
 </script>
 
-<svelte:head>
-	<title>MyAnimeStats</title>
-</svelte:head>
+<SEO />
 
 <PageTransition>
 	<div class="relative p-4 lg:container mx-auto">

@@ -22,6 +22,7 @@
 	import PageTransition from '$components/PageTransition.svelte';
 	import { capitalize } from '@/lib/utils/helpers';
 	import AnimeGenreDistributionGraph from '$components/graphs/AnimeGenreDistributionGraph.svelte';
+	import SEO from '$components/SEO.svelte';
 
 	export let data: PageData;
 
@@ -64,9 +65,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>MyAnimeStats | Season</title>
-</svelte:head>
+<SEO title={'Season'} />
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-6">

@@ -12,20 +12,20 @@
 	import { EyeSlashSolid, EyeSolid, StarSolid } from 'flowbite-svelte-icons';
 	import MyAnimeListInput from './MyAnimeListInput.svelte';
 	import session from '$stores/session';
-	import { fade, fly, slide } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 	import PageTransition from '$components/PageTransition.svelte';
 	import { PLACEHOLDER_IMAGE } from '@/common/constants';
 	import localizedFormat from 'dayjs/plugin/localizedFormat';
 	import dayjs from 'dayjs';
 	import { invalidateAll } from '$app/navigation';
 	import { onDestroy } from 'svelte';
+	import SEO from '$components/SEO.svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
-	let { anime, popularAnimeList } = data;
+	let { anime } = data;
 
 	onDestroy(() => {
-		console.log('destroy anime details');
 		invalidateAll();
 	});
 
@@ -54,9 +54,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{`MyAnimeStats | ${anime.title}`}</title>
-</svelte:head>
+<SEO title={anime.title} />
 
 {#key anime.id}
 	<PageTransition>

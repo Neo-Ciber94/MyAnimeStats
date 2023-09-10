@@ -22,6 +22,7 @@
 	import type { SetValue } from '@/lib/utils/types';
 	import { identity } from '@/lib/utils/helpers';
 	import { browser } from '$app/environment';
+	import SEO from '$components/SEO.svelte';
 
 	let q: string = '';
 	let nsfw = false;
@@ -94,9 +95,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>MyAnimeStats | Anime</title>
-</svelte:head>
+<SEO title={'Anime'} />
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">

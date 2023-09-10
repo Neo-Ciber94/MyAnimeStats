@@ -42,6 +42,7 @@
 	import type { AnimeOrderBy } from './AnimeOrderBySelector.svelte';
 	import AnimeOrderBySelector, { animeOrderBySchema } from './AnimeOrderBySelector.svelte';
 	import FiltersDialog from './AnimeFilterDialog.svelte';
+	import SEO from '$components/SEO.svelte';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
@@ -272,9 +273,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>MyAnimeStats | MyList</title>
-</svelte:head>
+<SEO title="MyList"/>
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">

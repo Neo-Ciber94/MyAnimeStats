@@ -6,6 +6,7 @@
 	import StatSidebar from './StatSidebar.svelte';
 	import StatTabs from './StatTabs.svelte';
 	import { onMount } from 'svelte';
+	import SEO from '$components/SEO.svelte';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -19,9 +20,7 @@
 	$: result = data.data || form?.data || null;
 </script>
 
-<svelte:head>
-	<title>MyAnimeStats | MyStats</title>
-</svelte:head>
+<SEO title="MyStats"/>
 
 <PageTransition>
 	<div class="flex flex-col md:flex-row h-full w-full grow">

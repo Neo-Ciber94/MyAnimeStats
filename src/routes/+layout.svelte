@@ -9,6 +9,7 @@
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import SEO from '$components/SEO.svelte';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
@@ -38,7 +39,7 @@
 	</style>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>MyAnimeStats</title>
+	<SEO />
 
 	{@html webManifestLink}
 </svelte:head>
