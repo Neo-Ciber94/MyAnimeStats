@@ -29,7 +29,7 @@
 <div class="w-full flex flex-row items-center">
 	<Listbox bind:value={selected} let:open class="w-full relative py-4">
 		<ListboxButton
-			class="text-base !z-0 flex flex-row text-start text-gray-200 border-b-2 pb-2 border-b-violet-500 w-full"
+			class="text-base !z-0 flex flex-row text-start text-orange-300 border-b-2 pb-2 border-b-violet-500 w-full"
 		>
 			<slot name="selected" {selectedItem}>
 				<span>{selectedItem.label}</span>
