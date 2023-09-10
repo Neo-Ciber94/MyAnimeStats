@@ -26,12 +26,10 @@
 			name: 'Fall'
 		}
 	};
-
-	function handleClick() {}
 </script>
 
-<button
-	on:click={handleClick}
+<a
+	href={`/anime/season/${year}/${season}`}
 	data-season={season}
 	class="text-[13px] cursor-pointer justify-between pr-3 pl-2 flex flex-row gap-2 shadow-md items-center bg-white rounded-lg h-7 overflow-hidden"
 >
@@ -50,7 +48,7 @@
 
 	<span class="mx-1">•</span>
 	<div class="font-bold">{year}</div>
-</button>
+</a>
 
 <style lang="postcss">
 	[data-season='winter'] {
