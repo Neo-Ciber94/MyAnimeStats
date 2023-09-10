@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let title: string | undefined = undefined;
-	export let description: string = 'You like anime right? see your anime stats, just for fun';
+	export let description: string = 'You like anime right? see your anime stats for fun';
 	export let url: string = 'https://myanimestats.pages.dev';
 	export let image: string = `${url}/icons/my-anime-stats-512x512.png`;
 

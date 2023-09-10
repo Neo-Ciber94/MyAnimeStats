@@ -20,13 +20,16 @@
 	import { invalidateAll } from '$app/navigation';
 	import { onDestroy } from 'svelte';
 	import SEO from '$components/SEO.svelte';
+	import { browser } from '$app/environment';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
 	let { anime } = data;
 
 	onDestroy(() => {
-		invalidateAll();
+		if (browser) {
+			invalidateAll();
+		}
 	});
 
 	const isNsfw = anime.nsfw === 'black' || anime.nsfw === 'gray';
