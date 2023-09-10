@@ -21,6 +21,9 @@ jobs:
     - name: Install deps
       run: yarn install --frozen-lockfile
 
+    - name: Build
+      run: export NODE_ENV=test yarn build
+
     - name: Check
       run: yarn run check
       
