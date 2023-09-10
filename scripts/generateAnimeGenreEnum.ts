@@ -74,7 +74,7 @@ genreIdAndNames.forEach(data => {
 });
 
 const destinationDir = path.join(process.cwd(), "src", "generated");
-const fileName = path.join(destinationDir, "animeGenres.g.ts");
+const fileName = path.join(destinationDir, "animeGenres.ts");
 
 await fse.ensureDir(destinationDir);
 
