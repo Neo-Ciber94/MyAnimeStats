@@ -10,6 +10,7 @@
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import SEO from '$components/SEO.svelte';
+	import AnimeWatchlistPrompt from '@/providers/AnimeWatchlistPrompt.svelte';
 
 	export let data: LayoutServerData;
 	const queryClient = new QueryClient();
@@ -63,3 +64,5 @@
 {#await import('$components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
 	<ReloadPrompt />
 {/await}
+
+<AnimeWatchlistPrompt />

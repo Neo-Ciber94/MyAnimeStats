@@ -87,7 +87,7 @@ export namespace AnimeListService {
     }
 
     export async function getSeasonAnime(opts: GetSeasonAnimeOptions) {
-        const { season, year, offset = 0, limit = 100, nsfw = false } = opts;
+        const { season, year, offset = 0, limit = 500, nsfw = false } = opts;
         const malClient = new MALClient({
             clientId: MY_ANIME_LIST_CLIENT_ID
         })
@@ -97,14 +97,14 @@ export namespace AnimeListService {
 
         if (!animeList) {
             animeList = [];
-            const limit = 500;
-            let offset = 0;
+            const currentLimit = 500;
+            let currentOffset = 0;
 
             const getAnimeList = () => malClient.getSeasonalAnime({
                 season,
                 year,
-                limit,
-                offset,
+                limit: currentLimit,
+                offset: currentOffset,
                 sort: 'anime_num_list_users',
                 nsfw: true,
                 fields: [
@@ -131,7 +131,7 @@ export namespace AnimeListService {
                     break;
                 }
 
-                offset += limit;
+                currentOffset += currentLimit;
             }
 
             // We only cache if we had data

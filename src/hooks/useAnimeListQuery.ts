@@ -2,11 +2,19 @@ import type { AnimeObject } from "@/lib/myanimelist/common/types";
 import { getResponseError } from "@/lib/utils/getResponseError";
 import { createInfiniteQuery, useQueryClient } from "@tanstack/svelte-query";
 import { derived } from "svelte/store";
+import { z } from "zod";
 
-type ApiResponse = {
-    data: AnimeObject[];
-    next?: string | null;
-};
+const apiResponseSchema = z.object({
+    data: z.array(z.object({
+        node: z.record(z.unknown())
+    })),
+    next: z.string().nullish()
+})
+
+export type AnimeApiResponse = {
+    data: AnimeObject[],
+    next?: string | null
+}
 
 type AnimeError = {
     message: string;
@@ -22,7 +30,7 @@ type UseAnimeListQueryOptions = {
 export function useAnimeListQuery<Q extends QueryObject = QueryObject>(path: string, options?: UseAnimeListQueryOptions) {
     let query: Q | undefined = undefined;
     const queryClient = useQueryClient();
-    const animeQuery = createInfiniteQuery<ApiResponse, AnimeError>({
+    const animeQuery = createInfiniteQuery<AnimeApiResponse, AnimeError>({
         queryKey: [path, query],
         enabled: false,
         queryFn: async ({ signal, pageParam: offset }) => {
@@ -115,6 +123,6 @@ async function fetchAnimeList(path: string, query: QueryObject | undefined, opti
         throw new Error(msg || 'Something went wrong');
     }
 
-    const json = (await res.json()) as ApiResponse;
-    return json;
+    const json = apiResponseSchema.parse(await res.json());
+    return json as AnimeApiResponse;
 }
