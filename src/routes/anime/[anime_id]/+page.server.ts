@@ -2,7 +2,6 @@ import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
-import { AnimeListService } from "@/lib/server/services/animeListService";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 
 export const load: PageServerLoad = async (event) => {
@@ -49,12 +48,7 @@ export const load: PageServerLoad = async (event) => {
         throw error(404, "Anime not found");
     }
 
-    const popularAnimeList = await AnimeListService.getPopularAnimeList({ force: false })
-        .then(animeList => animeList.sort((a, b) => a.ranking.rank - b.ranking.rank))
-        .then(animeList => animeList.slice(0, 10));
-
     return {
-        anime,
-        popularAnimeList
+        anime
     }
 };
