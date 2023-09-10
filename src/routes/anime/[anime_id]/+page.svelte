@@ -54,7 +54,11 @@
 	}
 </script>
 
-<SEO title={anime.title} />
+<SEO
+	title={anime.title}
+	description={anime.synopsis}
+	image={anime.main_picture?.medium || anime.main_picture?.large}
+/>
 
 {#key anime.id}
 	<PageTransition>

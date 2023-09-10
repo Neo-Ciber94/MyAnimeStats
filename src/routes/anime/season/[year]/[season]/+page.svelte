@@ -65,7 +65,7 @@
 	}
 </script>
 
-<SEO title={'Season'} />
+<SEO title={'Season'} description={`Anime released on season ${data.season} ${data.year}`} />
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-6">
