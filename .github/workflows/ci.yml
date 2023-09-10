@@ -17,5 +17,12 @@ jobs:
       with:
         node-version: 16.x
         cache: 'yarn'
-    - run: yarn install --frozen-lockfile
-    - run: export NODE_ENV=test yarn test
+        
+    - name: Install deps
+      run: yarn install --frozen-lockfile
+
+    - name: Check
+      run: yarn run check
+      
+    - name: Run tests
+      run: export NODE_ENV=test yarn test
