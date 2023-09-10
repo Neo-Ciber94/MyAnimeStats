@@ -64,6 +64,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>MyAnimeStats | Season</title>
+</svelte:head>
+
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-6">
 		<h1 class="text-white text-3xl">

@@ -94,6 +94,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>MyAnimeStats | Anime</title>
+</svelte:head>
+
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
 		<AnimeSearchBar placeholder="Search anime..." on:search={handleOnSearch} bind:value={q} />

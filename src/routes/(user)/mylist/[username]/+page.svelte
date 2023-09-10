@@ -272,6 +272,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>MyAnimeStats | MyList</title>
+</svelte:head>
+
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
 		<div class="flex flex-row mb-1 justify-start gap-2 items-center">

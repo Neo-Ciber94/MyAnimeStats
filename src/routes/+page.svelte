@@ -26,6 +26,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>MyAnimeStats</title>
+</svelte:head>
+
 <PageTransition>
 	<div class="relative p-4 lg:container mx-auto">
 		<section

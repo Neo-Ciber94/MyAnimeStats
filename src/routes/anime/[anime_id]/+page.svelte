@@ -79,6 +79,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{`MyAnimeStats | ${data.anime.title}`}</title>
+</svelte:head>
+
 {#key anime.id}
 	<PageTransition>
 		<div class="px-4 sm:px-20 pt-10 lg:container mx-auto mb-10">

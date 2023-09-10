@@ -19,6 +19,10 @@
 	$: result = data.data || form?.data || null;
 </script>
 
+<svelte:head>
+	<title>MyAnimeStats | MyStats</title>
+</svelte:head>
+
 <PageTransition>
 	<div class="flex flex-col md:flex-row h-full w-full grow">
 		<StatSidebar />
