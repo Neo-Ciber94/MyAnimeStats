@@ -4,9 +4,13 @@ import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 import { z } from "zod";
 import { KV } from "$lib/server/kv";
 import { MALClient } from "$lib/myanimelist/api";
-import type { AnimeObjectWithRanking } from "$lib/myanimelist/common/types";
+import type { AnimeObject, AnimeObjectWithRanking, AnimeSeason } from "$lib/myanimelist/common/types";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
+import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
+import ANIME_GENRES from "@/generated/animeGenres";
+import { RedisService } from "../cache";
+import Enumerable from "linq";
 dayjs.extend(isSameOrAfter);
 
 const POPULAR_ANIME_KEY = 'most_popular_anime';
@@ -72,5 +76,84 @@ export namespace AnimeListService {
         }
 
         return result.popularAnimeList as AnimeObjectWithRanking[];
+    }
+
+    type GetSeasonAnimeOptions = {
+        season: AnimeSeason,
+        year: number,
+        offset?: number,
+        limit?: number,
+        nsfw?: boolean
+    }
+
+    export async function getSeasonAnime(opts: GetSeasonAnimeOptions) {
+        const { season, year, offset = 0, limit = 100, nsfw = false } = opts;
+        const malClient = new MALClient({
+            clientId: MY_ANIME_LIST_CLIENT_ID
+        })
+
+        const cacheKey = `anime/${year}/${season}`;
+        let animeList: AnimeObject[] | null = await RedisService.get<AnimeObject[]>(cacheKey);
+
+        if (!animeList) {
+            animeList = [];
+            const limit = 500;
+            let offset = 0;
+
+            const getAnimeList = () => malClient.getSeasonalAnime({
+                season,
+                year,
+                limit,
+                offset,
+                sort: 'anime_num_list_users',
+                nsfw: true,
+                fields: [
+                    "nsfw",
+                    "genres",
+                    "status",
+                    "mean",
+                    'start_season',
+                    'broadcast',
+                    'main_picture',
+                    'alternative_titles',
+                    'rank',
+                    'rating'
+                ],
+            });
+
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                const result = await runAndRetryOnThrow(getAnimeList, Retry.exponential({ attends: 6 }), true);
+                animeList.push(...result.data);
+
+                console.log({ data: result })
+                if (result.paging?.next == null) {
+                    break;
+                }
+
+                offset += limit;
+            }
+
+            // We only cache if we had data
+            if (animeList.length > 0) {
+                await RedisService.set(cacheKey, animeList, {
+                    ex: 1000 * 60 * 60 * 3, // 3 hours of cache
+                })
+            }
+        }
+
+        const result = Enumerable.from(animeList)
+            .where(({ node }) => {
+                const isNsfw = node.genres?.some(x => x.id === ANIME_GENRES.Hentai.ID);
+                if (isNsfw && nsfw === false) {
+                    return false;
+                }
+                return true;
+            })
+            .skip(offset)
+            .take(limit)
+            .toArray();
+
+        return result;
     }
 }

@@ -1,10 +1,8 @@
-import { MALClient } from "@/lib/myanimelist/api";
 import type { RequestHandler } from "./$types";
 import { type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
-import ANIME_GENRES from "@/generated/animeGenres";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
-import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 import { AnimeHelper } from "@/lib/myanimelist/common/helper";
+import { AnimeListService } from "@/lib/server/services/animeListService";
 
 const LIMIT = 100;
 
@@ -38,34 +36,25 @@ type SeasonalAnimeQuery = {
 }
 
 export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
-    const malClient = new MALClient({
-        clientId: MY_ANIME_LIST_CLIENT_ID
-    })
-
     const currentSeason = AnimeHelper.getCurrentAnimeSeason();
     const { offset, allowNsfw, season = currentSeason.season, year = currentSeason.year } = query;
 
-    const result = await malClient.getSeasonalAnime({
+    const result = await AnimeListService.getSeasonAnime({
         season,
         year,
-        limit: LIMIT,
         offset,
-        sort: 'anime_num_list_users',
-        fields: ["nsfw", "genres", "status", "mean", 'start_season', 'broadcast'],
-        nsfw: true
+        limit: LIMIT,
+        nsfw: allowNsfw
     });
-
-    const animeList = result.data.filter(({ node }) => {
+    
+    const animeList = result.filter(({ node }) => {
         if (!node.start_season) {
             return false;
         }
 
-        const isNsfw = node.genres?.some(x => x.id === ANIME_GENRES.Hentai.ID);
-
         return node.start_season.season === season
             && node.start_season.year === year
-            && node.broadcast?.start_time != null
-            && (allowNsfw || !isNsfw)
+            && node.broadcast?.start_time != null;
     });
 
     let next: string | null = null;
