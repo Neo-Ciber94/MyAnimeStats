@@ -15,7 +15,7 @@
 	import DotLoader from '$components/loaders/DotLoader.svelte';
 	import AnimeCardGrid from '$components/AnimeListGrid.svelte';
 	import AnimeSeasonSelector from '@/routes/anime/season/[year]/[season]/AnimeSeasonSelector.svelte';
-	import { getCurrentAnimeSeason, type AnimeSeason } from '@/lib/myanimelist/common/types';
+	import type { AnimeSeason } from '@/lib/myanimelist/common/types';
 	import { goto } from '$app/navigation';
 	import { AnimeSeasonYear } from '@/lib/myanimelist/common/AnimeSeasonYear';
 	import type { PageData } from './$types';
@@ -23,6 +23,7 @@
 	import { capitalize } from '@/lib/utils/helpers';
 	import AnimeGenreDistributionGraph from '$components/graphs/AnimeGenreDistributionGraph.svelte';
 	import SEO from '$components/SEO.svelte';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	export let data: PageData;
 
@@ -46,7 +47,7 @@
 	}
 
 	function getMaxSeason() {
-		const currentSeason = getCurrentAnimeSeason();
+		const currentSeason = AnimeHelper.getCurrentAnimeSeason();
 		return AnimeSeasonYear.from(currentSeason.season, currentSeason.year).next;
 	}
 

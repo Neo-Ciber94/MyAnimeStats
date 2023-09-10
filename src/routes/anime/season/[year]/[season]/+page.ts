@@ -1,8 +1,9 @@
-import { animeSeasonSchema, getCurrentAnimeSeason } from "@/lib/myanimelist/common/types";
+import { animeSeasonSchema } from "@/lib/myanimelist/common/types";
 import type { PageLoad } from "./$types";
+import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 
 export const load: PageLoad = async ({ params }) => {
-    const currentSeason = getCurrentAnimeSeason();
+    const currentSeason = AnimeHelper.getCurrentAnimeSeason();
 
     const seasonResult = animeSeasonSchema.safeParse(params.season);
     const seasonYear = Number(params.year);

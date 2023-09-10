@@ -5,14 +5,14 @@
 	import { Button } from 'flowbite-svelte';
 	import { HeartSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';
-	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
 	import { capitalize } from '@/lib/utils/helpers';
 	import AnimeCarousel from '$components/AnimeCarousel.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
 	import SEO from '$components/SEO.svelte';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	export let data: PageServerData;
-	const animeSeason = getCurrentAnimeSeason();
+	const animeSeason = AnimeHelper.getCurrentAnimeSeason();
 
 	const handleConnect = () => {
 		if ($session.loading) {

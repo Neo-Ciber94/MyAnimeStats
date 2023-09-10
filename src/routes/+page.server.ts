@@ -1,10 +1,11 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { PageServerLoad } from "./$types";
-import { getCurrentAnimeSeason, type AiringStatus, getNextAnimeSeason } from "@/lib/myanimelist/common/types";
+import { type AiringStatus, getNextAnimeSeason } from "@/lib/myanimelist/common/types";
 import { invariant } from "@/lib/utils/invariant";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { shuffleArray } from "@/lib/utils/helpers";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
+import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 
 const ANIME_LIMIT = 50;
 
@@ -24,7 +25,7 @@ async function getCurrentSeasonAnimeList({ limit }: { limit: number }) {
         clientId: MY_ANIME_LIST_CLIENT_ID 
     });
 
-    const { season, year } = getCurrentAnimeSeason();
+    const { season, year } = AnimeHelper.getCurrentAnimeSeason();
     const result = await malClient.getSeasonalAnime({
         season,
         year,

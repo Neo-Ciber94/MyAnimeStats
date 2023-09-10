@@ -5,11 +5,11 @@
 	import { signIn, signOut } from '$lib/myanimelist/auth/client';
 	import NavSearchBar from './NavSearchBar.svelte';
 	import { page } from '$app/stores';
-	import { getCurrentAnimeSeason } from '@/lib/myanimelist/common/types';
 	import elementEmphasis, { ELEMENT_EMPHASIS_IDS } from '$stores/elementEmphasis';
 	import cx from '@/lib/utils/cx';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
-	const { season, year } = getCurrentAnimeSeason();
+	const { season, year } = AnimeHelper.getCurrentAnimeSeason();
 </script>
 
 <header>

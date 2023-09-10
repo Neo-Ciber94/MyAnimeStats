@@ -2,6 +2,7 @@
 
 import ANIME_GENRES from "@/generated/animeGenres";
 import type { AiringStatus, AnimeObject, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
+import dayjs from "dayjs";
 
 export namespace AnimeHelper {
     export function mediaTypeToString(mediaType: MediaType) {
@@ -159,6 +160,51 @@ export namespace AnimeHelper {
         }
     }
 
+    export function getCurrentAnimeSeason() {
+        const now = dayjs();
+        const month = now.month();
+        const year = now.year();
+    
+        let season: AnimeSeason;
+    
+        if ([0, 1, 2].includes(month)) {
+            season = 'winter';
+        } else if ([3, 4, 5].includes(month)) {
+            season = 'spring'
+        } else if ([6, 7, 8].includes(month)) {
+            season = 'summer'
+        } else {
+            season = 'fall';
+        }
+    
+        return { season, year }
+    }
+    
+    export function getNextAnimeSeason() {
+        let { season, year } = getCurrentAnimeSeason();
+    
+        if (season === 'winter') {
+            year += 1;
+        }
+    
+        switch (season) {
+            case 'winter':
+                season = 'spring';
+                break;
+            case 'spring':
+                season = 'summer';
+                break;
+            case 'summer':
+                season = 'fall';
+                break;
+            case 'fall':
+                season = 'winter';
+                break;
+        }
+    
+        return { season, year }
+    }
+    
     export function seasonOrder(season: AnimeSeason) {
         const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
         const idx = seasonOrder.indexOf(season);

@@ -1,9 +1,10 @@
 import { MALClient } from "@/lib/myanimelist/api";
 import type { RequestHandler } from "./$types";
-import { getCurrentAnimeSeason, type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
+import { type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/types";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
+import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 
 const LIMIT = 100;
 
@@ -41,7 +42,7 @@ export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
         clientId: MY_ANIME_LIST_CLIENT_ID
     })
 
-    const currentSeason = getCurrentAnimeSeason();
+    const currentSeason = AnimeHelper.getCurrentAnimeSeason();
     const { offset, allowNsfw, season = currentSeason.season, year = currentSeason.year } = query;
 
     const result = await malClient.getSeasonalAnime({

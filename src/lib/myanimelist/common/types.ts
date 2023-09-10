@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { z } from "zod";
 
 // api specification: https://github.com/SuperMarcus/myanimelist-api-specification/blob/master/README.md
@@ -177,48 +176,3 @@ export type AnimeStatusApiResponse = AnimeApiResponse<AnimeObjectWithStatus>;
 // https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
 export const animeSeasonSchema = z.enum(['winter', 'spring', 'summer', 'fall'])
 export type AnimeSeason = z.infer<typeof animeSeasonSchema>;
-
-export function getCurrentAnimeSeason() {
-    const now = dayjs();
-    const month = now.month();
-    const year = now.year();
-
-    let season: AnimeSeason;
-
-    if ([0, 1, 2].includes(month)) {
-        season = 'winter';
-    } else if ([3, 4, 5].includes(month)) {
-        season = 'spring'
-    } else if ([6, 7, 8].includes(month)) {
-        season = 'summer'
-    } else {
-        season = 'fall';
-    }
-
-    return { season, year }
-}
-
-export function getNextAnimeSeason() {
-    let { season, year } = getCurrentAnimeSeason();
-
-    if (season === 'winter') {
-        year += 1;
-    }
-
-    switch (season) {
-        case 'winter':
-            season = 'spring';
-            break;
-        case 'spring':
-            season = 'summer';
-            break;
-        case 'summer':
-            season = 'fall';
-            break;
-        case 'fall':
-            season = 'winter';
-            break;
-    }
-
-    return { season, year }
-}

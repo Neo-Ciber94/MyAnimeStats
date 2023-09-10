@@ -1,5 +1,5 @@
 import { capitalize } from "@/lib/utils/helpers";
-import { getCurrentAnimeSeason, type AnimeSeason } from "./types";
+import type { AnimeSeason } from "./types";
 import { AnimeHelper } from "./helper";
 
 export class AnimeSeasonYear {
@@ -16,7 +16,7 @@ export class AnimeSeasonYear {
     }
 
     static current() {
-        const { season, year } = getCurrentAnimeSeason();
+        const { season, year } = AnimeHelper.getCurrentAnimeSeason();
         return new AnimeSeasonYear(season, year);
     }
 
