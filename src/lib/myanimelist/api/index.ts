@@ -5,9 +5,10 @@ import type { User } from "../common/user";
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Empty = {}
 
-type AnimeFields = (keyof AnimeNode) | Empty;
 
 type UserFields = (keyof User) | Empty;
+
+export type AnimeFields = (keyof AnimeNode) | Empty;
 
 export interface GetMyUserInfoOptions {
     fields?: UserFields[];

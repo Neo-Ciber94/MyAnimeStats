@@ -1,12 +1,28 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { error, type Cookies } from "@sveltejs/kit";
 import { KV } from "$lib/server/kv";
-import { MALClient, MalHttpError, type UpdateMyAnimeListStatusOptions } from "$lib/myanimelist/api";
+import { MALClient, MalHttpError, type AnimeFields, type UpdateMyAnimeListStatusOptions } from "$lib/myanimelist/api";
 import type { AnimeNode, AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import { Retry, runAndRetryOnThrow } from "$lib/utils/retry";
 import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
 import { z } from "zod";
 import { Parser as CSVParser } from '@json2csv/plainjs';
+
+const USER_ANIME_DETAILS_FIELDS: AnimeFields[] = [
+    'genres',
+    'start_season',
+    'end_date',
+    'studios',
+    'my_list_status',
+    'end_date',
+    'list_status',
+    'status',
+    'mean',
+    'rank',
+    'num_scoring_users',
+    'alternative_titles',
+    'num_episodes'
+];
 
 export const userAnimeListSchema = z.object({
     animeList: z.array(z.record(z.unknown())),
@@ -49,7 +65,15 @@ export namespace UserAnimeListService {
         return animeList;
     }
 
-    export async function updateMyUserAnimeList(userId: number, animeId: number, data: UpdateMyAnimeListStatusOptions) {
+    type UpdateMyAnimeListOptions = {
+        userId: number,
+        animeId: number,
+        data: UpdateMyAnimeListStatusOptions,
+        accessToken: string
+    }
+
+    export async function updateMyUserAnimeList(opts: UpdateMyAnimeListOptions) {
+        const { userId, animeId, data, accessToken } = opts;
         const kv = KV.current();
         const userAnimeList = await kv.get(getKey(userId), userAnimeListSchema);
 
@@ -57,29 +81,44 @@ export namespace UserAnimeListService {
             return null;
         }
 
-        let updated: AnimeObjectWithStatus | null = null;
+        let anime: AnimeObjectWithStatus | null = null;
         const animeList = userAnimeList.animeList as AnimeObjectWithStatus[];
+        const animeIndex = animeList.findIndex(x => x.node.id === animeId);
+        anime = animeList[animeIndex];
 
-        animeList.map(anime => {
-            if (anime.node.id === animeId) {
-                anime.list_status = { ...anime.list_status, ...data }
+        if (anime) {
+            anime.list_status = { ...anime.list_status, ...data }
 
-                if (anime.node.my_list_status) {
-                    anime.node.my_list_status = { ...anime.node.my_list_status, ...data }
-                }
-
-                updated = anime;
+            if (anime.node.my_list_status) {
+                anime.node.my_list_status = { ...anime.node.my_list_status, ...data }
             }
 
-            return anime;
-        });
+            animeList[animeIndex] = anime;
+        } else {
+            // anime do not exists on list, so we add it
+            const malClient = new MALClient({ accessToken });
+            const animeToAdd = await malClient.getAnimeDetails(animeId, {
+                fields: USER_ANIME_DETAILS_FIELDS
+            });
 
-        if (!updated) {
-            return null;
+            if (animeToAdd == null) {
+                return null;
+            }
+
+            anime = {
+                node: animeToAdd,
+                list_status: {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    ...animeToAdd.my_list_status!, // We include this in the query
+                    ...data
+                }
+            }
+
+            animeList.push(anime)
         }
 
         await kv.set(getKey(userId), userAnimeListSchema, { ...userAnimeList, animeList });
-        return updated;
+        return anime;
     }
 
     export async function deleteUserAnime(userId: number, animeId: number) {
@@ -211,21 +250,7 @@ async function fetchCurrentUserAnimeListInternal(accessToken: string) {
         limit: batchSize,
         offset,
         nsfw: true,
-        fields: [
-            'genres',
-            'start_season',
-            'end_date',
-            'studios',
-            'my_list_status',
-            'end_date',
-            'list_status',
-            'status',
-            'mean',
-            'rank',
-            'num_scoring_users',
-            'alternative_titles',
-            'num_episodes',
-        ]
+        fields: USER_ANIME_DETAILS_FIELDS
     });
 
     // eslint-disable-next-line no-constant-condition

@@ -16,17 +16,17 @@
 	let open = false;
 
 	onMount(async () => {
-		// // To protect users of this prompt showing each time they enter
-		// if (!navigator.cookieEnabled) {
-		// 	return;
-		// }
+		// To protect users of this prompt showing each time they enter
+		if (!navigator.cookieEnabled) {
+			return;
+		}
 
-		// const cookies = cookie.parse(document.cookie);
+		const cookies = cookie.parse(document.cookie);
 
-		// if (cookies[COOKIE_ANIME_WATCHLIST] == null) {
-		// 	$animeQuery.refetch();
-		// 	open = true;
-		// }
+		if (cookies[COOKIE_ANIME_WATCHLIST] == null) {
+			$animeQuery.refetch();
+			open = true;
+		}
 	});
 
 	function toggleAnime(anime: AnimeObject) {

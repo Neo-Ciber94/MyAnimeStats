@@ -37,8 +37,12 @@ export const PATCH: RequestHandler = async ({ request, params, cookies, locals }
     // Update the cache, we don't care if it fails
     try {
         console.log(`🕑 Updating anime '${animeId}' from user '${userId}' (${userName}) cache`);
-
-        const result = await UserAnimeListService.updateMyUserAnimeList(userId, animeId, data);
+        const result = await UserAnimeListService.updateMyUserAnimeList({
+            userId,
+            accessToken,
+            animeId,
+            data
+        });
 
         if (result) {
             console.log(`Anime '${animeId}' was updated for user '${userId}' cache`)
@@ -62,7 +66,7 @@ export const DELETE: RequestHandler = async ({ params, cookies, locals }) => {
     // Delete anime from cache
     try {
         console.log(`🕑 Deleting anime '${animeId}' from user '${userId}' (${userName}) cache`);
-        
+
         await UserAnimeListService.deleteUserAnime(userId, animeId);
 
         console.log(`Anime '${animeId}' was deleted for user '${userId}' cache`)
