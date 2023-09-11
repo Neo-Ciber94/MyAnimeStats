@@ -45,7 +45,7 @@
 		const animeList = Object.values(selectedAnime);
 		const res = await fetch('/api/anime/watchlist', {
 			method: 'POST',
-			body: JSON.stringify(animeList)
+			body: JSON.stringify({ animeList })
 		});
 
 		if (!res.ok) {
@@ -109,7 +109,7 @@
 
 		<div class="mt-4 flex flex-row gap-4">
 			<Button on:click={saveWatchlist} color="purple">Confirm</Button>
-			<Button on:click={onClose} color="red">Cancel</Button>
+			<Button on:click={onClose} color="red">Nothing</Button>
 		</div>
 	{/if}
 </AlertDialog>
