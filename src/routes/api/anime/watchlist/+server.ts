@@ -8,6 +8,9 @@ import Enumerable from "linq";
 import { z } from 'zod'
 import { error } from "@sveltejs/kit";
 import ANIME_GENRES from "@/generated/animeGenres";
+import { MALClient } from "@/lib/myanimelist/api";
+import type { AnimeObject } from "@/lib/myanimelist/common/types";
+import { COOKIE_ANIME_WATCHLIST } from "@/common/constants";
 
 export const GET: RequestHandler = async ({ cookies, request }) => {
     const { userId } = await getRequiredServerSession(cookies);
@@ -52,7 +55,7 @@ export const GET: RequestHandler = async ({ cookies, request }) => {
 }
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
-    const { userId } = await getRequiredServerSession(cookies);
+    const { userId, accessToken } = await getRequiredServerSession(cookies);
 
     const watchListSchema = z.object({
         animeList: z.array(z.record(z.unknown()))
@@ -64,6 +67,53 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
         throw error(400, "Invalid watchlist request");
     }
 
-    console.log("Saving watchlist", { userId, result });
-    return Response.json({ success: true })
+    try {
+        console.log("Saving watchlist", { userId, result });
+        const client = new MALClient({ accessToken });
+
+        for (const record of result.data.animeList) {
+            const anime = record as AnimeObject;
+            const animeId = anime.node.id;
+            await client.updateMyAnimeListStatus(animeId, {
+                status: 'watching',
+                num_watched_episodes: 1
+            });
+
+            try {
+                await UserAnimeListService.updateMyUserAnimeList({
+                    userId,
+                    accessToken,
+                    animeId,
+                    data: {
+                        status: 'watching',
+                        num_watched_episodes: 1
+                    }
+                })
+            }
+            catch (err) {
+                console.error(err);
+            }
+        }
+
+        // TODO: Set a cookie to show the prompt again on the next anime season
+        cookies.set(COOKIE_ANIME_WATCHLIST, 'next_season', {
+            httpOnly: false,
+            path: '/',
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week, this should be the next season
+        });
+
+        return Response.json({ success: true })
+    }
+    catch (err) {
+        console.error(err);
+
+        // We wait for the next day to show the prompt again
+        cookies.set(COOKIE_ANIME_WATCHLIST, '1d', {
+            httpOnly: false,
+            path: '/',
+            maxAge: 1000 * 60 * 60 * 24, // 24h
+        });
+
+        throw error(400, "Failed to update watchlist");
+    }
 }
