@@ -210,6 +210,7 @@ async function fetchCurrentUserAnimeListInternal(accessToken: string) {
     const getAnimeList = () => malClient.getUserAnimeList("@me", {
         limit: batchSize,
         offset,
+        nsfw: true,
         fields: [
             'genres',
             'start_season',

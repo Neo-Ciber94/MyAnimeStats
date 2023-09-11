@@ -7,10 +7,12 @@ import { AnimeListService } from "@/lib/server/services/animeListService";
 import Enumerable from "linq";
 import { z } from 'zod'
 import { error } from "@sveltejs/kit";
+import ANIME_GENRES from "@/generated/animeGenres";
 
-export const GET: RequestHandler = async ({ cookies }) => {
+export const GET: RequestHandler = async ({ cookies, request }) => {
     const { userId } = await getRequiredServerSession(cookies);
-
+    const { searchParams } = new URL(request.url);
+    const allowNsfw = searchParams.get('nsfw') === 'true';
     const { season, year } = AnimeHelper.getCurrentAnimeSeason();
     const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
 
@@ -25,9 +27,16 @@ export const GET: RequestHandler = async ({ cookies }) => {
                 return false;
             }
 
+            const genres = node.genres || [];
+            const isNsfw = genres.some(x => x.id === ANIME_GENRES.Hentai.ID);
+
+            if (!allowNsfw && isNsfw) {
+                return false;
+            }
+
             return node.media_type !== 'music' && node.media_type !== 'unknown' && node.media_type !== 'special'
                 && node.start_season.season === season
-                && node.start_season.year === year
+                && node.start_season.year === year;
         })
         .where(({ node }) => {
             const anime = userAnimeList.animeList.find(x => x.node.id === node.id);

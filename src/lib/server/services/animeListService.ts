@@ -130,7 +130,6 @@ export namespace AnimeListService {
                 const result = await runAndRetryOnThrow(getAnimeList, Retry.exponential({ attends: 6 }), true);
                 animeList.push(...result.data);
 
-                console.log({ data: result })
                 if (result.paging?.next == null) {
                     break;
                 }
