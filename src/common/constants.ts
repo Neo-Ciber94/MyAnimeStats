@@ -37,3 +37,4 @@ export const PLACEHOLDER_IMAGE = 'https://placehold.co/300x400/fbcfe8/db2777?tex
  * Cookie used to store a timestamp of the user my anime list.
  */
 export const COOKIE_MY_LIST_TIMESTAMP = 'my-anime-stats-timestamp';
+export const COOKIE_ANIME_WATCHLIST = 'my-anime-stats-watchlist';

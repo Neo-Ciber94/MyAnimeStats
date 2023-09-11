@@ -21,11 +21,22 @@ export const GET: RequestHandler = async ({ cookies }) => {
     const seasonAnimeList = await AnimeListService.getSeasonAnime({ season, year });
     const seasonAnimeToWatch = Enumerable.from(seasonAnimeList)
         .where(({ node }) => {
+            if (node.start_season == null) {
+                return false;
+            }
+
+            return node.media_type !== 'music' && node.media_type !== 'unknown' && node.media_type !== 'special'
+                && node.start_season.season === season
+                && node.start_season.year === year
+        })
+        .where(({ node }) => {
             const anime = userAnimeList.animeList.find(x => x.node.id === node.id);
 
             // If anime is not in the user list or is planning to watch it, we add it to the list
-            return anime == null || anime?.list_status?.status === 'plan_to_watch';
+            return (anime == null || anime?.list_status?.status === 'plan_to_watch');
         })
+        .where(anime => anime != null)
+        .orderBy(anime => anime.node.popularity)
         .toArray();
 
     return Response.json({ data: seasonAnimeToWatch } satisfies AnimeApiResponse)

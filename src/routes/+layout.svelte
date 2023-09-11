@@ -57,12 +57,12 @@
 			{/key}
 		</Layout>
 	</SessionProvider>
+
+	<AnimeWatchlistPrompt />
+	<Toaster />
+	<ElementEmphasisProvider />
 </QueryClientProvider>
-<Toaster />
-<ElementEmphasisProvider />
 
 {#await import('$components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
 	<ReloadPrompt />
 {/await}
-
-<AnimeWatchlistPrompt />

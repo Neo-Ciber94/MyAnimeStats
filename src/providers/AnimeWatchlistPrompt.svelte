@@ -7,26 +7,43 @@
 	import { Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
+	import cookie from 'cookie';
+	import { COOKIE_ANIME_WATCHLIST } from '@/common/constants';
+	import cx from '@/lib/utils/cx';
 
-	const animeQuery = useAnimeListQuery('/anime/watchlist');
-	const selectedAnime = new Map<number, AnimeObject>();
+	const animeQuery = useAnimeListQuery('/api/anime/watchlist');
+	let selectedAnime: Record<number, AnimeObject> = {};
 	let open = false;
 
-    onMount(() => {
-        
-    })
+	onMount(async () => {
+		// // To protect users of this prompt showing each time they enter
+		// if (!navigator.cookieEnabled) {
+		// 	return;
+		// }
+
+		// const cookies = cookie.parse(document.cookie);
+
+		// if (cookies[COOKIE_ANIME_WATCHLIST] == null) {
+		// 	$animeQuery.refetch();
+		// 	open = true;
+		// }
+	});
 
 	function toggleAnime(anime: AnimeObject) {
-		if (selectedAnime.has(anime.node.id)) {
-			selectedAnime.delete(anime.node.id);
+		if (selectedAnime[anime.node.id]) {
+			delete selectedAnime[anime.node.id];
+			selectedAnime = { ...selectedAnime };
 		} else {
-			selectedAnime.set(anime.node.id, anime);
+			selectedAnime = {
+				...selectedAnime,
+				[anime.node.id]: anime
+			};
 		}
 	}
 
 	async function saveWatchlist() {
-		const animeList = Array.from(selectedAnime.values());
-		const res = await fetch('/anime/watchlist', {
+		const animeList = Object.values(selectedAnime);
+		const res = await fetch('/api/anime/watchlist', {
 			method: 'POST',
 			body: JSON.stringify(animeList)
 		});
@@ -48,24 +65,45 @@
 <AlertDialog
 	isOpen={open}
 	on:close={onClose}
-	dialogClass="bg-gray-900 rounded-lg border-2 border-violet-500 p-4"
+	dialogClass="bg-gray-900 rounded-lg border-2 border-violet-500 p-4 w-full max-w-screen-xl mx-1 sm:mx-4"
 >
 	{#if $animeQuery.isLoading}
 		<div class="flex flex-row justify-center items-center">
 			<Spinner bg="violet" />
 		</div>
 	{:else}
-		<div class="flex gap-2 flex-row flex-wrap justify-center">
+		<div class="text-white text-base sm:text-xl mt-4 mb-2">What are you watching this season?</div>
+
+		<div
+			class="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2 max-h-[400px] overflow-auto pr-4"
+		>
 			{#each $animeQuery.data as anime (anime.node.id)}
-				<button class="rounded-md p-2" on:click={() => toggleAnime(anime)}>
-					<img
-						alt={anime.node.title}
-						src={AnimeHelper.getImage(anime)}
-						width={80}
-						height={80}
-						class="object-cover"
-					/>
-				</button>
+				{@const isSelected = selectedAnime[anime.node.id] != null}
+
+				<div>
+					<button
+						class={cx(
+							'rounded-lg overflow-hidden border-4 border-violet-500 transition duration-200',
+							{
+								'border-pink-500 scale-90': isSelected
+							}
+						)}
+						on:click={() => toggleAnime(anime)}
+					>
+						<img
+							alt={anime.node.title}
+							src={AnimeHelper.getImage(anime, { large: false })}
+							width={200}
+							height={200}
+							class={cx('w-full h-[150px] object-cover border-violet-500', {
+								grayscale: isSelected
+							})}
+						/>
+					</button>
+					<!-- <div class="p-1 text-center text-xs mt-1 text-white">
+						{anime.node.title}
+					</div> -->
+				</div>
 			{/each}
 		</div>
 

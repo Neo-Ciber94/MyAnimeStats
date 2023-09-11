@@ -113,9 +113,13 @@ export namespace AnimeListService {
                     "status",
                     "mean",
                     'start_season',
+                    'end_date',
                     'broadcast',
                     'main_picture',
                     'alternative_titles',
+                    'media_type',
+                    'popularity',
+                    'studios',
                     'rank',
                     'rating'
                 ],
