@@ -36,7 +36,7 @@ export namespace Auth {
     export function getAuthenticationUrl(options: GetAuthenticationUrlOptions) {
         const { redirectTo } = options;
         const state = crypto.randomUUID();
-        const codeVerifier = createCodeVerifier();
+        const codeVerifier = createCodeChallenge();
         const url = new URL(`${MY_ANIME_LIST_OAUTH2_URL}/authorize`);
         url.searchParams.set("response_type", "code");
         url.searchParams.set("client_id", MY_ANIME_LIST_CLIENT_ID);
@@ -157,7 +157,7 @@ export namespace Auth {
     }
 }
 
-function createCodeVerifier(length = 43) {
+function generateCodeVerifier(length = 43) {
     if (length < 43 || length > 128) {
         throw new Error("code verifier length must be between 43 and 128 characters");
     }
@@ -170,6 +170,12 @@ function createCodeVerifier(length = 43) {
         codeVerifier += charset.charAt(randomIndex);
     }
 
+    return codeVerifier;
+}
+
+function createCodeChallenge(length = 43) {
+    const codeVerifier = generateCodeVerifier(length);
+
     // Convert the code verifier to a Uint8Array
     const encoder = new TextEncoder();
     const data = encoder.encode(codeVerifier);
@@ -181,7 +187,8 @@ function createCodeVerifier(length = 43) {
 
     // Convert the hash to a base64 URL-safe string
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashBase64 = btoa(String.fromCharCode(...hashArray))
+    const asciiString = String.fromCharCode(...hashArray);
+    const hashBase64 = btoa(asciiString)
         .replace('+', '-')
         .replace('/', '_')
         .replace(/=+$/, '');
@@ -189,19 +196,8 @@ function createCodeVerifier(length = 43) {
     return hashBase64;
 }
 
-// async function createCodeVerifier(length = 64) {
-//     if (length < 43 || length > 128) {
-//         throw new Error("code verifier length must be between 43 and 128 characters");
-//     }
-
-//     // Generate a random string of the specified length
-//     const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-//     let codeVerifier = '';
-//     for (let i = 0; i < length; i++) {
-//         const randomIndex = Math.floor(Math.random() * charset.length);
-//         codeVerifier += charset.charAt(randomIndex);
-//     }
-
+// async function createCodeChallenge(length = 64) {
+//     const codeVerifier = generateCodeVerifier(length);
 //     // Convert the code verifier to a Uint8Array
 //     const encoder = new TextEncoder();
 //     const data = encoder.encode(codeVerifier);
