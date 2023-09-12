@@ -2,7 +2,7 @@ import { error, redirect, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
 import { getApiUrl } from "../common/getApiUrl";
 import { MALClient } from "../api";
-import { AUTH_ACCESS_TOKEN_COOKIE, AUTH_CSRF_COOKIE, AUTH_SESSION_COOKIE, generateJwt, getServerSession } from "./auth";
+import { AUTH_ACCESS_TOKEN_COOKIE, AUTH_CODE_CHALLENGE_COOKIE, AUTH_CSRF_COOKIE, AUTH_SESSION_COOKIE, generateJwt, getServerSession } from "./auth";
 import type { User } from "../common/user";
 
 export const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
@@ -128,13 +128,20 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
     switch (action) {
         case '/sign-in': {
             const redirectTo = `${originUrl}/callback`;
-            const { url, state } = Auth.getAuthenticationUrl({ redirectTo });
+            const { url, state, codeVerifier } = Auth.getAuthenticationUrl({ redirectTo });
 
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
                 path: "/",
                 sameSite: 'lax',
                 httpOnly: true,
                 maxAge: sessionDurationSeconds
+            });
+
+            event.cookies.set(AUTH_CODE_CHALLENGE_COOKIE, codeVerifier, {
+                path: "/",
+                sameSite: 'lax',
+                httpOnly: true,
+                maxAge: 1000 * 60 * 5, // 5min
             });
 
             // sign-in callback
@@ -144,7 +151,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
         }
         case '/sign-out': {
             event.cookies.delete(AUTH_SESSION_COOKIE, { path: "/" })
-            event.cookies.delete(AUTH_CSRF_COOKIE, { path: "/" });
+            event.cookies.delete(AUTH_CODE_CHALLENGE_COOKIE, { path: "/" });
             event.cookies.delete(AUTH_ACCESS_TOKEN_COOKIE, { path: "/" });
 
             // sign-out callback
@@ -157,18 +164,31 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             const searchParams = url.searchParams;
             const code = searchParams.get('code');
             const state = searchParams.get('state');
+            const codeChallenge = event.cookies.get(AUTH_CODE_CHALLENGE_COOKIE);
 
             if (code == null) {
                 throw error(401, "No oauth2 code was received");
             }
 
+            if (codeChallenge == null) {
+                throw error(401, "No oauth2 code challenge was received");
+            }
+
             const csrf = event.cookies.get(AUTH_CSRF_COOKIE);
-            
+
+            console.log({ codeChallenge, state, csrf })
+
+
             if (state == null || state != csrf) {
                 throw error(401, "Invalid auth state");
             }
 
-            const tokens = await Auth.getToken({ code, redirectTo: `${originUrl}/callback` });
+            const tokens = await Auth.getToken({
+                code,
+                codeVerifier: codeChallenge,
+                redirectTo: `${originUrl}/callback`
+            });
+
             const userId = Auth.getUserIdFromToken(tokens.access_token);
 
             if (userId == null) {

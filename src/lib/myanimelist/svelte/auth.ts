@@ -5,6 +5,7 @@ import { error, type Cookies } from '@sveltejs/kit';
 
 export const AUTH_SESSION_COOKIE = 'myanimestats.session';
 export const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
+export const AUTH_CODE_CHALLENGE_COOKIE = 'myanimestats.code_challenge';
 export const AUTH_ACCESS_TOKEN_COOKIE = 'myanimestats.access_token';
 
 const MY_ANIME_STATS_AUDIENCE = "myanimestats";

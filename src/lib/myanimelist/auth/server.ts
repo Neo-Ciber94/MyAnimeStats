@@ -4,7 +4,6 @@ import { sha256 } from 'js-sha256';
 import * as jose from 'jose';
 
 const MY_ANIME_LIST_OAUTH2_URL = "https://myanimelist.net/v1/oauth2";
-const CODE_VERIFIER = createCodeVerifier();
 
 export interface GetAuthenticationUrlOptions {
     redirectTo?: string;
@@ -13,6 +12,7 @@ export interface GetAuthenticationUrlOptions {
 export interface GetTokenOptions {
     code: string,
     redirectTo?: string;
+    codeVerifier: string;
 }
 
 export interface RefreshTokenOptions {
@@ -36,11 +36,11 @@ export namespace Auth {
     export function getAuthenticationUrl(options: GetAuthenticationUrlOptions) {
         const { redirectTo } = options;
         const state = crypto.randomUUID();
-
+        const codeVerifier = createCodeVerifier();
         const url = new URL(`${MY_ANIME_LIST_OAUTH2_URL}/authorize`);
         url.searchParams.set("response_type", "code");
         url.searchParams.set("client_id", MY_ANIME_LIST_CLIENT_ID);
-        url.searchParams.set("code_challenge", CODE_VERIFIER)
+        url.searchParams.set("code_challenge", codeVerifier)
         url.searchParams.set("code_challenge_method", "plain");
         url.searchParams.set("state", state);
 
@@ -50,6 +50,7 @@ export namespace Auth {
 
         return {
             url: url.toString(),
+            codeVerifier,
             state
         }
     }
@@ -65,7 +66,7 @@ export namespace Auth {
             client_id: MY_ANIME_LIST_CLIENT_ID,
             client_secret: MY_ANIME_LIST_CLIENT_SECRET,
             grant_type: "authorization_code",
-            code_verifier: CODE_VERIFIER,
+            code_verifier: options.codeVerifier,
             code,
         });
 
