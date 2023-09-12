@@ -12,7 +12,7 @@ declare global {
 			authenticatedUser?: {
 				user: User,
 				accessToken: string;
-			}
+			} | null;
 		}
 
 		interface Platform {
