@@ -64,8 +64,17 @@ async function initialize(init?: Omit<SessionState, 'loading'>) {
     }
 }
 
+function destroy() {
+    sessionStore.set({
+        user: null,
+        accessToken: null,
+        loading: false
+    })
+}
+
 export default {
     initialize,
+    destroy,
     subscribe: sessionStore.subscribe,
     get current() {
         return get(sessionStore);

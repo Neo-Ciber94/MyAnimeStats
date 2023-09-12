@@ -13,7 +13,7 @@
 </script>
 
 <header>
-	<div class="h-full md:h-28 pt-2 sm:pt-0 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
+	<div class="h-full md:h-28 pt-2 flex flex-col gap-2 shadow-lg justify-center bg-gray-950">
 		<div class="flex flex-row flex-wrap justify-between items-center px-10 h-2/3">
 			<Logo />
 			<div class="flex flex-row gap-8 items-center">
@@ -31,7 +31,10 @@
 						</div>
 
 						<Dropdown triggeredBy="#user-avatar" headerClass="z-[100]" class="min-w-[150px] gap-2">
-							<DropdownItem class="flex flex-row items-center gap-3" on:click={() => signOut()}>
+							<DropdownItem class="flex flex-row items-center gap-3" on:click={() => {
+								signOut();
+								session.destroy();
+							}}>
 								<svg
 									class="w-[14px] h-[14px] text-gray-800 dark:text-white"
 									aria-hidden="true"
