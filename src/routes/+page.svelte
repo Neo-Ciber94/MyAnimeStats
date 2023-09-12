@@ -51,7 +51,7 @@
 					>Why?
 				</span>
 				<span>
-					<span>Just for</span>
+					<span>for</span>
 					<span
 						class="font-extrabold text-transparent bg-clip-text
 						bg-gradient-to-r from-orange-500 via-orange-500 to-orange-600"

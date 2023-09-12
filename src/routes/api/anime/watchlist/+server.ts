@@ -9,7 +9,6 @@ import { z } from 'zod'
 import { error } from "@sveltejs/kit";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { MALClient } from "@/lib/myanimelist/api";
-import type { AnimeObject } from "@/lib/myanimelist/common/types";
 import { COOKIE_ANIME_WATCHLIST } from "@/common/constants";
 
 export const GET: RequestHandler = async ({ cookies, request }) => {
@@ -58,7 +57,10 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     const { userId, accessToken } = await getRequiredServerSession(cookies);
 
     const watchListSchema = z.object({
-        animeList: z.array(z.record(z.unknown()))
+        watchList: z.array(z.object({
+            animeId: z.number(),
+            status: z.enum(['watching', 'plan_to_watch'])
+        }))
     });
 
     const result = watchListSchema.safeParse(await request.json());
@@ -71,11 +73,12 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
         console.log("Saving watchlist", { userId, result });
         const client = new MALClient({ accessToken });
 
-        for (const record of result.data.animeList) {
-            const anime = record as AnimeObject;
-            const animeId = anime.node.id;
+        // We update the anime list on order
+        for (const record of result.data.watchList) {
+            const animeId = record.animeId;
+            const status = record.status;
             await client.updateMyAnimeListStatus(animeId, {
-                status: 'watching',
+                status,
                 num_watched_episodes: 1
             });
 
@@ -85,7 +88,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
                     accessToken,
                     animeId,
                     data: {
-                        status: 'watching',
+                        status,
                         num_watched_episodes: 1
                     }
                 })
