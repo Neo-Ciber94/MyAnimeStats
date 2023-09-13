@@ -9,6 +9,15 @@
 	import cx from '@/lib/utils/cx';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 	const { season, year } = AnimeHelper.getCurrentAnimeSeason();
+
+	function handleSignIn() {
+		signIn();
+	}
+
+	function handleLogout() {
+		signOut();
+		session.destroy();
+	}
 </script>
 
 <header>
@@ -26,14 +35,11 @@
 					{:else if $session.user}
 						<div id="user-avatar" class="flex flex-row gap-2 items-center cursor-pointer">
 							<span class="text-white font-bold text-sm md:text-xl">{$session.user.name}</span>
-							<Avatar src={$session.user.picture} class="object-cover" />
+							<Avatar src={$session.user.picture} class="object-cover aspect-square" />
 						</div>
 
 						<Dropdown triggeredBy="#user-avatar" headerClass="z-[100]" class="min-w-[150px] gap-2">
-							<DropdownItem
-								class="flex flex-row items-center gap-3"
-								on:click={() => session.signOut()}
-							>
+							<DropdownItem class="flex flex-row items-center gap-3" on:click={handleLogout}>
 								<svg
 									class="w-[14px] h-[14px] text-gray-800 dark:text-white"
 									aria-hidden="true"
@@ -53,7 +59,7 @@
 							</DropdownItem>
 						</Dropdown>
 					{:else}
-						<Button color="purple" on:click={() => session.signIn()}>Login</Button>
+						<Button color="purple" on:click={handleSignIn}>Login</Button>
 					{/if}
 				</div>
 			</div>

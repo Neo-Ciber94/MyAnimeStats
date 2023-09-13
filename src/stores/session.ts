@@ -2,13 +2,8 @@ import { dev } from "$app/environment";
 import { getSession } from "$lib/myanimelist/auth/client";
 import type { User } from "$lib/myanimelist/common/user";
 import { get, writable } from "svelte/store";
-import { signIn as clientSignIn, signOut as clientSignOut } from '$lib/myanimelist/auth/client';
-import { deleteCookie, setCookie } from "@/lib/utils/cookies";
-import cookie from 'cookie';
-import { invalidateAll } from "$app/navigation";
 
-const COOKIE_INIT_SESSION = 'init-session';
-
+let lock = false;
 let initialized = false;
 
 export type SessionState = {
@@ -75,9 +70,7 @@ async function fetchUserSession() {
 }
 
 async function initialize(session?: InitializeSession | null) {
-    const hasUser = get(sessionStore).user != null;
-
-    if (initialized === true && !hasUser) {
+    if (lock || initialized) {
         return;
     }
 
@@ -85,44 +78,37 @@ async function initialize(session?: InitializeSession | null) {
         return;
     }
 
-    initialized = true;
-    const cookies = cookie.parse(document.cookie);
+    lock = true;
 
-    // If the init cookie is set, we refetch the session
-    if (cookies[COOKIE_INIT_SESSION]) {
-        deleteCookie(COOKIE_INIT_SESSION);
-        await fetchUserSession();
-        await invalidateAll();
+    try {
+        // If no session was set, we fetch the session
+        if (session === undefined) {
+            await fetchUserSession();
+        }
+        else {
+            // Otherwise we set the session provided
+            setUserSession(session);
+        }
+
+        initialized = true;
     }
-    // If not undefined we set the session
-    else if (session !== undefined) {
-        setUserSession(session);
+    finally {
+        lock = false;
     }
-    // By default we just fetch the session
-    else {
-        await fetchUserSession();
-    }
+
 }
 
-function signIn() {
-    setCookie(COOKIE_INIT_SESSION, '1', { maxAge: 60 * 60 * 15 });
-    clientSignIn();
-}
-
-function signOut() {
-    clientSignOut();
-
+function destroy() {
     sessionStore.set({
-        user: null,
         accessToken: null,
-        loading: false
+        loading: false,
+        user: null,
     })
 }
 
 export default {
     initialize,
-    signIn,
-    signOut,
+    destroy,
     subscribe: sessionStore.subscribe,
     get current() {
         return get(sessionStore);
