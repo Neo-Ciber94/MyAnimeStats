@@ -2,6 +2,12 @@ import { dev } from "$app/environment";
 import { getSession } from "$lib/myanimelist/auth/client";
 import type { User } from "$lib/myanimelist/common/user";
 import { get, writable } from "svelte/store";
+import { signIn as clientSignIn, signOut as clientSignOut } from '$lib/myanimelist/auth/client';
+import { deleteCookie, setCookie } from "@/lib/utils/cookies";
+import cookie from 'cookie';
+import { invalidateAll } from "$app/navigation";
+
+const COOKIE_INIT_SESSION = 'init-session';
 
 let initialized = false;
 
@@ -19,40 +25,31 @@ const sessionStore = writable<SessionState>({
 
 type InitializeSession = Omit<SessionState, 'loading'>;
 
-async function initialize(init?: InitializeSession | null) {
-    if (initialized === true) {
-        return;
+function setUserSession(session: InitializeSession | null) {
+    if (session) {
+        sessionStore.set({
+            loading: false,
+            accessToken: session.accessToken,
+            user: session.user
+        })
+    } else {
+        sessionStore.set({
+            loading: false,
+            accessToken: null,
+            user: null
+        });
     }
+}
 
-    if (typeof window === 'undefined') {
-        return;
-    }
-
-    initialized = true;
-
-    // If not undefined we set the session
-    if (init !== undefined) {
-        if (init) {
-            sessionStore.set({
-                loading: false,
-                accessToken: init.accessToken,
-                user: init.user
-            })
-        } else {
-            sessionStore.set({
-                loading: false,
-                accessToken: null,
-                user: null
-            });
-        }
-
-        return;
-    }
-
-
+async function fetchUserSession() {
     try {
         // Set state to loading
-        sessionStore.set({ loading: true, accessToken: null, user: null });
+        const currentSession = get(sessionStore);
+        sessionStore.set({
+            loading: true,
+            accessToken: currentSession.accessToken,
+            user: currentSession.user
+        });
 
         // fetch the current user session
         const session = await getSession();
@@ -77,7 +74,44 @@ async function initialize(init?: InitializeSession | null) {
     }
 }
 
-function destroy() {
+async function initialize(session?: InitializeSession | null) {
+    const hasUser = get(sessionStore).user != null;
+
+    if (initialized === true && !hasUser) {
+        return;
+    }
+
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    initialized = true;
+    const cookies = cookie.parse(document.cookie);
+
+    // If the init cookie is set, we refetch the session
+    if (cookies[COOKIE_INIT_SESSION]) {
+        deleteCookie(COOKIE_INIT_SESSION);
+        await fetchUserSession();
+        await invalidateAll();
+    }
+    // If not undefined we set the session
+    else if (session !== undefined) {
+        setUserSession(session);
+    }
+    // By default we just fetch the session
+    else {
+        await fetchUserSession();
+    }
+}
+
+function signIn() {
+    setCookie(COOKIE_INIT_SESSION, '1', { maxAge: 60 * 60 * 15 });
+    clientSignIn();
+}
+
+function signOut() {
+    clientSignOut();
+
     sessionStore.set({
         user: null,
         accessToken: null,
@@ -87,7 +121,8 @@ function destroy() {
 
 export default {
     initialize,
-    destroy,
+    signIn,
+    signOut,
     subscribe: sessionStore.subscribe,
     get current() {
         return get(sessionStore);

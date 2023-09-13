@@ -10,15 +10,9 @@
 	import type { User } from '@/lib/myanimelist/common/user';
 
 	export let userSession: UserSession | undefined | null = undefined;
-	let wasInit = false;
 
-	// We don't use onMount because it does not run on the server
-	if (!wasInit) {
-		session
-			.initialize(userSession)
-			.then(() => (wasInit = true))
-			.catch(console.error);
-	}
+	// Initialize the session
+	session.initialize(userSession).catch(console.error);
 </script>
 
 <slot session={session.current} />
