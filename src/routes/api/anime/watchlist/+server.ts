@@ -10,6 +10,7 @@ import { error } from "@sveltejs/kit";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { MALClient } from "@/lib/myanimelist/api";
 import { COOKIE_ANIME_WATCHLIST } from "@/common/constants";
+import dayjs from "dayjs";
 
 export const GET: RequestHandler = async ({ cookies, request }) => {
     const { userId } = await getRequiredServerSession(cookies);
@@ -98,11 +99,18 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
             }
         }
 
-        // TODO: Set a cookie to show the prompt again on the next anime season
+        // We expires the cookie at the start of the next season, to show the message again
+        const currentSeason = AnimeHelper.getCurrentAnimeSeason();
+        const nextSeasonStartMonth = AnimeHelper.startOfNextSeason(currentSeason.season, currentSeason.year);
+        const showNextPromptAt = dayjs()
+            .month(nextSeasonStartMonth)
+            .add(7, 'day') // we add 1 week because some anime don't start at the beginning of the season
+            .toDate();
+
         cookies.set(COOKIE_ANIME_WATCHLIST, 'next_season', {
             httpOnly: false,
             path: '/',
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week, this should be the next season
+            expires: showNextPromptAt
         });
 
         return Response.json({ success: true })
@@ -114,7 +122,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
         cookies.set(COOKIE_ANIME_WATCHLIST, '1d', {
             httpOnly: false,
             path: '/',
-            maxAge: 1000 * 60 * 60 * 24, // 24h
+            maxAge: 60 * 60 * 24, // 24h
         });
 
         throw error(400, "Failed to update watchlist");

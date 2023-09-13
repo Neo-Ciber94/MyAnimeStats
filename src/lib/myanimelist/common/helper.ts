@@ -4,6 +4,7 @@ import ANIME_GENRES from "@/generated/animeGenres";
 import type { AiringStatus, AnimeObject, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
 import dayjs from "dayjs";
 import { PLACEHOLDER_IMAGE } from "@/common/constants";
+import { Months } from "@/lib";
 
 export namespace AnimeHelper {
     export function mediaTypeToString(mediaType: MediaType) {
@@ -181,9 +182,7 @@ export namespace AnimeHelper {
         return { season, year }
     }
 
-    export function getNextAnimeSeason() {
-        let { season, year } = getCurrentAnimeSeason();
-
+    export function getNextAnimeSeason(season: AnimeSeason, year: number) {
         if (season === 'winter') {
             year += 1;
         }
@@ -243,6 +242,22 @@ export namespace AnimeHelper {
             return image?.large || image?.medium || placeholder;
         } else {
             return image?.medium || image?.large || placeholder;
+        }
+    }
+
+    export function startOfNextSeason(season: AnimeSeason, year: number): Months {
+        const nextSeason = getNextAnimeSeason(season, year);
+        switch (nextSeason.season) {
+            case 'spring':
+                return Months.April;
+            case 'summer':
+                return Months.July;
+            case 'fall':
+                return Months.October;
+            case 'winter':
+                return Months.January;
+            default:
+                throw new Error("unreachable")
         }
     }
 }

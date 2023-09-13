@@ -79,7 +79,8 @@ async function getMostPopularAnimeList({ limit }: { limit: number }) {
 
 async function getUpcomingAnimeList({ limit }: { limit: number }) {
     const malClient = new MALClient({ clientId: MY_ANIME_LIST_CLIENT_ID });
-    const { season, year } = AnimeHelper.getNextAnimeSeason();
+    const currentSeason = AnimeHelper.getCurrentAnimeSeason();
+    const { season, year } = AnimeHelper.getNextAnimeSeason(currentSeason.season, currentSeason.year);
 
     const result = await malClient.getSeasonalAnime({
         limit,

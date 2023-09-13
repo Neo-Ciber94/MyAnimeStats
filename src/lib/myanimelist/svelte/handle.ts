@@ -141,7 +141,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 path: "/",
                 sameSite: 'lax',
                 httpOnly: true,
-                maxAge: 1000 * 60 * 5, // 5min
+                maxAge: 60 * 15, // 15min
             });
 
             // sign-in callback
@@ -175,9 +175,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             }
 
             const csrf = event.cookies.get(AUTH_CSRF_COOKIE);
-
             console.log({ codeChallenge, state, csrf })
-
 
             if (state == null || state != csrf) {
                 throw error(401, "Invalid auth state");
