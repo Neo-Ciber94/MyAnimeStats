@@ -39,9 +39,9 @@
 			$animeQuery.refetch();
 			open = true;
 
-			// By default we delay the message by 1 hour if is closed
-			setCookie(COOKIE_ANIME_WATCHLIST, '1h', {
-				maxAge: 1000 * 60 * 60,
+			// By default we delay the message by 3min if is closed
+			setCookie(COOKIE_ANIME_WATCHLIST, '3m', {
+				maxAge: 60 * 3,
 				path: '/'
 			});
 		}
@@ -95,7 +95,7 @@
 		try {
 			open = false;
 			setCookie(COOKIE_ANIME_WATCHLIST, '1d', {
-				maxAge: 1000 * 60 * 60 * 24,
+				maxAge: 60 * 60 * 24,
 				path: '/'
 			});
 		} catch (err) {
