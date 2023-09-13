@@ -13,7 +13,13 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}', "tests/**/*.test.{js,ts}"],
 	},
 	optimizeDeps: {
-		include: ['./src/lib/badges/**']
+		include: ['./src/lib/badges/**'],
+		esbuildOptions: {
+			// Node.js global to browser globalThis
+			define: {
+				global: 'globalThis',
+			},
+		},
 	},
 	define: {
 		__DATE__: `'${new Date().toISOString()}'`,
