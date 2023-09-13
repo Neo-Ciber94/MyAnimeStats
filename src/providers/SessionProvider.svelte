@@ -9,7 +9,7 @@
 	import session from '../stores/session';
 	import type { User } from '@/lib/myanimelist/common/user';
 
-	export let userSession: UserSession | undefined = undefined;
+	export let userSession: UserSession | undefined | null = undefined;
 	let wasInit = false;
 
 	// We don't use onMount because it does not run on the server

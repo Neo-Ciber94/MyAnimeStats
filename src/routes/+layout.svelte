@@ -46,7 +46,7 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<SessionProvider userSession={data.session ?? undefined}>
+	<SessionProvider userSession={data.session}>
 		<Layout>
 			<!-- 
 				We use a key here to ensure the anime/[anime_id] route is reloaded: 

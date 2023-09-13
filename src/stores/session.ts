@@ -17,31 +17,44 @@ const sessionStore = writable<SessionState>({
     loading: false
 });
 
+type InitializeSession = Omit<SessionState, 'loading'>;
 
-async function initialize(init?: Omit<SessionState, 'loading'>) {
+async function initialize(init?: InitializeSession | null) {
     if (initialized === true) {
         return;
     }
 
-    // If we are not setting the default value with exit early to avoid 
-    // triggering a fetch request from the server.
-    if (typeof window === 'undefined' && init == null) {
+    if (typeof window === 'undefined') {
         return;
     }
 
     initialized = true;
 
-    if (init) {
-        return sessionStore.set({
-            loading: false,
-            accessToken: init.accessToken,
-            user: init.user
-        })
-    } else {
-        sessionStore.set({ loading: true, accessToken: null, user: null });
+    // If not undefined we set the session
+    if (init !== undefined) {
+        if (init) {
+            sessionStore.set({
+                loading: false,
+                accessToken: init.accessToken,
+                user: init.user
+            })
+        } else {
+            sessionStore.set({
+                loading: false,
+                accessToken: null,
+                user: null
+            });
+        }
+
+        return;
     }
 
+
     try {
+        // Set state to loading
+        sessionStore.set({ loading: true, accessToken: null, user: null });
+
+        // fetch the current user session
         const session = await getSession();
 
         if (session == null) {
