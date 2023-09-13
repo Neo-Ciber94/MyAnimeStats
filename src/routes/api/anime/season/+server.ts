@@ -3,6 +3,8 @@ import { type AnimeSeason, animeSeasonSchema } from "@/lib/myanimelist/common/ty
 import { parseNumberOrNull } from "@/lib/utils/helpers";
 import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 import { AnimeListService } from "@/lib/server/services/animeListService";
+import { AnimeSeasonYear } from "@/lib/myanimelist/common/AnimeSeasonYear";
+import { error } from "@sveltejs/kit";
 
 const LIMIT = 100;
 
@@ -39,6 +41,14 @@ export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
     const currentSeason = AnimeHelper.getCurrentAnimeSeason();
     const { offset, allowNsfw, season = currentSeason.season, year = currentSeason.year } = query;
 
+    const minSeason = AnimeSeasonYear.from('winter', 1900);
+    const maxSeason = AnimeSeasonYear.from(currentSeason.season, currentSeason.year).next;
+    const cur = AnimeSeasonYear.from(season, year);
+
+    if (cur.compare(minSeason) < 0 || cur.compare(maxSeason) > 0) {
+        throw error(400, 'Season out of range');
+    }
+
     const result = await AnimeListService.getSeasonAnime({
         season,
         year,
@@ -46,7 +56,7 @@ export async function _getSeasonalAnime(query: SeasonalAnimeQuery) {
         limit: LIMIT,
         nsfw: allowNsfw
     });
-    
+
     const animeList = result.filter(({ node }) => {
         if (!node.start_season) {
             return false;

@@ -23,7 +23,6 @@
 	import { capitalize } from '@/lib/utils/helpers';
 	import AnimeGenreDistributionGraph from '$components/graphs/AnimeGenreDistributionGraph.svelte';
 	import SEO from '$components/SEO.svelte';
-	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	export let data: PageData;
 
@@ -47,12 +46,11 @@
 	}
 
 	function getMaxSeason() {
-		const currentSeason = AnimeHelper.getCurrentAnimeSeason();
-		return AnimeSeasonYear.from(currentSeason.season, currentSeason.year).next;
+		return AnimeSeasonYear.from(data.maxSeason.season, data.maxSeason.year).next;
 	}
 
 	function getMinSeason() {
-		return AnimeSeasonYear.from('winter', 1900);
+		return AnimeSeasonYear.from(data.minSeason.season, data.minSeason.year);
 	}
 
 	async function goToSeason(season: AnimeSeason, year: number) {
