@@ -9,7 +9,7 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
 import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";
 import ANIME_GENRES from "@/generated/animeGenres";
-//import { RedisService } from "../cache";
+import { RedisService } from "../cache";
 import Enumerable from "linq";
 dayjs.extend(isSameOrAfter);
 
@@ -93,8 +93,7 @@ export namespace AnimeListService {
         })
 
         const cacheKey = `anime/${year}/${season}`;
-        // let animeList: AnimeObject[] | null = await RedisService.get<AnimeObject[]>(cacheKey);
-        let animeList: AnimeObject[] | null = null;
+        let animeList: AnimeObject[] | null = await RedisService.get<AnimeObject[]>(cacheKey);
 
         if (!animeList) {
             animeList = [];
@@ -139,11 +138,11 @@ export namespace AnimeListService {
             }
 
             // We only cache if we had data
-            // if (animeList.length > 0) {
-            //     await RedisService.set(cacheKey, animeList, {
-            //         ex: 1000 * 60 * 60 * 3, // 3 hours of cache
-            //     })
-            // }
+            if (animeList.length > 0) {
+                await RedisService.set(cacheKey, animeList, {
+                    ex: 1000 * 60 * 60 * 3, // 3 hours of cache
+                })
+            }
         }
 
         const result = Enumerable.from(animeList)
