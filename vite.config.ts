@@ -2,6 +2,8 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 
+const nodePolyfill = await loadNodePolyfill();
+
 export default defineConfig({
 	ssr: {
 		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons']
@@ -16,12 +18,12 @@ export default defineConfig({
 		include: ['./src/lib/badges/**'],
 	},
 	define: {
-		global: 'globalThis',
 		__DATE__: `'${new Date().toISOString()}'`,
 		__RELOAD_SW__: false,
 		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"',
 	},
 	plugins: [
+		nodePolyfill,
 		sveltekit(),
 		SvelteKitPWA({
 			srcDir: './src',
@@ -91,3 +93,13 @@ export default defineConfig({
 		}),
 	],
 });
+
+// For some reason this crash because cannot found `process/browser.js` so we only import during development
+async function loadNodePolyfill() {
+	if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+		return undefined;
+	}
+
+	const { nodePolyfills: viteNodePolyfill } = await import('vite-plugin-node-polyfills');
+	return viteNodePolyfill({ globals: { global: true } });
+}
