@@ -54,12 +54,12 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
     const accessToken = cookies.get(AUTH_ACCESS_TOKEN_COOKIE);
 
     if (sessionToken == null) {
-        console.warn("⚠️\tsession token is null");
+        console.warn("⚠️  session token is null");
         return null;
     }
 
     if (accessToken == null) {
-        console.warn("⚠️\taccess token is null");
+        console.warn("⚠️  access token is null");
         return null;
     }
 
