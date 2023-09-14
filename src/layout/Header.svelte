@@ -8,16 +8,8 @@
 	import elementEmphasis, { ELEMENT_EMPHASIS_IDS } from '$stores/elementEmphasis';
 	import cx from '@/lib/utils/cx';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
-	const { season, year } = AnimeHelper.getCurrentAnimeSeason();
-	
-	function handleSignIn() {
-		signIn();
-	}
 
-	function handleLogout() {
-		signOut();
-		//session.destroy();
-	}
+	const { season, year } = AnimeHelper.getCurrentAnimeSeason();
 </script>
 
 <header>
@@ -39,7 +31,7 @@
 						</div>
 
 						<Dropdown triggeredBy="#user-avatar" headerClass="z-[100]" class="min-w-[150px] gap-2">
-							<DropdownItem class="flex flex-row items-center gap-3" on:click={handleLogout}>
+							<DropdownItem class="flex flex-row items-center gap-3" on:click={signOut}>
 								<svg
 									class="w-[14px] h-[14px] text-gray-800 dark:text-white"
 									aria-hidden="true"
@@ -59,7 +51,7 @@
 							</DropdownItem>
 						</Dropdown>
 					{:else}
-						<Button color="purple" on:click={handleSignIn}>Login</Button>
+						<Button color="purple" on:click={signIn}>Login</Button>
 					{/if}
 				</div>
 			</div>

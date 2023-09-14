@@ -1,4 +1,4 @@
-import { error, redirect, type RequestEvent } from "@sveltejs/kit";
+import { error, redirect, type Handle, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
 import { getApiUrl } from "../common/getApiUrl";
 import { MALClient } from "../api";
@@ -79,7 +79,7 @@ export interface MyAnimeListHandlerOptions {
  * Creates a handler for `myanimelist` requests.
  * @param options The options for configure the handler.
  */
-export function createMyAnimeListHandler(options: MyAnimeListHandlerOptions = {}) {
+export function createMyAnimeListHandler(options: MyAnimeListHandlerOptions = {}): Handle {
     const { auth = {} } = options;
     const { sessionDurationSeconds = DEFAULT_SESSION_DURATION_SECONDS } = auth;
     const apiUrl = getApiUrl();
@@ -89,11 +89,11 @@ export function createMyAnimeListHandler(options: MyAnimeListHandlerOptions = {}
         throw new Error(`api url cannot end with '/'`);
     }
 
-    return async (event: RequestEvent): Promise<Response> => {
+    return async ({ event, resolve }) => {
         const pathname = event.url.pathname;
 
         if (!startsWithPathSegment(pathname, apiUrl)) {
-            throw new Error(`Invalid url pathname, expected path starting with ${apiUrl}`);
+            return resolve(event);
         }
 
         if (startsWithPathSegment(pathname, authPath)) {
