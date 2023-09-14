@@ -175,7 +175,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             }
 
             const csrf = event.cookies.get(AUTH_CSRF_COOKIE);
-            console.log({ codeChallenge, state, csrf })
+            //console.log({ codeChallenge, state, csrf })
 
             if (state == null || state != csrf) {
                 throw error(401, "Invalid auth state");

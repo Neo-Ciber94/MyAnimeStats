@@ -26,7 +26,6 @@
 		});
 	});
 
-	console.log(data.session)
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 </script>
 

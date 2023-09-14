@@ -9,14 +9,14 @@
 	import cx from '@/lib/utils/cx';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 	const { season, year } = AnimeHelper.getCurrentAnimeSeason();
-
+	
 	function handleSignIn() {
 		signIn();
 	}
 
 	function handleLogout() {
 		signOut();
-		session.destroy();
+		//session.destroy();
 	}
 </script>
 

@@ -3,7 +3,6 @@ import { getSession } from "$lib/myanimelist/auth/client";
 import type { User } from "$lib/myanimelist/common/user";
 import { get, writable } from "svelte/store";
 
-let lock = false;
 let initialized = false;
 
 export type SessionState = {
@@ -70,32 +69,18 @@ async function fetchUserSession() {
 }
 
 async function initialize(session?: InitializeSession | null) {
-    if (lock || initialized) {
+    if (initialized || typeof window === 'undefined') {
         return;
     }
 
-    if (typeof window === 'undefined') {
-        return;
+    initialized = true;
+
+    if (session) {
+        setUserSession(session);
     }
-
-    lock = true;
-
-    try {
-        // If no session was set, we fetch the session
-        if (session === undefined) {
-            await fetchUserSession();
-        }
-        else {
-            // Otherwise we set the session provided
-            setUserSession(session);
-        }
-
-        initialized = true;
+    else {
+        await fetchUserSession();
     }
-    finally {
-        lock = false;
-    }
-
 }
 
 function destroy() {
