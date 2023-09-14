@@ -25,8 +25,8 @@ function myAnimeListMiddleware(): Handle {
         const myAnimeListHandler = createMyAnimeListHandler();
         const pathname = event.url.pathname;
 
-        if (pathname.startsWith("/api/myanimelist")) {
-            return myAnimeListHandler(event);
+        if (pathname.startsWith("/api/myanimelist") && !event.isDataRequest) {
+            return myAnimeListHandler({ event, resolve });
         }
 
         return resolve(event);
