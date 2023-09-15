@@ -68,6 +68,16 @@ export interface MyAnimeListHandlerOptions {
     sessionDurationSeconds?: number;
 
     /**
+     * Url to redirect after sign-in.
+     */
+    redirectAfterSignInUrl?: string;
+
+    /**
+     * Url to redirect after sign-out.
+     */
+    redirectAfterSignOutUrl?: string;
+
+    /**
      * Callbacks.
      */
     callbacks?: AuthCallbacks
@@ -101,9 +111,10 @@ export function createMyAnimeListHandler(options: MyAnimeListHandlerOptions = {}
         if (startsWithPathSegment(pathname, authPath)) {
             const action = pathname.slice(authPath.length);
             return handleAuth(event, {
+                ...options,
                 action,
                 apiUrl,
-                sessionDurationSeconds
+                sessionDurationSeconds,
             });
         }
 
@@ -116,11 +127,10 @@ export function createMyAnimeListHandler(options: MyAnimeListHandlerOptions = {}
     }
 }
 
-type HandleAuthOptions = {
+type HandleAuthOptions = MyAnimeListHandlerOptions & {
     action: string,
     apiUrl: string,
     sessionDurationSeconds: number,
-    callbacks?: AuthCallbacks
 }
 
 async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
@@ -130,7 +140,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
     switch (action) {
         case '/sign-in': {
             const redirectTo = `${originUrl}/callback`;
-            const { url, state, codeChallenge } = Auth.getAuthenticationUrl({ redirectTo });
+            const { url: authenticationUrl, state, codeChallenge } = Auth.getAuthenticationUrl({ redirectTo });
 
             event.cookies.set(COOKIE_AUTH_CSRF, state, {
                 path: "/",
@@ -149,7 +159,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             // sign-in callback
             options.callbacks?.onSignIn?.(event);
 
-            throw redirect(307, url);
+            throw redirect(307, authenticationUrl);
         }
         case '/sign-out': {
             event.cookies.delete(COOKIE_AUTH_SESSION, { path: "/" })
@@ -159,7 +169,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             // sign-out callback
             options.callbacks?.onSignOut?.(event);
 
-            throw redirect(307, '/');
+            throw redirect(307, options.redirectAfterSignInUrl ?? '/');
         }
         case '/callback': {
             const url = event.url;
@@ -213,10 +223,13 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 sameSite: 'strict'
             });
 
+            // remove the auth code challenge cookie
+            event.cookies.delete(COOKIE_AUTH_CODE_CHALLENGE);
+
             // auth callback
             options.callbacks?.onCallback?.(event);
 
-            throw redirect(307, '/');
+            throw redirect(307, options.redirectAfterSignOutUrl ?? '/');
         }
         case '/token': {
             const { accessToken, expiresAt } = await getMyAnimeListAuthToken(event);
