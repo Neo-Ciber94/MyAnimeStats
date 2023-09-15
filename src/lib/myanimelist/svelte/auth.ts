@@ -3,17 +3,46 @@ import { SECRET_KEY } from "$env/static/private";
 import { DEFAULT_SESSION_DURATION_SECONDS } from "./handle";
 import { error, type Cookies } from '@sveltejs/kit';
 
-export const AUTH_SESSION_COOKIE = 'myanimestats.session';
-export const AUTH_CSRF_COOKIE = 'myanimestats.csrf';
-export const AUTH_CODE_CHALLENGE_COOKIE = 'myanimestats.code_challenge';
-export const AUTH_ACCESS_TOKEN_COOKIE = 'myanimestats.access_token';
+/**
+ * Name of the `session` cookie.
+ */
+export const COOKIE_AUTH_SESSION = 'mal.session';
 
-const MY_ANIME_STATS_AUDIENCE = "myanimestats";
-const MY_ANIME_STATS_ISSUER = "myanimestats";
+/**
+ * Name of the `csrf token` cookie.
+ */
+export const COOKIE_AUTH_CSRF = 'mal.csrf';
 
-export type AuthenticatedUser = {
+/**
+ * Name of the short lived `code challenge` cookie.
+ */
+export const COOKIE_AUTH_CODE_CHALLENGE = 'mal.code_challenge';
+
+/**
+ * Name of the `access token` cookie.
+ */
+export const COOKIE_AUTH_ACCESS_TOKEN = 'mal.access_token';
+
+const JWT_AUDIENCE = "mal.audience";
+const JWT_ISSUER = "mal.issuer";
+
+/**
+ * Authenticated user information.
+ */
+export type UserSession = {
+    /**
+     * The `MyAnimeList` user id.
+     */
     userId: number;
+
+    /**
+     * The refresh token.
+     */
     refreshToken: string;
+
+    /**
+     * The access token.
+     */
     accessToken: string;
 }
 
@@ -26,15 +55,15 @@ function getSecretKey() {
 /**
  * Generate a jwt from the refreshToken returned from MyAnimeList to validate in our server.
  * 
- * @param userId the user id.
+ * @param userId the `MyAnimeList` user id.
  * @param refreshToken The MyAnimeList refresh token.
  * @returns A jwt token with the refresh token and user id.
  */
 export async function generateJwt(userId: number, refreshToken: string): Promise<string> {
     const signJwt = new jose.SignJWT({ refreshToken, sub: String(userId) })
         .setExpirationTime(Date.now() + DEFAULT_SESSION_DURATION_SECONDS)
-        .setAudience(MY_ANIME_STATS_AUDIENCE)
-        .setIssuer(MY_ANIME_STATS_ISSUER)
+        .setAudience(JWT_AUDIENCE)
+        .setIssuer(JWT_ISSUER)
         .setProtectedHeader({ alg: 'HS256' })
 
     const key = getSecretKey();
@@ -47,11 +76,11 @@ export async function generateJwt(userId: number, refreshToken: string): Promise
  * @param cookies The cookies to extract the user token.
  * @returns The user refresh token and user id.
  */
-export async function getServerSession(cookies: Cookies): Promise<AuthenticatedUser | null> {
+export async function getServerSession(cookies: Cookies): Promise<UserSession | null> {
     const key = getSecretKey();
 
-    const sessionToken = cookies.get(AUTH_SESSION_COOKIE);
-    const accessToken = cookies.get(AUTH_ACCESS_TOKEN_COOKIE);
+    const sessionToken = cookies.get(COOKIE_AUTH_SESSION);
+    const accessToken = cookies.get(COOKIE_AUTH_ACCESS_TOKEN);
 
     if (sessionToken == null) {
         console.warn("⚠️  session token is null");
@@ -65,8 +94,8 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
 
     try {
         const result = await jose.jwtVerify(sessionToken, key, {
-            audience: MY_ANIME_STATS_AUDIENCE,
-            issuer: MY_ANIME_STATS_ISSUER
+            audience: JWT_AUDIENCE,
+            issuer: JWT_ISSUER
         });
 
         const { payload: { refreshToken, sub } } = result;
@@ -88,7 +117,6 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
         console.error(err);
         return null;
     }
-
 }
 
 /**
@@ -97,7 +125,7 @@ export async function getServerSession(cookies: Cookies): Promise<AuthenticatedU
  * @param message The error message to show when the user is not authenticated. Defaults to `"unable to get user session"`.
  * @returns The user refresh token and id.
  */
-export async function getRequiredServerSession(cookies: Cookies, message = "unable to get user session"): Promise<AuthenticatedUser> {
+export async function getRequiredServerSession(cookies: Cookies, message = "unable to get user session"): Promise<UserSession> {
     const session = await getServerSession(cookies);
 
     if (session == null) {

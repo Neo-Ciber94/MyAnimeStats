@@ -2,7 +2,7 @@ import { error, redirect, type Handle, type RequestEvent } from "@sveltejs/kit";
 import { Auth } from "../auth/server";
 import { getApiUrl } from "../common/getApiUrl";
 import { MALClient } from "../api";
-import { AUTH_ACCESS_TOKEN_COOKIE, AUTH_CODE_CHALLENGE_COOKIE, AUTH_CSRF_COOKIE, AUTH_SESSION_COOKIE, generateJwt, getServerSession } from "./auth";
+import { COOKIE_AUTH_ACCESS_TOKEN, COOKIE_AUTH_CODE_CHALLENGE, COOKIE_AUTH_CSRF, COOKIE_AUTH_SESSION, generateJwt, getServerSession } from "./auth";
 import type { User } from "../common/user";
 
 export const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
@@ -130,14 +130,14 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             const redirectTo = `${originUrl}/callback`;
             const { url, state, codeChallenge } = Auth.getAuthenticationUrl({ redirectTo });
 
-            event.cookies.set(AUTH_CSRF_COOKIE, state, {
+            event.cookies.set(COOKIE_AUTH_CSRF, state, {
                 path: "/",
                 sameSite: 'lax',
                 httpOnly: true,
                 maxAge: sessionDurationSeconds
             });
 
-            event.cookies.set(AUTH_CODE_CHALLENGE_COOKIE, codeChallenge, {
+            event.cookies.set(COOKIE_AUTH_CODE_CHALLENGE, codeChallenge, {
                 path: "/",
                 sameSite: 'lax',
                 httpOnly: true,
@@ -150,9 +150,9 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             throw redirect(307, url);
         }
         case '/sign-out': {
-            event.cookies.delete(AUTH_SESSION_COOKIE, { path: "/" })
-            event.cookies.delete(AUTH_CODE_CHALLENGE_COOKIE, { path: "/" });
-            event.cookies.delete(AUTH_ACCESS_TOKEN_COOKIE, { path: "/" });
+            event.cookies.delete(COOKIE_AUTH_SESSION, { path: "/" })
+            event.cookies.delete(COOKIE_AUTH_CODE_CHALLENGE, { path: "/" });
+            event.cookies.delete(COOKIE_AUTH_ACCESS_TOKEN, { path: "/" });
 
             // sign-out callback
             options.callbacks?.onSignOut?.(event);
@@ -164,7 +164,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             const searchParams = url.searchParams;
             const code = searchParams.get('code');
             const state = searchParams.get('state');
-            const codeChallenge = event.cookies.get(AUTH_CODE_CHALLENGE_COOKIE);
+            const codeChallenge = event.cookies.get(COOKIE_AUTH_CODE_CHALLENGE);
 
             if (code == null) {
                 throw error(401, "No oauth2 code was received");
@@ -174,7 +174,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 throw error(401, "No oauth2 code challenge was received");
             }
 
-            const csrf = event.cookies.get(AUTH_CSRF_COOKIE);
+            const csrf = event.cookies.get(COOKIE_AUTH_CSRF);
             //console.log({ codeChallenge, state, csrf })
 
             if (state == null || state != csrf) {
@@ -195,7 +195,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 
             const sessionToken = await generateJwt(userId, tokens.refresh_token);
 
-            event.cookies.set(AUTH_SESSION_COOKIE, sessionToken, {
+            event.cookies.set(COOKIE_AUTH_SESSION, sessionToken, {
                 path: "/",
                 maxAge: sessionDurationSeconds,
                 httpOnly: true,
@@ -204,7 +204,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 
             const { access_token: accessToken, expires_in } = await Auth.refreshToken({ refreshToken: tokens.refresh_token });
 
-            event.cookies.set(AUTH_ACCESS_TOKEN_COOKIE, accessToken, {
+            event.cookies.set(COOKIE_AUTH_ACCESS_TOKEN, accessToken, {
                 path: "/",
                 maxAge: expires_in,
                 httpOnly: true,
@@ -233,7 +233,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 fields: includeStatistics ? ['anime_statistics'] : []
             });
 
-            event.cookies.set(AUTH_ACCESS_TOKEN_COOKIE, accessToken, {
+            event.cookies.set(COOKIE_AUTH_ACCESS_TOKEN, accessToken, {
                 path: "/",
                 maxAge: sessionDurationSeconds,
                 httpOnly: true,
@@ -257,7 +257,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 }
 
 async function getMyAnimeListAuthToken(event: RequestEvent) {
-    const token = event.cookies.get(AUTH_SESSION_COOKIE);
+    const token = event.cookies.get(COOKIE_AUTH_SESSION);
 
     if (token == null) {
         throw error(401);
