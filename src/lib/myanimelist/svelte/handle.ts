@@ -20,6 +20,9 @@ type OnSessionData = {
     expiresAt: Date
 }
 
+/**
+ * Auth callbacks.
+ */
 export type AuthCallbacks = {
     /**
      * Called after sign-in.
@@ -60,14 +63,9 @@ export type AuthCallbacks = {
  */
 export interface MyAnimeListHandlerOptions {
     /**
-     * Auth options.
+     * Duration per session, defaults to 7 days.
      */
-    auth?: {
-        /**
-         * Duration per session, defaults to 7 days.
-         */
-        sessionDurationSeconds?: number;
-    },
+    sessionDurationSeconds?: number;
 
     /**
      * Callbacks.
@@ -80,8 +78,12 @@ export interface MyAnimeListHandlerOptions {
  * @param options The options for configure the handler.
  */
 export function createMyAnimeListHandler(options: MyAnimeListHandlerOptions = {}): Handle {
-    const { auth = {} } = options;
-    const { sessionDurationSeconds = DEFAULT_SESSION_DURATION_SECONDS } = auth;
+    const { sessionDurationSeconds = DEFAULT_SESSION_DURATION_SECONDS } = options;
+
+    if (sessionDurationSeconds <= 0) {
+        throw new Error(`Session duration must be greater than zero but was: ${sessionDurationSeconds}`);
+    }
+
     const apiUrl = getApiUrl();
     const authPath = `${apiUrl}/auth`;
 
