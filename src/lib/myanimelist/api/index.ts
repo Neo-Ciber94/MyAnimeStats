@@ -5,93 +5,307 @@ import type { User } from "../common/user";
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Empty = {}
 
+// This was the lazy path, we should write the fields that can be included
+export type UserFields = (keyof User) | Empty;
 
-type UserFields = (keyof User) | Empty;
-
+// This was the lazy path, we should write the fields that can be included
 export type AnimeFields = (keyof AnimeNode) | Empty;
 
+/**
+ * Options to get user information.
+ */
 export interface GetMyUserInfoOptions {
+    /**
+     * The fields to include.
+     */
     fields?: UserFields[];
 }
 
+/**
+ * Options to get anime information.
+ */
 export interface GetAnimeListOptions {
-    q?: string;
+    /**
+     * The search term.
+     */
+    q: string;
+
+    /**
+     * Number of anime to include.
+     */
     limit?: number,
+
+    /**
+     * The number of anime to skip.
+     */
     offset?: number;
+
+    /**
+     * The fields to include.
+     */
     fields?: AnimeFields[];
+
+    /**
+     * Whether if include nsfw (not safe for work) anime.
+     */
     nsfw?: boolean;
 }
 
+/**
+ * Options to get anime by rank.
+ */
 export interface GetAnimeRankingOptions {
+    /**
+     * The ranking.
+     */
     ranking_type: RankingType,
+
+    /**
+     * Number of anime to include.
+     */
     limit?: number;
+
+    /**
+     * The number of anime to skip.
+     */
     offset?: number;
-    fields?: AnimeFields[]
+
+    /**
+     * The fields to include.
+     */
+    fields?: AnimeFields[];
+
+    /**
+     * Whether if include nsfw (not safe for work) anime.
+     */
     nsfw?: boolean;
 }
 
+/**
+ * Options to get anime by season.
+ */
 export interface GetSeasonalAnimeOptions {
+    /**
+     * The year to search.
+     */
     year: number,
+
+    /**
+     * The season to search.
+     */
     season: AnimeSeason,
+
+    /**
+     * Sorting logic.
+     */
     sort?: 'anime_score' | 'anime_num_list_users',
+
+    /**
+     * Number of anime to include.
+     */
     limit?: number;
+
+    /**
+     * The number of anime to skip.
+     */
     offset?: number;
+
+    /**
+     * The fields to include.
+     */
     fields?: AnimeFields[];
+
+    /**
+     * Whether if include nsfw (not safe for work) anime.
+     */
     nsfw?: boolean;
 }
 
+/**
+ * Options to get user suggested anime.
+ */
 export interface GetSuggestedAnimeOptions {
+    /**
+     * Number of anime to include.
+     */
     limit?: number;
+
+    /**
+     * The number of anime to skip.
+     */
     offset?: number;
+
+    /**
+     * The fields to include.
+     */
     fields?: AnimeFields[];
+
+    /**
+     * Whether if include nsfw (not safe for work) anime.
+     */
     nsfw?: boolean;
 }
 
+/**
+ * Input to update user anime list.
+ */
 export interface UpdateMyAnimeListStatusOptions {
+    /**
+     * The status of the anime.
+     */
     status?: WatchStatus;
+
+    /**
+     * Whether if the user is rewatching the anime.
+     */
     is_rewatching?: boolean;
+
+    /**
+     * The user anime score.
+     */
     score?: number;
+
+    /**
+     * Number of episodes the user watched.
+     */
     num_watched_episodes: number;
+
+    /**
+     * Priority of this anime.
+     */
     priority?: number;
+
+    /**
+     * Number of times the user rewatched this anime.
+     */
     num_times_rewatched?: number;
+
+    /**
+     * The rewatch value.
+     */
     rewatch_value?: number;
+
+    /**
+     * User tags.
+     */
     tags?: string[];
+
+    /**
+     * Comments for this anime.
+     */
     comments?: string;
 }
 
+/**
+ * Options to get the user anime list.
+ */
 export interface GetUserAnimeListOptions {
+    /**
+     * The status of the anime to get.
+     */
     status?: WatchStatus,
+
+    /**
+     * How to sort the anime list.
+     */
     sort?: 'list_score' | 'list_updated_at' | 'anime_title' | 'anime_start_date' | 'anime_id',
-    fields?: AnimeFields[];
+
+    /**
+     * Number of anime to include.
+     */
     limit?: number;
+
+    /**
+     * The number of anime to skip.
+     */
     offset?: number;
+
+    /**
+     * The fields to include.
+     */
+    fields?: AnimeFields[];
+
+    /**
+     * Whether if include nsfw (not safe for work) anime.
+     */
     nsfw?: boolean;
 }
 
-interface MALClientConfig {
+/**
+ * Configuration of the client.
+ * 
+ * You will need an `access token` or `client id` to use this client.
+ * @see https://myanimelist.net/apiconfig/references/authorization
+ */
+export interface MALClientConfig {
+    /**
+     * Fetch implementation to use.
+     * 
+     * @default 
+     * Defaults to global.
+     */
     fetch?: typeof fetch,
+
+    /**
+     * The access token.
+     */
     accessToken?: string;
+
+    /**
+     * The client id.
+     */
     clientId?: string;
+
+    /**
+     * The url to proxy all the requests to.
+     * 
+     * @default 
+     * `https://api.myanimelist.net/v2`
+     */
     proxyUrl?: string;
 }
 
+// Config of a request.
 interface MALRequestInit {
+    // The route.
     resource: `/${string}`;
+
+    // The http method.
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+    // Query params.
     params?: Record<string, unknown>,
+
+    // Whether if return null instead of throwing an error when `404` is returned.
     returnNullOn404?: boolean;
+
+    // The headers.
     headers?: Record<string, string>;
+
+    // The body.
     body?: BodyInit | null | undefined;
 }
 
 type UserName = "@me" | (string & Empty)
 
+/**
+ * An error that ocurred during a request.
+ */
 export class MalHttpError extends Error {
+    /**
+     * An error that ocurred during a `MyAnimeList` request.
+     * @param status The status code of the error.
+     * @param message The message of the error.
+     * @param cause The cause of the error.
+     */
     constructor(public readonly status: number, message: string, cause?: unknown) {
         super(message, { cause })
     }
 }
 
+/**
+ * A client to send requests to `MyAnimeList` api.
+ */
 export class MALClient {
     #config: MALClientConfig;
 
@@ -172,6 +386,12 @@ export class MALClient {
         return data;
     }
 
+    /**
+     * Search anime by a term.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_get.
+     * @param options The options.
+     * @returns 
+     */
     async getAnimeList(options: GetAnimeListOptions): Promise<AnimeApiResponse> {
         const { fields = [], limit, offset, q, ...rest } = options;
 
@@ -190,6 +410,12 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Gets the details of an anime.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_get
+     * @param animeId The id of the anime.
+     * @param options The options.
+     */
     async getAnimeDetails(animeId: number, options: { fields?: AnimeFields[] }) {
         const { fields = [] } = options;
 
@@ -205,6 +431,11 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Get a list of anime of the given rank.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_ranking_get
+     * @param options The options.
+     */
     async getAnimeRanking(options: GetAnimeRankingOptions) {
         const { fields = [], ...params } = options;
 
@@ -220,6 +451,11 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Gets a list of the anime of the given season.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
+     * @param options The options.
+     */
     async getSeasonalAnime(options: GetSeasonalAnimeOptions) {
         const { fields = [], year, season, ...params } = options;
 
@@ -235,6 +471,11 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Gets an anime suggestion for the user identified by the `accessToken`.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_suggestions_get
+     * @param options The options.
+     */
     async getSuggestedAnime(options: GetSuggestedAnimeOptions) {
         const { fields = [], ...params } = options;
 
@@ -250,6 +491,12 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Updates the given user anime status.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_put
+     * @param animeId The anime id.
+     * @param options The input options.
+     */
     async updateMyAnimeListStatus(animeId: number, options: UpdateMyAnimeListStatusOptions) {
         const { ...rest } = options;
 
@@ -276,6 +523,11 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Delete the given anime from the user list.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_delete
+     * @param animeId The anime id.
+     */
     async deleteMyAnimeListStatus(animeId: number) {
         const result = await this.sendRequest<Empty>({
             method: 'DELETE',
@@ -286,6 +538,12 @@ export class MALClient {
         return result;
     }
 
+    /**
+     * Gets the given user anime list.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get
+     * @param userName The username.
+     * @param options The options.
+     */
     async getUserAnimeList(userName: UserName, options: GetUserAnimeListOptions) {
         const { fields = [], ...params } = options;
 
@@ -301,12 +559,17 @@ export class MALClient {
         return result;
     }
 
-    async getMyUserInfo(options: GetMyUserInfoOptions): Promise<User> {
+    /**
+     * Gets information about the given user.
+     * @see https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_get
+     * @param options The options.
+     */
+    async getMyUserInfo(options: GetMyUserInfoOptions, userId = "@me"): Promise<User> {
         const { fields = [] } = options;
 
         const result = await this.sendRequest<User>({
             method: 'GET',
-            resource: "/users/@me",
+            resource: `/users/${userId}`,
             params: {
                 fields: fields.length > 0 ? fields.join(",") : undefined
             },
