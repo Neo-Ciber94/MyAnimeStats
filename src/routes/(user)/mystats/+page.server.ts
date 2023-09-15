@@ -16,12 +16,12 @@ dayjs.extend(isSameOrAfter);
 const RECALCULATE_WAIT_DAYS = 1;
 
 export const load = (async ({ locals }) => {
-    if (locals.authenticatedUser == null) {
+    if (locals.session == null) {
         throw redirect(307, "/");
     }
 
     try {
-        const userId = locals.authenticatedUser.user.id;
+        const userId = locals.session.user.id;
 
         const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
         const userAnimeStats = await UserStatsService.getStats(userId);
@@ -80,7 +80,7 @@ export const actions = {
     },
 
     async downloadJson({ locals, setHeaders }) {
-        const userId = locals.authenticatedUser?.user.id;
+        const userId = locals.session?.user.id;
 
         if (!userId) {
             throw error(401);
@@ -102,7 +102,7 @@ export const actions = {
     },
 
     async downloadCsv({ locals, setHeaders }) {
-        const userId = locals.authenticatedUser?.user.id;
+        const userId = locals.session?.user.id;
 
         if (!userId) {
             throw error(401);

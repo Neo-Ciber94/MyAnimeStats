@@ -9,7 +9,7 @@ declare global {
 		// interface PageData {}
 
 		interface Locals {
-			authenticatedUser?: {
+			session?: {
 				user: User,
 				accessToken: string;
 			} | null;

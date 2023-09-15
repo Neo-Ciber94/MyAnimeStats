@@ -32,7 +32,7 @@ export const PATCH: RequestHandler = async ({ request, params, cookies, locals }
         num_watched_episodes: data.num_watched_episodes
     });
 
-    const userName = locals.authenticatedUser?.user.name || '<unknown>';
+    const userName = locals.session?.user.name || '<unknown>';
 
     // Update the cache, we don't care if it fails
     try {
@@ -61,7 +61,7 @@ export const DELETE: RequestHandler = async ({ params, cookies, locals }) => {
     const animeId = Number(params.anime_id);
 
     const deletedResult = await malClient.deleteMyAnimeListStatus(animeId);
-    const userName = locals.authenticatedUser?.user.name || '<unknown>';
+    const userName = locals.session?.user.name || '<unknown>';
 
     // Delete anime from cache
     try {

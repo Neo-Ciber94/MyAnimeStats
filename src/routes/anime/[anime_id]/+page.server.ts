@@ -7,7 +7,7 @@ import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 export const load: PageServerLoad = async (event) => {
     const malClient = new MALClient({
         clientId: MY_ANIME_LIST_CLIENT_ID,
-        accessToken: event.locals.authenticatedUser?.accessToken
+        accessToken: event.locals.session?.accessToken
     });
 
     const animeId = Number(event.params.anime_id);

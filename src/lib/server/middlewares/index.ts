@@ -42,13 +42,13 @@ function authMiddleware(): Handle {
                 const { accessToken } = session;
                 const malClient = new MALClient({ accessToken });
                 const user = await malClient.getMyUserInfo({ fields: ['anime_statistics'] });
-                event.locals.authenticatedUser = { user, accessToken };
+                event.locals.session = { user, accessToken };
             }
             catch (err) {
                 console.error(err);
             }
         } else {
-            event.locals.authenticatedUser = undefined;
+            event.locals.session = undefined;
         }
 
         return resolve(event);

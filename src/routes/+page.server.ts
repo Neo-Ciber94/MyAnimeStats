@@ -10,7 +10,7 @@ import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 const ANIME_LIMIT = 50;
 
 export const load: PageServerLoad = async (event) => {
-    const accessToken = event.locals.authenticatedUser?.accessToken;
+    const accessToken = event.locals.session?.accessToken;
 
     const suggestedAnimeList = await getSuggestedAnimeList({ limit: ANIME_LIMIT, accessToken });
     const seasonalAnimeList = await getCurrentSeasonAnimeList({ limit: ANIME_LIMIT });

@@ -8,7 +8,7 @@ function getCacheKey(timestamp: string | undefined, format: 'json' | 'csv') {
 }
 
 export async function exportUserAnimeList(event: RequestEvent, format: 'json' | 'csv') {
-    const userId = event.locals.authenticatedUser?.user.id;
+    const userId = event.locals.session?.user.id;
 
     if (userId == null) {
         throw error(401);
