@@ -82,7 +82,9 @@ export default defineConfig({
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
+				cleanupOutdatedCaches: true,
+				disableDevLogs: process.env.NODE_ENV !== 'development',
 			},
 			devOptions: {
 				enabled: true,
