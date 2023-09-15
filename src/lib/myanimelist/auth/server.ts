@@ -5,13 +5,48 @@ import * as jose from 'jose';
 
 const MY_ANIME_LIST_OAUTH2_URL = "https://myanimelist.net/v1/oauth2";
 
+/**
+ * Options to create the authentication url.
+ */
 export interface GetAuthenticationUrlOptions {
+    /**
+     * The url to redirect after authentication.
+     * 
+     * This should be set in your https://myanimelist.net/apiconfig
+     */
     redirectTo?: string;
+
+    /**
+     * A minimum length of 43 characters and a maximum length of 128 characters.
+     * 
+     * @see 
+     * This is generated automatically, you do not require to set it manually.
+     */
+    codeVerifier?: string;
 }
 
+/**
+ * The options to get the token.
+ */
 export interface GetTokenOptions {
+    /**
+     * The authorization code returned from the initial request. Normally, this value is nearly 1,000 bytes long.
+     */
     code: string,
+
+    /**
+     * The url to redirect after authentication.
+     * 
+     * This is the same set in your: https://myanimelist.net/apiconfig
+     */
     redirectTo?: string;
+
+    /**
+     * A minimum length of 43 characters and a maximum length of 128 characters.
+     * 
+     * @see 
+     * In case you generated your url with a manual code, you need to use the same code here.
+     */
     codeVerifier: string;
 }
 
@@ -25,6 +60,8 @@ export interface GetUserProfileOptions {
 
 /**
  * Utilities for authenticate with `MyAnimeList`.
+ * 
+ * @see https://myanimelist.net/apiconfig/references/authorization
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Auth {
@@ -36,11 +73,11 @@ export namespace Auth {
     export function getAuthenticationUrl(options: GetAuthenticationUrlOptions) {
         const { redirectTo } = options;
         const state = crypto.randomUUID();
-        const codeVerifier = createCodeChallenge();
+        const codeChallenge = options.codeVerifier ?? createCodeChallenge();
         const url = new URL(`${MY_ANIME_LIST_OAUTH2_URL}/authorize`);
         url.searchParams.set("response_type", "code");
         url.searchParams.set("client_id", MY_ANIME_LIST_CLIENT_ID);
-        url.searchParams.set("code_challenge", codeVerifier)
+        url.searchParams.set("code_challenge", codeChallenge)
         url.searchParams.set("code_challenge_method", "plain");
         url.searchParams.set("state", state);
 
@@ -50,7 +87,7 @@ export namespace Auth {
 
         return {
             url: url.toString(),
-            codeVerifier,
+            codeChallenge,
             state
         }
     }
@@ -83,8 +120,6 @@ export namespace Auth {
         });
 
         if (!res.ok) {
-            // const msg = await getResponseError(res) ?? res.statusText;
-            // console.log(await res.text());
             const msg = await res.text();
             console.error(msg);
             throw new Error(msg);
@@ -173,6 +208,7 @@ function generateCodeVerifier(length = 43) {
     return codeVerifier;
 }
 
+// This code should run both on `node` and the `edge`.
 function createCodeChallenge(length = 43) {
     const codeVerifier = generateCodeVerifier(length);
 

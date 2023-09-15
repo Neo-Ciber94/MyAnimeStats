@@ -128,7 +128,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
     switch (action) {
         case '/sign-in': {
             const redirectTo = `${originUrl}/callback`;
-            const { url, state, codeVerifier } = Auth.getAuthenticationUrl({ redirectTo });
+            const { url, state, codeChallenge } = Auth.getAuthenticationUrl({ redirectTo });
 
             event.cookies.set(AUTH_CSRF_COOKIE, state, {
                 path: "/",
@@ -137,7 +137,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
                 maxAge: sessionDurationSeconds
             });
 
-            event.cookies.set(AUTH_CODE_CHALLENGE_COOKIE, codeVerifier, {
+            event.cookies.set(AUTH_CODE_CHALLENGE_COOKIE, codeChallenge, {
                 path: "/",
                 sameSite: 'lax',
                 httpOnly: true,
