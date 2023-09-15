@@ -47,6 +47,8 @@ function authMiddleware(): Handle {
             catch (err) {
                 console.error(err);
             }
+        } else {
+            event.locals.authenticatedUser = undefined;
         }
 
         return resolve(event);

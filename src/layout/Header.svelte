@@ -8,8 +8,21 @@
 	import elementEmphasis, { ELEMENT_EMPHASIS_IDS } from '$stores/elementEmphasis';
 	import cx from '@/lib/utils/cx';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
+	import { useRegisterSW } from 'virtual:pwa-register/svelte';
+	import { onMount } from 'svelte';
 
 	const { season, year } = AnimeHelper.getCurrentAnimeSeason();
+
+	let close: Function = () => {};
+
+	onMount(() => {
+		const { needRefresh, offlineReady, updateServiceWorker } = useRegisterSW();
+
+		close = () => {
+			needRefresh.set(false);
+			offlineReady.set(false);
+		};
+	});
 </script>
 
 <header>
@@ -31,7 +44,13 @@
 						</div>
 
 						<Dropdown triggeredBy="#user-avatar" headerClass="z-[100]" class="min-w-[150px] gap-2">
-							<DropdownItem class="flex flex-row items-center gap-3" on:click={signOut}>
+							<DropdownItem
+								class="flex flex-row items-center gap-3"
+								on:click={() => {
+									close();
+									signOut();
+								}}
+							>
 								<svg
 									class="w-[14px] h-[14px] text-gray-800 dark:text-white"
 									aria-hidden="true"

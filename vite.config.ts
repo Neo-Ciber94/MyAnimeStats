@@ -27,14 +27,16 @@ export default defineConfig({
 		sveltekit(),
 		SvelteKitPWA({
 			srcDir: './src',
-			mode: 'development',
+			mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+			minify: process.env.NODE_ENV !== 'development',
 			// you don't need to do this if you're using generateSW strategy in your app
 			strategies: 'generateSW',
 			// you don't need to do this if you're using generateSW strategy in your app
 			//filename: generateSW ? undefined : 'prompt-sw.ts',
 			scope: '/',
 			base: '/',
-			selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
+			//selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
+			selfDestroying: true,
 			manifest: {
 				short_name: 'MyAnimeStats',
 				name: 'MyAnimeStats',

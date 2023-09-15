@@ -21,12 +21,14 @@ type InitializeSession = Omit<SessionState, 'loading'>;
 
 function setUserSession(session: InitializeSession | null) {
     if (session) {
+        initialized = true;
         sessionStore.set({
             loading: false,
             accessToken: session.accessToken,
             user: session.user
         })
     } else {
+        initialized = false;
         sessionStore.set({
             loading: false,
             accessToken: null,
@@ -36,6 +38,12 @@ function setUserSession(session: InitializeSession | null) {
 }
 
 async function fetchUserSession() {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    initialized = true;
+
     try {
         // Set state to loading
         const currentSession = get(sessionStore);
@@ -69,11 +77,9 @@ async function fetchUserSession() {
 }
 
 async function initialize(session?: InitializeSession | null) {
-    if (initialized || typeof window === 'undefined') {
+    if (session && initialized) {
         return;
     }
-
-    initialized = true;
 
     if (session) {
         setUserSession(session);
