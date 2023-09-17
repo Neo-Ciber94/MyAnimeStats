@@ -16,8 +16,10 @@
 	import UserBadgeList from '$components/UserBadgeList.svelte';
 	import { useUserBadges } from '$stores/userBadges';
 	import type { CalculatedStats } from '$lib/utils/calculatePersonalStats.server';
-	import { fade, fly } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import StatsExportData from './StatsDownloadData.svelte';
+	import LevelIndicator from './LevelIndicator.svelte';
+	import session from '$stores/session';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeObjectWithStatus[];
@@ -35,12 +37,12 @@
 	}
 </script>
 
-<div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full">
+<div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full overflow-hidden">
 	<Tabs
 		divider={true}
 		style="underline"
 		activeClass="text-indigo-500"
-		contentClass="bg-transparent w-full pt-5 overflow-hidden"
+		contentClass="bg-transparent w-full pt-5"
 		defaultClass="text-indigo-500 mt-5 flex flex-row justify-around w-full 
 		flex-wrap border-b border-b-violet-500"
 	>
@@ -56,6 +58,14 @@
 			</div>
 
 			<div transition:fly={getTransitionParams(0)}>
+				<div class="mt-4 mb-10">
+					<h1 class="text-white text-xl mb-2">Level</h1>
+					<LevelIndicator {animeList} />
+				</div>
+				<div
+					class="h-[1px] w-10/12 mx-auto bg-gradient-to-r from-violet-500 via-violet-700 to-violet-500 rounded-full mb-10"
+				/>
+
 				<MyStatsSection {stats} />
 
 				{#if $userBadges.loading}
