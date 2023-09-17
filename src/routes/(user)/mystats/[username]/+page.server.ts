@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Actions, PageServerLoad, RequestEvent } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
@@ -11,12 +9,13 @@ import { UserAnimeListService } from "@/lib/server/services/userAnimeListService
 import { UserStatsService } from "@/lib/server/services/userStatsService";
 import { dev } from "$app/environment";
 import { COOKIE_MY_LIST_TIMESTAMP } from "@/common/constants";
+import { MALClient } from "@/lib/myanimelist/api";
 dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
 
 export const load = (async (event) => {
-    const userId = getUserId(event)
+    const userId = await getUserId(event)
 
     try {
         const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
@@ -47,10 +46,9 @@ export const load = (async (event) => {
 export const actions = {
     async calculate(event) {
         const session = await getRequiredServerSession(event.cookies);
-        const requestUserId = getUserId(event);
 
-        if (!dev || requestUserId !== session.userId) {
-            throw error(407, "Invalid operation");
+        if (event.params.username !== "@me") {
+            throw error(404, "User not found");
         }
 
         try {
@@ -120,19 +118,28 @@ export const actions = {
     },
 } satisfies Actions;
 
-function getUserId({ params, locals }: RequestEvent) {
-    const username = params.username;
+async function getUserId(event: RequestEvent) {
+    const username = event.params.username;
     let userId: number | null = null;
 
     if (username === "@me") {
-        if (locals.session == null) {
+        if (event.locals.session == null) {
             throw redirect(307, "/");
         }
 
-        userId = locals.session.user.id;
+        userId = event.locals.session.user.id;
     } else {
-        // get user name
-        throw error(404);
+        const { accessToken } = await getRequiredServerSession(event.cookies);
+        const client = new MALClient({ accessToken });
+
+        try {
+            const user = await client.getMyUserInfo({}, username);
+            return user.id;
+        }
+        catch (err) {
+            console.error(err);
+            throw error(404, "User not found");
+        }
     }
 
     return userId;
