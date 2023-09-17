@@ -29,8 +29,8 @@ function episodesWatchedForLevel(level: number): number {
     return Math.max(1, Math.floor(episodes));
 }
 
-// level = (sqrt(factor * episodes)) / 5;
+// level = sqrt(4 * episodes / factor);
 function levelForEpisodesWatched(episodes: number): number {
-    const approximatedLevel = Math.sqrt(LEVEL_FACTOR * episodes) / 5;
+    const approximatedLevel = Math.sqrt((4 * episodes) / LEVEL_FACTOR);
     return Math.max(1, Math.floor(approximatedLevel))
 }
