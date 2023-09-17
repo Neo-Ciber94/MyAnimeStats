@@ -69,6 +69,7 @@
 		"isomorphic-dompurify": "^1.8.0",
 		"jose": "^4.14.4",
 		"linq": "^4.0.1",
+		"node-html-parser": "^6.1.10",
 		"svelte-french-toast": "^1.2.0",
 		"svelte-portal": "^2.2.0",
 		"swiper": "^10.1.0",
