@@ -21,12 +21,12 @@
 	import cx from '@/lib/utils/cx';
 	import session from '$stores/session';
 	import { setCookie } from '@/lib/utils/cookies';
-	import { ExclamationCircleSolid, EyeOutline, EyeSolid } from 'flowbite-svelte-icons';
+	import { ExclamationCircleSolid } from 'flowbite-svelte-icons';
 
 	const animeQuery = useAnimeListQuery('/api/anime/watchlist');
 	let selectedAnime: Record<number, WatchListAnime> = {};
 	let loading = false;
-	let open = true;
+	let open = false;
 
 	onMount(async () => {
 		// To protect users of this prompt showing each time they enter
