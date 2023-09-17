@@ -1,10 +1,12 @@
 <script context="module" lang="ts">
 	import type { AnimeSeason, WatchStatus } from '@/lib/myanimelist/common/types';
 
+	export type UserWatchStatus = WatchStatus | 'needs_review';
+
 	type Filters = {
 		year?: number;
 		season?: AnimeSeason;
-		status?: WatchStatus;
+		status?: UserWatchStatus;
 	};
 </script>
 
@@ -27,7 +29,7 @@
 	// filters
 	export let year: number | undefined = undefined;
 	export let season: AnimeSeason | undefined = undefined;
-	export let status: WatchStatus | undefined = undefined;
+	export let status: UserWatchStatus | undefined = undefined;
 
 	let tempFilters: Filters = {
 		year,
@@ -61,16 +63,17 @@
 		{ label: 'Spring', value: 'spring' },
 		{ label: 'Summer', value: 'summer' },
 		{ label: 'Fall', value: 'fall' },
-		{ label: 'Winter', value: 'winter' }
+		{ label: 'Winter', value: 'winter' },
 	];
 
-	const statusItems: SelectItem<WatchStatus | undefined>[] = [
+	const statusItems: SelectItem<UserWatchStatus | undefined>[] = [
 		{ label: 'Any status', value: undefined },
 		{ label: 'Completed', value: 'completed' },
 		{ label: 'Watching', value: 'watching' },
 		{ label: 'On Hold', value: 'on_hold' },
 		{ label: 'Plan to Watch', value: 'plan_to_watch' },
-		{ label: 'Dropped', value: 'dropped' }
+		{ label: 'Needs Review', value: 'needs_review' }, 
+		{ label: 'Dropped', value: 'dropped' }, 
 	];
 
 	function handleFilter() {

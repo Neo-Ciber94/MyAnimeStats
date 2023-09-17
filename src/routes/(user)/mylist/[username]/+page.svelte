@@ -6,7 +6,7 @@
 		order_by: animeOrderBySchema.default('my_score_desc').catch('my_score_desc').optional(),
 		year: z.coerce.number().min(1900).optional().catch(undefined),
 		season: animeSeasonSchema.optional().catch(undefined),
-		status: watchStatusSchema.optional().catch(undefined)
+		status: watchStatusSchema.or(z.literal('needs_review')).optional().catch(undefined)
 	});
 
 	type Query = z.infer<typeof querySchema>;
@@ -41,7 +41,7 @@
 	import { useZodSearchParams } from '@/hooks/useZodSearchParams';
 	import type { AnimeOrderBy } from './AnimeOrderBySelector.svelte';
 	import AnimeOrderBySelector, { animeOrderBySchema } from './AnimeOrderBySelector.svelte';
-	import FiltersDialog from './AnimeFilterDialog.svelte';
+	import FiltersDialog, { type UserWatchStatus } from './AnimeFilterDialog.svelte';
 	import SEO from '$components/SEO.svelte';
 	dayjs.extend(localizedFormat);
 
@@ -78,7 +78,7 @@
 	let orderBy: AnimeOrderBy | undefined = undefined;
 	let year: number | undefined = undefined;
 	let season: AnimeSeason | undefined = undefined;
-	let status: WatchStatus | undefined = undefined;
+	let status: UserWatchStatus | undefined = undefined;
 
 	const releaseYears = Enumerable.from(data.data.userAnimeList?.animeList || [])
 		.select((x) => x.node.start_season!.year)
@@ -174,7 +174,14 @@
 					return false;
 				}
 
-				if (status && list_status.status !== status) {
+				if (status === 'needs_review') {
+					// Needs user review anime is completed and is in status: watching, dropped, plan_to_watch
+					const mayBeWatching =
+						list_status.status === 'watching' ||
+						list_status.status === 'dropped' ||
+						list_status.status === 'plan_to_watch';
+					return node.status === 'finished_airing' && mayBeWatching;
+				} else if (status && list_status.status !== status) {
 					return false;
 				}
 
@@ -273,7 +280,7 @@
 	}
 </script>
 
-<SEO title="MyList"/>
+<SEO title="MyList" />
 
 <PageTransition>
 	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
@@ -366,7 +373,7 @@
 										</Badge>
 									{/if}
 
-									{#if my_list.score}
+									{#if my_list.score && my_list.status !== 'plan_to_watch'}
 										<Badge rounded color="yellow" class="font-bold text-[10px]" title="My score">
 											{my_list.score.toFixed(2)}
 										</Badge>
