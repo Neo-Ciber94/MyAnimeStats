@@ -34,7 +34,11 @@
 	</div>
 
 	{#if open}
-		<div class="flex flex-row flex-wrap gap-2 overflow-hidden" out:blur in:blur>
+		<div
+			class="flex flex-row flex-wrap justify-center md:justify-start gap-2 overflow-hidden"
+			out:blur
+			in:blur
+		>
 			{#each badges as badge}
 				<UserBadge {badge} {user} />
 			{/each}
