@@ -1,4 +1,6 @@
 <script lang="ts" generics="TAnime extends AnimeObject">
+	import { PLACEHOLDER_IMAGE } from '@/common/constants';
+
 	import 'swiper/css/bundle';
 	import Swiper from 'swiper';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
@@ -54,6 +56,11 @@
 			swiper.slidePrev();
 		}
 	}
+
+	function handleImgError(event: Event & { currentTarget: EventTarget & Element }) {
+		const el = event.currentTarget as HTMLImageElement;
+		el.src = PLACEHOLDER_IMAGE;
+	}
 </script>
 
 <div class={`swiper group h-[200px] sm:h-[300px]`} bind:this={swiperElement}>
@@ -98,14 +105,15 @@
 
 					<!-- Image -->
 					<img
+						data-anime-image
 						width={0}
 						height={0}
+						on:error={handleImgError}
 						alt={anime.node.title}
 						src={AnimeHelper.getImage(anime)}
 						class={`object-cover w-full h-full ${
 							AnimeHelper.shouldCensor(anime) && !showNsfw ? 'blur-md' : ''
 						}`}
-						data-anime-image
 					/>
 
 					<!-- Title -->

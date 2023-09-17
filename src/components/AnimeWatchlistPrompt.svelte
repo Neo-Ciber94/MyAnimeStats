@@ -17,7 +17,7 @@
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import cookie from 'cookie';
-	import { COOKIE_ANIME_WATCHLIST } from '@/common/constants';
+	import { COOKIE_ANIME_WATCHLIST, PLACEHOLDER_IMAGE } from '@/common/constants';
 	import cx from '@/lib/utils/cx';
 	import session from '$stores/session';
 	import { setCookie } from '@/lib/utils/cookies';
@@ -106,6 +106,11 @@
 	function onClose() {
 		open = false;
 	}
+
+	function handleImgError(event: Event & { currentTarget: EventTarget & Element }) {
+		const el = event.currentTarget as HTMLImageElement;
+		el.src = PLACEHOLDER_IMAGE;
+	}
 </script>
 
 <AlertDialog
@@ -151,6 +156,7 @@
 							src={AnimeHelper.getImage(anime, { large: false })}
 							width={200}
 							height={200}
+							on:error={handleImgError}
 							class={cx('w-full h-[150px] object-cover border-violet-500', {
 								grayscale: isSelected
 							})}
