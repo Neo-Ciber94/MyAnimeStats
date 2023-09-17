@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import type { Actions, PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad, RequestEvent } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import { calculatePersonalStats, type CalculatedStats } from "$lib/utils/calculatePersonalStats.server";
-import { getRequiredServerSession, getServerSession } from "$lib/myanimelist/svelte/auth";
+import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
 import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
@@ -15,14 +15,10 @@ dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
 
-export const load = (async ({ locals }) => {
-    if (locals.session == null) {
-        throw redirect(307, "/");
-    }
+export const load = (async (event) => {
+    const userId = getUserId(event)
 
     try {
-        const userId = locals.session.user.id;
-
         const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
         const userAnimeStats = await UserStatsService.getStats(userId);
 
@@ -49,20 +45,21 @@ export const load = (async ({ locals }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    async calculate({ cookies }) {
-        const session = await getServerSession(cookies);
+    async calculate(event) {
+        const session = await getRequiredServerSession(event.cookies);
+        const requestUserId = getUserId(event);
 
-        if (session == null) {
-            throw redirect(307, "/");
+        if (!dev || requestUserId !== session.userId) {
+            throw error(407, "Invalid operation");
         }
 
         try {
-            const { userStats, animeList } = await calculateUserStats(cookies);
+            const { userStats, animeList } = await calculateUserStats(session.userId, event.cookies);
             const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
             const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
             // set a timestamp cookie
-            cookies.set(COOKIE_MY_LIST_TIMESTAMP, String(Date.now()));
+            event.cookies.set(COOKIE_MY_LIST_TIMESTAMP, String(Date.now()));
 
             return {
                 data: {
@@ -123,9 +120,26 @@ export const actions = {
     },
 } satisfies Actions;
 
-async function calculateUserStats(cookies: Cookies) {
-    const { userId } = await getRequiredServerSession(cookies);
-    const animeList = await UserAnimeListService.fetchCurrentUserAnimeList(cookies);
+function getUserId({ params, locals }: RequestEvent) {
+    const username = params.username;
+    let userId: number | null = null;
+
+    if (username === "@me") {
+        if (locals.session == null) {
+            throw redirect(307, "/");
+        }
+
+        userId = locals.session.user.id;
+    } else {
+        // get user name
+        throw error(404);
+    }
+
+    return userId;
+}
+
+async function calculateUserStats(userId: number, cookies: Cookies) {
+    const animeList = await UserAnimeListService.fetchCurrentUserAnimeList(userId, cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user ${userId}`);
 
     let userStats = await UserStatsService.getStats(userId);

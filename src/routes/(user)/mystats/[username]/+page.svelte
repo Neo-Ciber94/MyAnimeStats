@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ActionData, PageServerData } from './$types';
-	import CalculateStatsButton from '@/routes/(user)/mystats/CalculateStatsButton.svelte';
+	import CalculateStatsButton from '@/routes/(user)/mystats/[username]/CalculateStatsButton.svelte';
 	import PageTransition from '$components/PageTransition.svelte';
 	import CubesLoader from '$components/loaders/CubesLoader.svelte';
 	import StatSidebar from './StatSidebar.svelte';
@@ -20,7 +20,7 @@
 	$: result = data.data || form?.data || null;
 </script>
 
-<SEO title="MyStats"/>
+<SEO title="MyStats" />
 
 <PageTransition>
 	<div class="flex flex-col md:flex-row h-full w-full grow">

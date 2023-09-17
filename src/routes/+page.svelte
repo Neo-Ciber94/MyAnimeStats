@@ -22,7 +22,7 @@
 		if (!$session.user) {
 			signIn();
 		} else {
-			goto('/mystats');
+			goto('/mystats/@me');
 		}
 	};
 </script>

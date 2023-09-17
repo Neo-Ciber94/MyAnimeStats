@@ -111,12 +111,12 @@
 			{#if $session.user}
 				<a
 					id={ELEMENT_EMPHASIS_IDS.myStatsLink}
-					href="/mystats"
+					href="/mystats/@me"
 					class={cx(
 						'relative inline-flex text-white hover:text-pink-400 transition duration-300',
 						`after:h-[2px] after:transition-all after:duration-300 after:mx-auto after:w-0 hover:after:w-full 
 							after:absolute after:bg-pink-500 after:bottom-0 after:left-0 after:right-0`,
-						$page.url.pathname === '/mystats' && '!text-pink-400 after:w-full'
+						$page.url.pathname === '/mystats/@me' && '!text-pink-400 after:w-full'
 					)}
 				>
 					<span class="text-red-500">My</span>

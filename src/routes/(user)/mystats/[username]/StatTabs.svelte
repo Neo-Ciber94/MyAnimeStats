@@ -6,7 +6,6 @@
 		ChartPieSolid,
 		CheckCircleSolid,
 		ChartLineUpSolid,
-		AdjustmentsVerticalSolid,
 		AdjustmentsHorizontalSolid
 	} from 'flowbite-svelte-icons';
 	import AnimeByGenreGraph from '$components/graphs/AnimeByGenreGraph.svelte';
@@ -19,7 +18,6 @@
 	import { fly } from 'svelte/transition';
 	import StatsExportData from './StatsDownloadData.svelte';
 	import LevelIndicator from './LevelIndicator.svelte';
-	import session from '$stores/session';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeObjectWithStatus[];

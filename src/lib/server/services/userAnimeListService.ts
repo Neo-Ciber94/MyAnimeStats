@@ -51,8 +51,8 @@ export namespace UserAnimeListService {
         }
     }
 
-    export async function fetchCurrentUserAnimeList(cookies: Cookies) {
-        const { userId, accessToken } = await getRequiredServerSession(cookies);
+    export async function fetchCurrentUserAnimeList(userId: number, cookies: Cookies) {
+        const { accessToken } = await getRequiredServerSession(cookies);
         const animeList = await fetchCurrentUserAnimeListInternal(accessToken);
 
         const userAnimeList = {
@@ -239,14 +239,14 @@ export namespace UserAnimeListService {
     }
 }
 
-async function fetchCurrentUserAnimeListInternal(accessToken: string) {
+async function fetchCurrentUserAnimeListInternal(accessToken: string, userName = "@me") {
     const anime: AnimeObjectWithStatus[] = [];
     const batchSize = 500;
     let offset = 0;
 
     const malClient = new MALClient({ accessToken });
 
-    const getAnimeList = () => malClient.getUserAnimeList("@me", {
+    const getAnimeList = () => malClient.getUserAnimeList(userName, {
         limit: batchSize,
         offset,
         nsfw: true,

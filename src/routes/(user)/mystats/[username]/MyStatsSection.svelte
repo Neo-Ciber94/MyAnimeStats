@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { CalculatedStats } from '$lib/utils/calculatePersonalStats.server';
 	import { PERSONAL_STATS } from '@/common/constants';
-	import StatProgress from '@/routes/(user)/mystats/StatProgress.svelte';
+	import StatProgress from '@/routes/(user)/mystats/[username]/StatProgress.svelte';
 	import { Tooltip } from 'flowbite-svelte';
 	import { InfoCircleSolid } from 'flowbite-svelte-icons';
 
