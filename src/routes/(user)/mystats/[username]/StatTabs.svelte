@@ -56,7 +56,7 @@
 			</div>
 
 			<div transition:fly={getTransitionParams(0)}>
-				<div class="mt-4 mb-10">
+				<div class="mt-4 mb-10 px-2 xl:px-20">
 					<h1 class="text-white text-xl mb-2">Level</h1>
 					<LevelIndicator {animeList} />
 				</div>
