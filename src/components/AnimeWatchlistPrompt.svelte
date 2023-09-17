@@ -21,11 +21,12 @@
 	import cx from '@/lib/utils/cx';
 	import session from '$stores/session';
 	import { setCookie } from '@/lib/utils/cookies';
+	import { ExclamationCircleSolid, EyeOutline, EyeSolid } from 'flowbite-svelte-icons';
 
 	const animeQuery = useAnimeListQuery('/api/anime/watchlist');
 	let selectedAnime: Record<number, WatchListAnime> = {};
 	let loading = false;
-	let open = false;
+	let open = true;
 
 	onMount(async () => {
 		// To protect users of this prompt showing each time they enter
@@ -132,7 +133,7 @@
 				{@const isSelected = selectedAnime[anime.node.id] != null}
 				{@const status = selectedAnime[anime.node.id]?.status}
 
-				<div>
+				<div class="relative">
 					<Tooltip
 						arrow={false}
 						triggeredBy={`#anime-watchlist-${anime.node.id}`}
@@ -140,6 +141,24 @@
 					>
 						{anime.node.title}
 					</Tooltip>
+
+					{#if isSelected}
+						<a
+							href={`/anime/${anime.node.id}`}
+							target="_blank"
+							class="absolute
+							p-[2px]
+							top-0
+							right-0
+							z-20
+							bg-pink-200
+							backdrop-blur-md
+							rounded-full
+							overflow-hidden"
+						>
+							<ExclamationCircleSolid class="outline-none text-pink-500 bg-blend-exclusion" />
+						</a>
+					{/if}
 
 					<button
 						class={cx(
