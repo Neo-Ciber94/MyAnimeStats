@@ -282,7 +282,7 @@
 		<div>
 			<a
 				href={`/mystats/${data.data.username}`}
-				class="bg-gradient-to-r bg-clip-text from-pink-500 via-pink-400 font-medium to-pink-600 text-transparent"
+				class=" bg-clip-text username-gradient font-medium text-transparent"
 			>
 				{data.data.username}
 			</a>
@@ -442,5 +442,23 @@
 <style>
 	:global(body) {
 		overflow-y: scroll;
+	}
+
+	.username-gradient {
+		@apply bg-gradient-to-r from-pink-500 via-pink-400 font-medium to-pink-600;
+		background-size: 300% 300%;
+		animation: moveGradient 5s linear infinite;
+	}
+
+	@keyframes moveGradient {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 </style>
