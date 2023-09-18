@@ -22,6 +22,7 @@
 	import session from '$stores/session';
 	import { setCookie } from '@/lib/utils/cookies';
 	import { ExclamationCircleSolid } from 'flowbite-svelte-icons';
+	import { env } from '$env/dynamic/public';
 
 	const animeQuery = useAnimeListQuery('/api/anime/watchlist');
 	let selectedAnime: Record<number, WatchListAnime> = {};
@@ -29,8 +30,14 @@
 	let open = false;
 
 	onMount(async () => {
+		// FIXME: We cannot bulk update anime, so this action may limit our API calls,
+		// for now we hide this
 		// To protect users of this prompt showing each time they enter
-		if (!navigator.cookieEnabled || $session.user == null) {
+		if (
+			!navigator.cookieEnabled ||
+			$session.user == null ||
+			env.PUBLIC_SHOW_WATCHLIST_REMINDER == null
+		) {
 			return;
 		}
 
