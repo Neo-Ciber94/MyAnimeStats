@@ -2,6 +2,8 @@
 	import { Spinner } from 'flowbite-svelte';
 	import StatIndicator from '@/routes/(user)/mystats/[username]/StatIndicator.svelte';
 	import type { User } from '@/lib/myanimelist/common/user';
+	import cx from '@/lib/utils/cx';
+	import session from '$stores/session';
 
 	export let user: User | null;
 </script>
@@ -20,8 +22,13 @@
 			<div class="flex flex-col gap-2 md:gap-4 items-center mr-5 md:mr-0">
 				<div class="aspect-square w-14 h-14 xs:w-24 xs:h-24 md:w-28 md:h-28 lg:w-36 lg:h-36">
 					<img
-						class="border-4 md:border-8 border-white/30 shadow-md w-full h-full
-						object-cover overflow-hidden rounded-full"
+						class={cx(
+							`border-4 md:border-8 border-white/30 shadow-md w-full h-full
+							object-cover overflow-hidden rounded-full`,
+							{
+								'border-orange-300': $session.user?.id === user.id
+							}
+						)}
 						width={0}
 						height={0}
 						src={user.picture}
