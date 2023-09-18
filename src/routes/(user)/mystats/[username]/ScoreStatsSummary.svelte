@@ -6,7 +6,10 @@
 
 	export let animeList: AnimeObjectWithStatus[];
 
-	const averageScore = Enumerable.from(animeList).average((x) => x.list_status.score);
+	const averageScore = Enumerable.from(animeList)
+		.where((x) => x.list_status.status !== 'plan_to_watch')
+		.average((x) => x.list_status.score);
+
 	const bestScored = Enumerable.from(animeList)
 		.orderByDescending((x) => x.list_status.score)
 		.take(10)
@@ -20,6 +23,7 @@
 
 	function getTypicalScore() {
 		const mostLikelyScore = Enumerable.from(animeList)
+			.where((x) => x.list_status.status !== 'plan_to_watch')
 			.groupBy((c) => c.list_status.score)
 			.orderByDescending((c) => c.count())
 			.toArray();
