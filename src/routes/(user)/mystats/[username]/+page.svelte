@@ -27,6 +27,8 @@
 		data = e.detail as PageServerData;
 	}
 
+	const userId = data.data?.user.id;
+	$: isCurrentUser = userId && $session.user?.id === userId;
 	$: result = data.data || form?.data || null;
 	$: needsReviewCount = (result?.animeList || []).filter((x) => AnimeHelper.needsReview(x)).length;
 </script>
@@ -42,11 +44,11 @@
 				<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
 					<CubesLoader size={30} class="text-violet-500" />
 				</div>
-			{:else if result}
+			{:else if result.stats && result.animeList}
 				<div class="w-full h-full" transition:fade={{ duration: 200 }}>
 					<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
 						<div slot="me-footer">
-							{#if result.canRecalculate && $session.user?.id === result.user.id}
+							{#if result.canRecalculate && isCurrentUser}
 								<div
 									class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
 										h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
@@ -69,13 +71,19 @@
 					>
 						<InboxSolid class="w-8 h-8" />
 
-						<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
+						{#if isCurrentUser}
+							<span class="text-lg md:text-2xl"> Your stats had not been calculated </span>
+						{:else}
+							<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
+						{/if}
 					</div>
 
-					<!-- This button will never be visible for an user -->
-					{#if dev}
+					{#if dev || isCurrentUser}
 						<CalculateStatsButton on:data={onSubmit}>
-							<span class="text-sm md:text-lg">Re-Calculate Stats (DEV)</span>
+							<span class="text-sm md:text-lg">Calculate Stats</span>
+							{#if dev && !isCurrentUser}
+								<span>{` (DEV)`}</span>
+							{/if}
 						</CalculateStatsButton>
 					{/if}
 				</div>

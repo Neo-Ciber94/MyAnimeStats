@@ -29,7 +29,7 @@ export const load = (async (event) => {
         const userAnimeStats = await UserStatsService.getStats(user.id);
 
         if (userAnimeList == null || userAnimeStats == null) {
-            return { data: null }
+            return { data: { user } }
         }
 
         const dayToRecalculate = dayjs(userAnimeStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
@@ -47,7 +47,7 @@ export const load = (async (event) => {
     }
     catch (err) {
         console.error(err);
-        return { data: null }
+        return { data: { user } }
     }
 }) satisfies PageServerLoad;
 
