@@ -7,7 +7,7 @@ const axiom = new Axiom({
 });
 
 function log(level: 'info' | 'warn' | 'fatal', args: unknown[]) {
-    axiom.ingest(env.AXIOM_DATASET, [level, ...args]);
+    axiom.ingest(env.AXIOM_DATASET, [{ level }, ...args]);
     axiom.flush();
 }
 
