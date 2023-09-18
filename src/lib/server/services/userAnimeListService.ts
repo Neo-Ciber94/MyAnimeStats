@@ -7,6 +7,7 @@ import { Retry, runAndRetryOnThrow } from "$lib/utils/retry";
 import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
 import { z } from "zod";
 import { Parser as CSVParser } from '@json2csv/plainjs';
+import { UserService } from "./userService";
 
 const USER_ANIME_DETAILS_FIELDS: AnimeFields[] = [
     'genres',
@@ -36,7 +37,7 @@ function getKey(userId: number) {
 }
 
 export namespace UserAnimeListService {
-    export async function getUserAnimeList(userId: number) {
+    export async function getUserAnimeListById(userId: number) {
         const key = getKey(userId);
         const kv = KV.current();
         const result = await kv.get(key, userAnimeListSchema);
@@ -51,7 +52,27 @@ export namespace UserAnimeListService {
         }
     }
 
-    export async function fetchCurrentUserAnimeList(userId: number, cookies: Cookies) {
+    export async function fetchUserAnimeListByName(userName: string, cookies: Cookies) {
+        const { accessToken } = await getRequiredServerSession(cookies);
+        const userId = await UserService.getUserIdFromUsername(userName);
+
+        if (userId == null) {
+            throw new Error(`Failed to retrieve user id of '${userName}'`);
+        }
+
+        const animeList = await fetchUserAnimeListInternal(accessToken, userName);
+
+        const userAnimeList = {
+            animeList,
+            lastUpdated: new Date()
+        };
+
+        const kv = KV.current();
+        await kv.set(getKey(userId), userAnimeListSchema, userAnimeList);
+        return animeList;
+    }
+
+    export async function fetchUserAnimeListById(userId: number, cookies: Cookies) {
         const { accessToken } = await getRequiredServerSession(cookies);
         const animeList = await fetchUserAnimeListInternal(accessToken);
 
@@ -143,7 +164,7 @@ export namespace UserAnimeListService {
     }
 
     export async function getUserListAsJSON(userId: number) {
-        const data = await UserAnimeListService.getUserAnimeList(userId);
+        const data = await UserAnimeListService.getUserAnimeListById(userId);
 
         if (data == null) {
             return null;
@@ -154,7 +175,7 @@ export namespace UserAnimeListService {
     }
 
     export async function getUserListAsCSV(userId: number) {
-        const data = await UserAnimeListService.getUserAnimeList(userId);
+        const data = await UserAnimeListService.getUserAnimeListById(userId);
         if (data == null) {
             return null;
         }
@@ -172,7 +193,7 @@ export namespace UserAnimeListService {
                 'nsfw',
                 {
                     label: 'genres',
-                    value: (row: AnimeNode) => row.genres.map(x => x.name).join(',')
+                    value: (row: AnimeNode) => (row.genres || []).map(x => x.name).join(',')
                 },
                 'mean',
                 'alternative_titles.synonyms',

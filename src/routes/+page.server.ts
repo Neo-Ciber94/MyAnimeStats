@@ -40,11 +40,12 @@ async function getCurrentSeasonAnimeList({ limit }: { limit: number }) {
     const animeList = result.data.filter(({ node }) => {
         invariant(node.start_season, "start season not defined");
 
+        const genres = node.genres || [];
         return node.start_season.season == season
             && node.start_date != null
             && AVAILABLE_STATUSES.includes(node.status)
             && node.broadcast?.start_time != null
-            && !node.genres.some(x => x.id === ANIME_GENRES.Hentai.ID)
+            && !genres.some(x => x.id === ANIME_GENRES.Hentai.ID)
     });
 
     return animeList;

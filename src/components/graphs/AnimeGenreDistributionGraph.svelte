@@ -14,7 +14,7 @@
 	function getGraphData() {
 		const animeGroupByGenre = Enumerable.from(animeList)
 			.selectMany(
-				(anime) => anime.node.genres,
+				(anime) => anime.node.genres || [],
 				(anime, genre: Genre) => ({ anime, genre })
 			)
 			.groupBy(

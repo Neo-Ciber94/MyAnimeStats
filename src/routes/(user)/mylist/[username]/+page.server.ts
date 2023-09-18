@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ cookies, params: { username } }) =>
     }
 
     const { userId } = await getRequiredServerSession(cookies);
-    const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
+    const userAnimeList = await UserAnimeListService.getUserAnimeListById(userId);
 
     return {
         data: {

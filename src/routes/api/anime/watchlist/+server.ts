@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ cookies, request }) => {
     const { searchParams } = new URL(request.url);
     const allowNsfw = searchParams.get('nsfw') === 'true';
     const { season, year } = AnimeHelper.getCurrentAnimeSeason();
-    const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
+    const userAnimeList = await UserAnimeListService.getUserAnimeListById(userId);
 
     if (userAnimeList?.animeList == null) {
         return Response.json({ data: [] } satisfies AnimeApiResponse)

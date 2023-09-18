@@ -10,7 +10,7 @@
 	const animeData: { genre: string; totalWatched: number }[] = [];
 
 	for (const animeNode of animeList) {
-		for (const genre of animeNode.node.genres) {
+		for (const genre of animeNode.node.genres || []) {
 			const animeOfGenre = animeData.find((x) => x.genre === genre.name);
 
 			if (animeOfGenre == null) {

@@ -59,7 +59,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Comedy.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Comedy.ID))
                 .count() >= 10
         }
     },
@@ -74,7 +74,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Comedy.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Comedy.ID))
                 .count() >= 50
         }
     },
@@ -86,7 +86,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Action.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Action.ID))
                 .count() >= 10
         }
     },
@@ -98,7 +98,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Adventure.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Adventure.ID))
                 .count() >= 50
         }
     },
@@ -110,7 +110,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Romance.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Romance.ID))
                 .count() >= 10
         }
     },
@@ -125,7 +125,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Romance.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Romance.ID))
                 .count() >= 50
         }
     },
@@ -137,7 +137,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Fantasy.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Fantasy.ID))
                 .count() >= 50
         }
     },
@@ -149,7 +149,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => {
+                .where(x => (x.node.genres || []).some(genre => {
                     return genre.id === ANIME_GENRES.Isekai.ID || genre.id === ANIME_GENRES.Reincarnation.ID
                 }))
                 .count() >= 10
@@ -166,7 +166,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => {
+                .where(x => (x.node.genres || []).some(genre => {
                     return genre.id === ANIME_GENRES.Isekai.ID || genre.id === ANIME_GENRES.Reincarnation.ID
                 }))
                 .count() >= 50
@@ -180,7 +180,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Racing.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Racing.ID))
                 .count() >= 50
         }
     },
@@ -192,7 +192,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.AvantGarde.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.AvantGarde.ID))
                 .count() >= 50
         }
     },
@@ -204,7 +204,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Mystery.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Mystery.ID))
                 .count() >= 30
         }
     },
@@ -216,7 +216,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Drama.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Drama.ID))
                 .count() >= 20
         }
     },
@@ -228,7 +228,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Ecchi.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Ecchi.ID))
                 .count() >= 30
         }
     },
@@ -241,7 +241,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.StrategyGame.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.StrategyGame.ID))
                 .count() >= 20
         }
     },
@@ -253,7 +253,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Hentai.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Hentai.ID))
                 .count() >= 10
         }
     },
@@ -269,7 +269,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Hentai.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Hentai.ID))
                 .count() >= 69
         }
     },
@@ -281,7 +281,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Historical.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Historical.ID))
                 .count() >= 35
         }
     },
@@ -293,7 +293,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Horror.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Horror.ID))
                 .count() >= 20
         }
     },
@@ -305,7 +305,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Kids.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Kids.ID))
                 .count() >= 20
         }
     },
@@ -317,7 +317,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.MartialArts.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.MartialArts.ID))
                 .count() >= 20
         }
     },
@@ -329,7 +329,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Mecha.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Mecha.ID))
                 .count() >= 40
         }
     },
@@ -341,7 +341,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Music.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Music.ID))
                 .count() >= 10
         }
     },
@@ -353,7 +353,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Parody.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Parody.ID))
                 .count() >= 22
         }
     },
@@ -365,7 +365,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Samurai.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Samurai.ID))
                 .count() >= 30
         }
     },
@@ -377,7 +377,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.School.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.School.ID))
                 .count() >= 30
         }
     },
@@ -389,7 +389,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Shoujo.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Shoujo.ID))
                 .count() >= 30
         }
     },
@@ -401,7 +401,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Space.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Space.ID))
                 .count() >= 40
         }
     },
@@ -413,7 +413,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Sports.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Sports.ID))
                 .count() >= 40
         }
     },
@@ -425,7 +425,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.SuperPower.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.SuperPower.ID))
                 .count() >= 100
         }
     },
@@ -437,7 +437,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Vampire.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Vampire.ID))
                 .count() >= 20
         }
     },
@@ -449,7 +449,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Harem.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Harem.ID))
                 .count() >= 30
         }
     },
@@ -461,7 +461,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.SliceofLife.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.SliceofLife.ID))
                 .count() >= 40
         }
     },
@@ -476,7 +476,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.SliceofLife.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.SliceofLife.ID))
                 .count() >= 100
         }
     },
@@ -488,7 +488,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Supernatural.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Supernatural.ID))
                 .count() >= 30
         }
     },
@@ -500,7 +500,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Military.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Military.ID))
                 .count() >= 20
         }
     },
@@ -512,7 +512,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Detective.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Detective.ID))
                 .count() >= 20
         }
     },
@@ -524,7 +524,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Psychological.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Psychological.ID))
                 .count() >= 30
         }
     },
@@ -536,7 +536,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Suspense.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Suspense.ID))
                 .count() >= 20
         }
     },
@@ -548,7 +548,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Seinen.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Seinen.ID))
                 .count() >= 40
         }
     },
@@ -560,7 +560,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Josei.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Josei.ID))
                 .count() >= 20
         }
     },
@@ -572,7 +572,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Gourmet.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Gourmet.ID))
                 .count() >= 10
         }
     },
@@ -584,7 +584,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Anthropomorphic.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Anthropomorphic.ID))
                 .count() >= 30
         }
     },
@@ -596,7 +596,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Gore.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Gore.ID))
                 .count() >= 15
         }
     },
@@ -608,7 +608,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.IdolsMale.ID || genre.id === ANIME_GENRES.IdolsFemale.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.IdolsMale.ID || genre.id === ANIME_GENRES.IdolsFemale.ID))
                 .count() >= 30
         }
     },
@@ -620,7 +620,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.MahouShoujo.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.MahouShoujo.ID))
                 .count() >= 25
         }
     },
@@ -632,7 +632,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.OtakuCulture.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.OtakuCulture.ID))
                 .count() >= 30
         }
     },
@@ -644,7 +644,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Pets.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Pets.ID))
                 .count() >= 10
         }
     },
@@ -656,7 +656,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.ReverseHarem.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.ReverseHarem.ID))
                 .count() >= 10
         }
     },
@@ -668,7 +668,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.VideoGame.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.VideoGame.ID))
                 .count() >= 20
         }
     },
@@ -680,7 +680,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.TimeTravel.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.TimeTravel.ID))
                 .count() >= 20
         }
     },
@@ -697,7 +697,7 @@ const genresBadges = [
         canHaveBadge: (animeList) => {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.AwardWinning.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.AwardWinning.ID))
                 .count() >= 30
         }
     },

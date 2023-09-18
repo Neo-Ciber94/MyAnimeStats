@@ -41,7 +41,7 @@ function calculateStrength(animeList: AnimeObjectWithStatus[]) {
     ];
 
     const matches = animeList.filter(({ node }) => {
-        return node.genres.some(x => STRENGTH_GENRES
+        return (node.genres || []).some(x => STRENGTH_GENRES
             .map(genre => genre.ID as number)
             .includes(x.id))
     });
@@ -73,7 +73,7 @@ function calculateCharisma(animeList: AnimeObjectWithStatus[]) {
     ];
 
     const matches = animeList.filter(({ node }) => {
-        return node.genres.some(x => CHARISMA_GENRES
+        return (node.genres || []).some(x => CHARISMA_GENRES
             .map(genre => genre.ID as number)
             .includes(x.id))
     });
@@ -109,7 +109,7 @@ function calculateIntelligence(animeList: AnimeObjectWithStatus[]) {
     ];
 
     const matches = animeList.filter(({ node }) => {
-        return node.genres.some(x => INTELLIGENCE_GENRES
+        return (node.genres || []).some(x => INTELLIGENCE_GENRES
             .map(genre => genre.ID as number)
             .includes(x.id))
     });
@@ -143,7 +143,7 @@ function calculateVitality(animeList: AnimeObjectWithStatus[]) {
     ];
 
     const matches = animeList.filter(({ node }) => {
-        return node.genres.some(x => VITALITY_GENRES
+        return (node.genres || []).some(x => VITALITY_GENRES
             .map(genre => genre.ID as number)
             .includes(x.id))
     });

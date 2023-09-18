@@ -101,7 +101,7 @@ export type AnimeNode = {
     media_type: MediaType;
     status: AiringStatus;
     nsfw?: Nsfw;
-    genres: Genre[];
+    genres?: Genre[];
     mean: number;
     alternative_titles?: {
         synonyms?: string[];

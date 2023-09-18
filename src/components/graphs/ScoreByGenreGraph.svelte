@@ -13,7 +13,7 @@
 	const scoresByGenre = new Map<string, AnimeObjectWithStatus[]>();
 
 	for (const anime of animeList) {
-		for (const genre of anime.node.genres) {
+		for (const genre of anime.node.genres || []) {
 			const animeOfGenre = scoresByGenre.get(genre.name) || [];
 			animeOfGenre.push(anime);
 			scoresByGenre.set(genre.name, animeOfGenre);

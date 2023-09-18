@@ -20,14 +20,12 @@ export const load = (async (event) => {
 
     const user = await getUserFromRequest(event);
 
-    console.log(user)
-
     if (user == null) {
         throw error(404, "User not found");
     }
 
     try {
-        const userAnimeList = await UserAnimeListService.getUserAnimeList(user.id);
+        const userAnimeList = await UserAnimeListService.getUserAnimeListById(user.id);
         const userAnimeStats = await UserStatsService.getStats(user.id);
 
         if (userAnimeList == null || userAnimeStats == null) {
@@ -66,10 +64,13 @@ export const actions = {
         }
 
         try {
+            const userName = event.params.username;
             const { userStats, animeList } = await calculateUserStats({
                 userId: user.id,
-                cookies: event.cookies
+                cookies: event.cookies,
+                userName: userName === "@me" ? undefined : userName
             });
+
             const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
             const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
@@ -81,7 +82,8 @@ export const actions = {
                     stats: userStats.stats,
                     animeList,
                     lastUpdated: userStats.lastUpdated,
-                    canRecalculate
+                    canRecalculate,
+                    user
                 }
             }
         }
@@ -149,8 +151,12 @@ async function getUserFromRequest(event: RequestEvent) {
     return user;
 }
 
-async function calculateUserStats({ userId, cookies }: { userId: number, cookies: Cookies }) {
-    const animeList = await UserAnimeListService.fetchCurrentUserAnimeList(userId, cookies);
+async function calculateUserStats({ userId, cookies, userName }: { userId: number, userName?: string, cookies: Cookies }) {
+    const animeList =
+        userName != null ?
+            await UserAnimeListService.fetchUserAnimeListByName(userName, cookies) :
+            await UserAnimeListService.fetchUserAnimeListById(userId, cookies);
+
     console.log(`🍙 ${animeList.length} anime loaded from user ${userId}`);
 
     let userStats = await UserStatsService.getStats(userId);

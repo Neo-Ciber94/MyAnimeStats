@@ -16,7 +16,7 @@ export function getAnimeWatchedByYear(animeList: AnimeObject[], options: GetAnim
             return true;
         }
 
-        return anime.node.genres.some(g => g.name.toLowerCase() === genre.toLowerCase());
+        return (anime.node.genres || []).some(g => g.name.toLowerCase() === genre.toLowerCase());
     }
 
     return animeList

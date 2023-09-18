@@ -19,8 +19,6 @@
 	});
 
 	$: result = data.data || form?.data || null;
-
-	console.log({ result });
 </script>
 
 <SEO title="MyStats" />

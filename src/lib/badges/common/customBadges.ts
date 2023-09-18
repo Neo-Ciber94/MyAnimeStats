@@ -21,12 +21,12 @@ const customBadges = [
         canHaveBadge(animeList) {
             const boysLoveCount = Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
                 .count();
 
             const girlLoveCount = Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
                 .count();
 
             return boysLoveCount >= 10 && girlLoveCount >= 10;
@@ -45,7 +45,7 @@ const customBadges = [
         canHaveBadge(animeList) {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.Shounen.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.Shounen.ID))
                 .count() >= 100
         }
     },
@@ -68,7 +68,7 @@ const customBadges = [
         canHaveBadge(animeList) {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.BoysLove.ID))
                 .count() >= 20
         }
     },
@@ -85,7 +85,7 @@ const customBadges = [
         canHaveBadge(animeList) {
             return Enumerable.from(animeList)
                 .where(x => hadWatchedAnime(x))
-                .where(x => x.node.genres.some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
+                .where(x => (x.node.genres || []).some(genre => genre.id === ANIME_GENRES.GirlsLove.ID))
                 .count() >= 20
         }
     },
@@ -132,7 +132,7 @@ const customBadges = [
         canHaveBadge: (animeList) => {
             const uniqueGenres = new Set();
             animeList.forEach(anime => {
-                anime.node.genres.forEach(genre => uniqueGenres.add(genre.name));
+                (anime.node.genres || []).forEach(genre => uniqueGenres.add(genre.name));
             });
             return uniqueGenres.size >= 50;
         }
