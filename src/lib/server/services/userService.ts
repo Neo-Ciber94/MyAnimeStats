@@ -133,6 +133,24 @@ export namespace UserService {
         }
     }
 
+    export async function getActualUserName(username: string) {
+        const profileUrl = `https://myanimelist.net/profile/${username}`;
+        const res = await fetch(profileUrl);
+
+        if (!res.ok) {
+            return null;
+        }
+
+        try {
+            const html = await res.text();
+            const htmlDocument = parse(html);
+            return getUserName(htmlDocument);
+        }
+        catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
 
 }
 

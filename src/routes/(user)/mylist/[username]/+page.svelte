@@ -283,7 +283,20 @@
 <SEO title="MyList" />
 
 <PageTransition>
-	<div class="mx-2 sm:mx-10 mt-8 mb-3 flex flex-col">
+	<div class="mx-2 sm:mx-10 mt-4 text-white text-2xl justify-end flex flex-row">
+		<div>
+			<a
+				href={`/mystats/${data.data.username}`}
+				class="bg-gradient-to-r bg-clip-text from-pink-500 via-pink-400 font-medium to-pink-600 text-transparent"
+			>
+				{data.data.username}
+			</a>
+			{` `}
+			<span>Anime List</span>
+		</div>
+	</div>
+
+	<div class="mx-2 sm:mx-10 mt-2 mb-3 flex flex-col">
 		<div class="flex flex-row mb-1 justify-start gap-2 items-center">
 			<div class="flex flex-row gap-2 items-center">
 				<button
