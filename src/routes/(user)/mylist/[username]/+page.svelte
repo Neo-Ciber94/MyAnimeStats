@@ -175,12 +175,7 @@
 				}
 
 				if (status === 'needs_review') {
-					// Needs user review anime is completed and is in status: watching, dropped, plan_to_watch
-					const mayBeWatching =
-						list_status.status === 'watching' ||
-						list_status.status === 'dropped' ||
-						list_status.status === 'plan_to_watch';
-					return node.status === 'finished_airing' && mayBeWatching;
+					return AnimeHelper.needsReview({ node, list_status });
 				} else if (status && list_status.status !== status) {
 					return false;
 				}

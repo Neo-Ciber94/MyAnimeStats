@@ -6,6 +6,7 @@
 	import session from '$stores/session';
 
 	export let user: User | null;
+	export let needsReview: number | undefined;
 
 	$: username = (function () {
 		if (user?.id === $session.user?.id || user == null) {
@@ -87,6 +88,13 @@
 						<span slot="count">{user.anime_statistics?.num_items_plan_to_watch ?? 0}</span>
 						<span slot="text" class="text-white text-xs xs:text-base lg:text-xl">Plan To Watch</span
 						>
+					</StatIndicator>
+				</a>
+
+				<a href={`/mylist/${username}?status=needs_review`}>
+					<StatIndicator color="#93c5fd">
+						<span slot="count">{needsReview ?? 0}</span>
+						<span slot="text" class="text-white text-xs xs:text-base lg:text-xl">Needs Review</span>
 					</StatIndicator>
 				</a>
 			</div>

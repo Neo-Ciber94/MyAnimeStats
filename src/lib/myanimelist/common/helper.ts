@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import ANIME_GENRES from "@/generated/animeGenres";
-import type { AiringStatus, AnimeObject, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
+import type { AiringStatus, AnimeObject, AnimeObjectWithStatus, AnimeRelationType, AnimeSeason, MediaType, RankingType, Rating, SourceType, WatchStatus } from "./types";
 import dayjs from "dayjs";
 import { PLACEHOLDER_IMAGE } from "@/common/constants";
 import { Months } from "@/lib";
@@ -259,5 +259,14 @@ export namespace AnimeHelper {
             default:
                 throw new Error("unreachable")
         }
+    }
+
+    export function needsReview({ list_status, node }: AnimeObjectWithStatus) {
+        const mayBeWatching =
+            list_status.status === 'watching' ||
+            list_status.status === 'dropped' ||
+            list_status.status === 'plan_to_watch';
+
+        return node.status === 'finished_airing' && mayBeWatching;
     }
 }

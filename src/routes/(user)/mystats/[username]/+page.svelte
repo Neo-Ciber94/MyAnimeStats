@@ -11,7 +11,8 @@
 	import session from '$stores/session';
 	import { dev } from '$app/environment';
 	import myStatsLoading from '$stores/myStatsLoading';
-	import { fade, scale } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
+	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -27,13 +28,14 @@
 	}
 
 	$: result = data.data || form?.data || null;
+	$: needsReviewCount = (result?.animeList || []).filter((x) => AnimeHelper.needsReview(x)).length;
 </script>
 
 <SEO title="MyStats" />
 
 <PageTransition>
 	<div class="flex flex-col md:flex-row h-full w-full grow">
-		<StatSidebar user={result?.user ?? null} />
+		<StatSidebar user={result?.user ?? null} needsReview={needsReviewCount} />
 
 		<div class="relative w-full">
 			{#if loading || $myStatsLoading}
