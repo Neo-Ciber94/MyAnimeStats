@@ -18,11 +18,14 @@
 	import { fly } from 'svelte/transition';
 	import StatsExportData from './StatsDownloadData.svelte';
 	import LevelIndicator from './LevelIndicator.svelte';
+	import type { User } from '@/lib/myanimelist/common/user';
+	import session from '$stores/session';
 
 	export let stats: CalculatedStats;
 	export let animeList: AnimeObjectWithStatus[];
+	export let user: User;
 
-	const userBadges = useUserBadges(animeList);
+	const userBadges = useUserBadges(animeList, user);
 
 	let tabIndex = 0;
 
@@ -151,23 +154,25 @@
 			</div>
 		</TabItem>
 
-		<TabItem
-			defaultClass="min-w-[100px] flex flex-row justify-center"
-			activeClasses="border-b-2 p-4 border-indigo-500"
-			on:click={() => onTabClick(4)}
-			open={tabIndex === 4}
-		>
-			<div slot="title" class="flex items-center gap-2">
-				<AdjustmentsHorizontalSolid class="h-4 w-4 !outline-none" />
-				<span>Advanced</span>
-			</div>
-
-			<div transition:fly={getTransitionParams(4)}>
-				<div class="flex flex-col gap-2 my-4">
-					<span class="text-white text-xl mb-2">Export MyList</span>
-					<StatsExportData />
+		{#if user.id === $session.user?.id}
+			<TabItem
+				defaultClass="min-w-[100px] flex flex-row justify-center"
+				activeClasses="border-b-2 p-4 border-indigo-500"
+				on:click={() => onTabClick(4)}
+				open={tabIndex === 4}
+			>
+				<div slot="title" class="flex items-center gap-2">
+					<AdjustmentsHorizontalSolid class="h-4 w-4 !outline-none" />
+					<span>Advanced</span>
 				</div>
-			</div>
-		</TabItem>
+
+				<div transition:fly={getTransitionParams(4)}>
+					<div class="flex flex-col gap-2 my-4">
+						<span class="text-white text-xl mb-2">Export MyList</span>
+						<StatsExportData />
+					</div>
+				</div>
+			</TabItem>
+		{/if}
 	</Tabs>
 </div>

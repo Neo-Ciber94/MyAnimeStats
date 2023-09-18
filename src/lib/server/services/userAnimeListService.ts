@@ -53,7 +53,7 @@ export namespace UserAnimeListService {
 
     export async function fetchCurrentUserAnimeList(userId: number, cookies: Cookies) {
         const { accessToken } = await getRequiredServerSession(cookies);
-        const animeList = await fetchCurrentUserAnimeListInternal(accessToken);
+        const animeList = await fetchUserAnimeListInternal(accessToken);
 
         const userAnimeList = {
             animeList,
@@ -239,7 +239,7 @@ export namespace UserAnimeListService {
     }
 }
 
-async function fetchCurrentUserAnimeListInternal(accessToken: string, userName = "@me") {
+async function fetchUserAnimeListInternal(accessToken: string, userName = "@me") {
     const anime: AnimeObjectWithStatus[] = [];
     const batchSize = 500;
     let offset = 0;

@@ -1,17 +1,20 @@
-import { derived } from 'svelte/store';
+import { readable, type Readable } from 'svelte/store';
 import BADGES from '@/lib/badges';
-import session from './session';
 import type { AnimeObjectWithStatus } from '@/lib/myanimelist/common/types';
+import type { User } from '@/lib/myanimelist/common/user';
+import type { AnimeBadge } from '@/lib/badges/AnimeBadge';
 
-export function useUserBadges(animeList: AnimeObjectWithStatus[]) {
-    return derived(session, (session) => {
-        const user = session.user;
-        const badges = user == null ? [] : BADGES.filter((b) => b.canHaveBadge(animeList, user));
-
-        return {
-            loading: session.loading,
+export function useUserBadges(animeList: AnimeObjectWithStatus[], user: User): Readable<{
+    user: User,
+    badges: AnimeBadge[],
+    loading: boolean
+}> {
+    return readable({ user, badges: [] as AnimeBadge[], loading: false }, (set) => {
+        const badges = BADGES.filter((b) => b.canHaveBadge(animeList, user));
+        return set({
             user,
-            badges
-        };
-    });
+            badges,
+            loading: false
+        })
+    })
 }

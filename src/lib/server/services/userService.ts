@@ -42,6 +42,7 @@ export namespace UserService {
             }
 
             const userImage = htmlDocument.querySelector("div.user-image img")?.getAttribute("data-src");
+            const name = getUserName(htmlDocument);
             const meanScore = Number(htmlDocument.querySelector(".user-statistics-stats .stat-score .score-label")?.textContent?.trim());
 
             // TODO: This should not be hardcoded
@@ -64,7 +65,7 @@ export namespace UserService {
 
             return {
                 id: userId,
-                name: username,
+                name: name,
                 picture: userImage ?? PLACEHOLDER_IMAGE,
                 joined_at: joinedAt ?? "",
                 anime_statistics: {
@@ -133,6 +134,22 @@ export namespace UserService {
     }
 
 
+}
+
+function getUserName(doc: HTMLElement) {
+    const content = doc.querySelector("h1 span.di-ib.po-r")?.textContent?.trim();
+
+    if (content == null) {
+        return "<unknown>"
+    }
+
+    const matches = /([\w_-~]+)'s Profile/.exec(content);
+
+    if (matches == null) {
+        return "<unknown>"
+    }
+
+    return matches[1];
 }
 
 function getStatsData(doc: HTMLElement) {

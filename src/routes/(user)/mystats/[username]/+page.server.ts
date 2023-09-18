@@ -2,7 +2,6 @@ import type { Actions, PageServerLoad, RequestEvent } from "./$types";
 import { error, type Cookies, redirect } from "@sveltejs/kit";
 import type { AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import { calculatePersonalStats, type CalculatedStats } from "$lib/utils/calculatePersonalStats.server";
-import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
 import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
@@ -67,7 +66,10 @@ export const actions = {
         }
 
         try {
-            const { userStats, animeList } = await calculateUserStats(user.id, event.cookies);
+            const { userStats, animeList } = await calculateUserStats({
+                userId: user.id,
+                cookies: event.cookies
+            });
             const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
             const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
@@ -147,7 +149,7 @@ async function getUserFromRequest(event: RequestEvent) {
     return user;
 }
 
-async function calculateUserStats(userId: number, cookies: Cookies) {
+async function calculateUserStats({ userId, cookies }: { userId: number, cookies: Cookies }) {
     const animeList = await UserAnimeListService.fetchCurrentUserAnimeList(userId, cookies);
     console.log(`🍙 ${animeList.length} anime loaded from user ${userId}`);
 

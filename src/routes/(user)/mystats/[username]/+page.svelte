@@ -8,7 +8,6 @@
 	import { onMount } from 'svelte';
 	import SEO from '$components/SEO.svelte';
 	import { InboxSolid } from 'flowbite-svelte-icons';
-	import session from '$stores/session';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -35,7 +34,7 @@
 				<CubesLoader size={30} class="text-violet-500" />
 			</div>
 		{:else if result}
-			<StatTabs stats={result.stats} animeList={result.animeList}>
+			<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
 				<div slot="me-footer">
 					{#if result.canRecalculate}
 						<div
