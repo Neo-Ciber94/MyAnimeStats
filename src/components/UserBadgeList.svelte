@@ -35,7 +35,7 @@
 
 	{#if open}
 		<div
-			class="flex flex-row flex-wrap justify-center md:justify-start gap-2 overflow-hidden"
+			class="flex flex-row flex-wrap justify-center gap-2 overflow-hidden"
 			out:blur
 			in:blur
 		>
