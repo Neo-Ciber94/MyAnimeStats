@@ -8,6 +8,8 @@
 	import { onMount } from 'svelte';
 	import SEO from '$components/SEO.svelte';
 	import { InboxSolid } from 'flowbite-svelte-icons';
+	import session from '$stores/session';
+	import { dev } from '$app/environment';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -34,7 +36,7 @@
 		{:else if result}
 			<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
 				<div slot="me-footer">
-					{#if result.canRecalculate}
+					{#if result.canRecalculate && $session.user?.id === result.user.id}
 						<div
 							class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
 							h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
@@ -59,9 +61,12 @@
 					<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
 				</div>
 
-				<CalculateStatsButton>
-					<span class="text-sm md:text-lg">Re-Calculate Stats</span>
-				</CalculateStatsButton>
+				<!-- This button will never be visible for an user -->
+				{#if dev}
+					<CalculateStatsButton>
+						<span class="text-sm md:text-lg">Re-Calculate Stats (DEV)</span>
+					</CalculateStatsButton>
+				{/if}
 			</div>
 		{/if}
 	</div>

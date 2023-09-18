@@ -1,5 +1,4 @@
-import type { AnimeObject } from "$lib/myanimelist/common/types";
-import { error } from "@sveltejs/kit";
+import type { AnimeObject, AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import dayjs from "dayjs";
 
 interface GetAnimeWatchedByYearOptions {
@@ -8,7 +7,7 @@ interface GetAnimeWatchedByYearOptions {
     genre?: string;
 }
 
-export function getAnimeWatchedByYear(animeList: AnimeObject[], options: GetAnimeWatchedByYearOptions) {
+export function getAnimeWatchedByYear(animeList: AnimeObjectWithStatus[], options: GetAnimeWatchedByYearOptions) {
     const { from, to = new Date().getFullYear(), genre } = options;
 
     const matchGenre = (anime: AnimeObject) => {
@@ -22,9 +21,10 @@ export function getAnimeWatchedByYear(animeList: AnimeObject[], options: GetAnim
     return animeList
         .filter(anime => matchGenre(anime))
         .filter((anime) => {
-            const myAnimeStatus = anime.node.my_list_status;
+            const myAnimeStatus = anime.list_status;
             if (myAnimeStatus == null) {
-                throw error(500, `user my anime status for series '${anime.node.title}' was not found`);
+                console.error(500, `user anime status for series '${anime.node.title}' was not found`);
+                return false;
             }
 
             const hadWatched =

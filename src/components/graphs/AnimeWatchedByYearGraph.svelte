@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import type { AnimeObject, AnimeSeason } from '$lib/myanimelist/common/types';
+	import type { AnimeObject, AnimeObjectWithStatus, AnimeSeason } from '$lib/myanimelist/common/types';
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';
@@ -16,7 +16,7 @@
 	import TagInput from '../TagInput.svelte';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
 
-	export let animeList: AnimeObject[];
+	export let animeList: AnimeObjectWithStatus[];
 
 	const now = dayjs();
 	let chartCanvas: HTMLCanvasElement;
