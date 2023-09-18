@@ -10,6 +10,8 @@
 	import { InboxSolid } from 'flowbite-svelte-icons';
 	import session from '$stores/session';
 	import { dev } from '$app/environment';
+	import myStatsLoading from '$stores/myStatsLoading';
+	import { fade, scale } from 'svelte/transition';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -20,36 +22,42 @@
 		loading = false;
 	});
 
+	function onSubmit(e: CustomEvent<Record<string, unknown>>) {
+		data = e.detail as PageServerData;
+	}
+
 	$: result = data.data || form?.data || null;
 </script>
 
 <SEO title="MyStats" />
 
 <PageTransition>
-	<div class="flex flex-col md:flex-row h-full w-full grow">
+	<div class="relative flex flex-col md:flex-row h-full w-full grow">
 		<StatSidebar user={result?.user ?? null} />
 
-		{#if loading}
+		{#if loading || $myStatsLoading}
 			<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
 				<CubesLoader size={30} class="text-violet-500" />
 			</div>
 		{:else if result}
-			<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
-				<div slot="me-footer">
-					{#if result.canRecalculate && $session.user?.id === result.user.id}
-						<div
-							class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
-							h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
-						>
-							<CalculateStatsButton>
-								<span class="text-sm md:text-lg">Re-Calculate Stats</span>
-							</CalculateStatsButton>
-						</div>
-					{/if}
+			<div class="w-full h-full">
+				<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
+					<div slot="me-footer">
+						{#if result.canRecalculate && $session.user?.id === result.user.id}
+							<div
+								class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
+					h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
+							>
+								<CalculateStatsButton on:data={onSubmit}>
+									<span class="text-sm md:text-lg">Re-Calculate Stats</span>
+								</CalculateStatsButton>
+							</div>
+						{/if}
 
-					<div class="mb-10" />
-				</div>
-			</StatTabs>
+						<div class="mb-10" />
+					</div>
+				</StatTabs>
+			</div>
 		{:else}
 			<div class="flex flex-col gap-3 justify-center p-4 w-full items-center">
 				<div
@@ -63,7 +71,7 @@
 
 				<!-- This button will never be visible for an user -->
 				{#if dev}
-					<CalculateStatsButton>
+					<CalculateStatsButton on:data={onSubmit}>
 						<span class="text-sm md:text-lg">Re-Calculate Stats (DEV)</span>
 					</CalculateStatsButton>
 				{/if}
