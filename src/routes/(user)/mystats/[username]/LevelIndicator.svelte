@@ -65,7 +65,7 @@ bg-gradient-to-r from-gray-200 to-gray-300 shadow-orange-500 glow cursor-pointer
 >
 	<div class="level-box" style={`width: ${levelBarWidth}%`} />
 	<span
-		class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm sm:text-xl
+		class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-base md:text-xl
     font-mono font-bold text-orange-950 mix-blend-hard-light"
 	>
 		{`Level ${level}`}

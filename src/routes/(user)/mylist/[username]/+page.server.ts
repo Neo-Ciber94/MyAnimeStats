@@ -21,18 +21,18 @@ export const load: PageServerLoad = async ({ cookies, params, locals }) => {
     }
 
     const userAnimeList = await UserAnimeListService.getUserAnimeListById(userId);
-    const username = params.username === "@me" ?
-        locals.session?.user.name :
-        await UserService.getActualUserName(params.username)
+    const user = params.username === "@me" ?
+        locals.session?.user :
+        await UserService.getUserDetails(params.username)
 
 
     // This never is reached
-    invariant(username, "User not found");
+    invariant(user, "User not found");
 
     return {
         data: {
             userAnimeList,
-            username
+            user
         }
     }
 };

@@ -42,9 +42,11 @@
 	import AnimeOrderBySelector, { animeOrderBySchema } from './AnimeOrderBySelector.svelte';
 	import FiltersDialog, { type UserWatchStatus } from './AnimeFilterDialog.svelte';
 	import SEO from '$components/SEO.svelte';
+	import session from '$stores/session';
 	dayjs.extend(localizedFormat);
 
 	export let data: PageServerData;
+	const username = data.data.user.name;
 	const pageSize = 40;
 
 	let loadMoreMarkerElement: HTMLDivElement;
@@ -281,10 +283,10 @@
 	<div class="mx-2 sm:mx-10 mt-4 text-white text-2xl justify-end flex flex-row">
 		<div>
 			<a
-				href={`/mystats/${data.data.username}`}
+				href={`/mystats/${username}`}
 				class=" bg-clip-text username-gradient font-medium text-transparent"
 			>
-				{data.data.username}
+				{username}
 			</a>
 			{` `}
 			<span>Anime List</span>
@@ -358,7 +360,11 @@
 					class="w-full items-center flex flex-row text-violet-500/60 text-3xl px-4 py-8 justify-center gap-4"
 				>
 					<InboxSolid size={'xl'} />
-					<span>Calculate your stats</span>
+					{#if $session.user?.id === data.data.user.id}
+						<span>Calculate your stats</span>
+					{:else}
+						<span>{`${username} had not calculated it's stats`}</span>
+					{/if}
 				</div>
 			{:else if currentAnimeList.length === 0}
 				<div
