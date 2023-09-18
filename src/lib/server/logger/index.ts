@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
-import pino from 'pino';
+import * as pino from 'pino';
 
-export const logger = pino(
+export const logger = pino.default(
     pino.transport({
         target: '@axiomhq/pino',
         options: {
