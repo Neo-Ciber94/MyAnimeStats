@@ -19,7 +19,7 @@
 	onMount(() => {
 		const timeout = window.setTimeout(() => {
 			percentage.set(initialPercentage);
-		}, 300);
+		}, 100);
 
 		return () => {
 			window.clearTimeout(timeout);
