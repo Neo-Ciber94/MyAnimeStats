@@ -63,6 +63,10 @@ export const actions = {
             throw error(404, "User not found");
         }
 
+        if (user.id !== event.locals.session.user.id) {
+            throw error(403, "Forbidden");
+        }
+
         try {
             const userName = event.params.username;
             const { userStats, animeList } = await calculateUserStats({
