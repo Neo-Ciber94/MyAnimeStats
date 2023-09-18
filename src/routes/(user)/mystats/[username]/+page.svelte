@@ -7,6 +7,7 @@
 	import StatTabs from './StatTabs.svelte';
 	import { onMount } from 'svelte';
 	import SEO from '$components/SEO.svelte';
+	import { InboxSolid } from 'flowbite-svelte-icons';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -48,8 +49,13 @@
 				</div>
 			</StatTabs>
 		{:else}
-			<div class="w-full flex flex-row justify-center mt-[10%] h-fit mb-20">
-				<span class="text-sm md:text-lg">Calculate Stats</span>
+			<div
+				class="w-full flex flex-row justify-center items-center opacity-70
+				flex-wrap text-center mt-[10%] h-fit mb-20 gap-4 text-violet-300"
+			>
+				<InboxSolid class="w-8 h-8" />
+
+				<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
 			</div>
 		{/if}
 	</div>

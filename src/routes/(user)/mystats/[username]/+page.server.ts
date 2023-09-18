@@ -9,13 +9,21 @@ import { UserAnimeListService } from "@/lib/server/services/userAnimeListService
 import { UserStatsService } from "@/lib/server/services/userStatsService";
 import { dev } from "$app/environment";
 import { COOKIE_MY_LIST_TIMESTAMP } from "@/common/constants";
-import { MALClient } from "@/lib/myanimelist/api";
+import { UserService } from "@/lib/server/services/userService";
 dayjs.extend(isSameOrAfter);
 
 const RECALCULATE_WAIT_DAYS = 1;
 
 export const load = (async (event) => {
+    if (event.locals.session == null) {
+        throw redirect(307, "/");
+    }
+
     const userId = await getUserId(event)
+
+    if (userId == null) {
+        throw error(404, "User not found");
+    }
 
     try {
         const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
@@ -120,29 +128,23 @@ export const actions = {
 
 async function getUserId(event: RequestEvent) {
     const username = event.params.username;
-    let userId: number | null = null;
 
     if (username === "@me") {
         if (event.locals.session == null) {
             throw redirect(307, "/");
         }
 
-        userId = event.locals.session.user.id;
+        return event.locals.session.user.id;
     } else {
-        const { accessToken } = await getRequiredServerSession(event.cookies);
-        const client = new MALClient({ accessToken });
-
         try {
-            const user = await client.getMyUserInfo({}, username);
-            return user.id;
+            const userId = await UserService.getUserIdFromUsername(username);
+            return userId;
         }
         catch (err) {
             console.error(err);
             throw error(404, "User not found");
         }
     }
-
-    return userId;
 }
 
 async function calculateUserStats(userId: number, cookies: Cookies) {
