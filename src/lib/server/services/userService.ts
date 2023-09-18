@@ -41,9 +41,13 @@ export namespace UserService {
                 return null;
             }
 
-            const userImage = htmlDocument.querySelector(".user-image img")?.getAttribute("src");
-            const joinedAt = htmlDocument.querySelector("span.user-status-data.di-ib.fl-r")?.textContent?.trim();
+            const userImage = htmlDocument.querySelector("div.user-image img")?.getAttribute("data-src");
             const meanScore = Number(htmlDocument.querySelector(".user-statistics-stats .stat-score .score-label")?.textContent?.trim());
+
+            // TODO: This should not be hardcoded
+            const joinedAt = htmlDocument.querySelectorAll("ul.user-status li span.fl-r")
+                ?.[4]
+                ?.textContent?.trim();
 
             const getStat = (status: WatchStatus) => {
                 const text = htmlDocument.querySelector(`.stats-status a.anime.${status} + span`)?.textContent?.replaceAll(/[\s,]/g, "");

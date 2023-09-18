@@ -19,15 +19,17 @@ export const load = (async (event) => {
         throw redirect(307, "/");
     }
 
-    const userId = await getUserId(event)
+    const user = await getUserFromRequest(event);
 
-    if (userId == null) {
+    console.log(user)
+
+    if (user == null) {
         throw error(404, "User not found");
     }
 
     try {
-        const userAnimeList = await UserAnimeListService.getUserAnimeList(userId);
-        const userAnimeStats = await UserStatsService.getStats(userId);
+        const userAnimeList = await UserAnimeListService.getUserAnimeList(user.id);
+        const userAnimeStats = await UserStatsService.getStats(user.id);
 
         if (userAnimeList == null || userAnimeStats == null) {
             return { data: null }
@@ -38,6 +40,7 @@ export const load = (async (event) => {
 
         return {
             data: {
+                user,
                 stats: userAnimeStats.stats,
                 animeList: userAnimeList.animeList as AnimeObjectWithStatus[],
                 lastUpdated: userAnimeList.lastUpdated,
@@ -53,14 +56,18 @@ export const load = (async (event) => {
 
 export const actions = {
     async calculate(event) {
-        const session = await getRequiredServerSession(event.cookies);
+        if (event.locals.session == null) {
+            throw error(401, "Unable to determine current user")
+        }
 
-        if (event.params.username !== "@me") {
+        const user = await getUserFromRequest(event)
+
+        if (user == null) {
             throw error(404, "User not found");
         }
 
         try {
-            const { userStats, animeList } = await calculateUserStats(session.userId, event.cookies);
+            const { userStats, animeList } = await calculateUserStats(user.id, event.cookies);
             const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
             const canRecalculate = dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
 
@@ -126,25 +133,18 @@ export const actions = {
     },
 } satisfies Actions;
 
-async function getUserId(event: RequestEvent) {
+async function getUserFromRequest(event: RequestEvent) {
     const username = event.params.username;
 
-    if (username === "@me") {
-        if (event.locals.session == null) {
-            throw redirect(307, "/");
-        }
+    const user = username === "@me" ?
+        event.locals.session?.user :
+        await UserService.getUserDetails(username)
 
-        return event.locals.session.user.id;
-    } else {
-        try {
-            const userId = await UserService.getUserIdFromUsername(username);
-            return userId;
-        }
-        catch (err) {
-            console.error(err);
-            throw error(404, "User not found");
-        }
+    if (user == null) {
+        throw error(404);
     }
+
+    return user;
 }
 
 async function calculateUserStats(userId: number, cookies: Cookies) {

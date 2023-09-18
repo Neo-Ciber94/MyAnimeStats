@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import SEO from '$components/SEO.svelte';
 	import { InboxSolid } from 'flowbite-svelte-icons';
+	import session from '$stores/session';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -19,13 +20,15 @@
 	});
 
 	$: result = data.data || form?.data || null;
+
+	console.log({ result });
 </script>
 
 <SEO title="MyStats" />
 
 <PageTransition>
 	<div class="flex flex-col md:flex-row h-full w-full grow">
-		<StatSidebar />
+		<StatSidebar user={result?.user ?? null} />
 
 		{#if loading}
 			<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
@@ -49,13 +52,19 @@
 				</div>
 			</StatTabs>
 		{:else}
-			<div
-				class="w-full flex flex-row justify-center items-center opacity-70
+			<div class="flex flex-col gap-3 justify-center p-4 w-full items-center">
+				<div
+					class="w-full flex flex-row justify-center items-center opacity-70
 				flex-wrap text-center mt-[10%] h-fit mb-20 gap-4 text-violet-300"
-			>
-				<InboxSolid class="w-8 h-8" />
+				>
+					<InboxSolid class="w-8 h-8" />
 
-				<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
+					<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
+				</div>
+
+				<CalculateStatsButton>
+					<span class="text-sm md:text-lg">Re-Calculate Stats</span>
+				</CalculateStatsButton>
 			</div>
 		{/if}
 	</div>
