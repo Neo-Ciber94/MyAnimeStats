@@ -5,7 +5,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import type { LayoutServerData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
-	import ElementEmphasisProvider from '@/providers/ElementEmphasisProvider.svelte';
+	import ElementEmphasis from '@/providers/ElementEmphasis.svelte';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -60,7 +60,7 @@
 
 	<AnimeWatchlistPrompt />
 	<Toaster />
-	<ElementEmphasisProvider />
+	<ElementEmphasis />
 </QueryClientProvider>
 
 {#await import('$components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
