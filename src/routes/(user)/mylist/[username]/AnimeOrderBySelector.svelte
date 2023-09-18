@@ -25,10 +25,10 @@
 	export let selected: AnimeOrderBy | undefined;
 
 	const items: AutocompleteItem<AnimeOrderBy>[] = [
-		{ label: 'My Score Descending', value: 'my_score_desc' },
-		{ label: 'My Score Ascending', value: 'my_score_asc' },
-		{ label: 'Score Descending', value: 'score_desc' },
-		{ label: 'Score Ascending', value: 'score_asc' },
+		{ label: 'Score Descending', value: 'my_score_desc' },
+		{ label: 'Score Ascending', value: 'my_score_asc' },
+		{ label: 'User Score Descending', value: 'score_desc' },
+		{ label: 'User Score Ascending', value: 'score_asc' },
 		{ label: 'Rank Descending', value: 'rank_desc' },
 		{ label: 'Rank Ascending', value: 'rank_asc' },
 	];
