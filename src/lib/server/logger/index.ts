@@ -1,12 +1,26 @@
 import { env } from '$env/dynamic/private';
-import { default as pino } from 'pino';
+import { Axiom } from '@axiomhq/js';
 
-export const logger = pino(
-    pino.transport({
-        target: '@axiomhq/pino',
-        options: {
-            dataset: env.AXIOM_DATASET,
-            token: env.AXIOM_TOKEN,
-        },
-    }),
-);
+const axiom = new Axiom({
+    token: env.AXIOM_TOKEN,
+    orgId: env.AXIOM_ORG_ID,
+});
+
+function log(level: 'info' | 'warn' | 'fatal', args: unknown[]) {
+    axiom.ingest(env.AXIOM_DATASET, [level, ...args]);
+    axiom.flush();
+}
+
+export const logger = {
+    info(...args: unknown[]) {
+        log('info', args);
+    },
+
+    warn(...args: unknown[]) {
+        log('warn', args);
+    },
+
+    fatal(...args: unknown[]) {
+        log('fatal', args);
+    }
+}
