@@ -12,11 +12,13 @@ export const MAX_LEVEL = 100;
 export function calculateLevel(animeList: AnimeObjectWithStatus[]) {
     const episodesWatched = animeList.reduce((count, anime) => count + anime.list_status.num_episodes_watched, 0);
     const level = levelForEpisodesWatched(episodesWatched);
-    const episodesUntilNextLevel = level >= MAX_LEVEL ? 0 : episodesWatchedForLevel(level + 1) - episodesWatched;
+    const episodesRequiredForNextLevel = level >= MAX_LEVEL ? 0 : episodesWatchedForLevel(level + 1);
+    const episodesUntilNextLevel = level >= MAX_LEVEL ? 0 : episodesRequiredForNextLevel - episodesWatched;
 
     return {
         level,
         episodesWatched,
+        episodesRequiredForNextLevel,
         episodesUntilNextLevel
     }
 }

@@ -8,23 +8,25 @@
 
 	export let animeList: AnimeObjectWithStatus[];
 
-	const { level, episodesUntilNextLevel, episodesWatched } = calculateLevel(animeList);
-	const initialPercentage = episodesWatched / episodesUntilNextLevel;
+	const { level, episodesUntilNextLevel, episodesRequiredForNextLevel, episodesWatched } =
+		calculateLevel(animeList);
+
+	const initialPercentage = (episodesWatched / episodesRequiredForNextLevel) * 100;
 	const percentage = spring(0, {
 		damping: 0.5
 	});
-
+	
 	onMount(() => {
-		let interval = 0;
 		const timeout = window.setTimeout(() => {
 			percentage.set(initialPercentage);
 		}, 300);
 
 		return () => {
 			window.clearTimeout(timeout);
-			window.clearInterval(interval);
 		};
 	});
+
+	$: levelBarWidth = Math.min(100, Math.max(0, $percentage));
 </script>
 
 <Tooltip
@@ -61,7 +63,7 @@
 	class="relative rounded-full border-2 h-6 md:h-10 w-full min-w-[40px]
 bg-gradient-to-r from-gray-200 to-gray-300 shadow-orange-500 glow cursor-pointer"
 >
-	<div class="level-box" style={`width: ${Math.max(0, $percentage)}%`} />
+	<div class="level-box" style={`width: ${levelBarWidth}%`} />
 	<span
 		class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm sm:text-xl
     font-mono font-bold text-orange-950 mix-blend-hard-light"
@@ -69,14 +71,6 @@ bg-gradient-to-r from-gray-200 to-gray-300 shadow-orange-500 glow cursor-pointer
 		{`Level ${level}`}
 	</span>
 </div>
-
-<!-- {#if level !== MAX_LEVEL}
-	<div class="w-full text-end pr-2">
-		<small class="text-orange-400 text-[10px]">
-			{`${episodesUntilNextLevel} episodes for level ${level + 1}`}
-		</small>
-	</div>
-{/if} -->
 
 <style lang="postcss">
 	.glow {
