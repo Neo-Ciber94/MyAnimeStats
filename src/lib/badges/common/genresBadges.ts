@@ -701,6 +701,30 @@ const genresBadges = [
                 .count() >= 30
         }
     },
+    {
+        id: "trash_taste_badge",
+        name: /*html*/`<b class="text-violet-300">Trash Taste</b>`,
+        description: "Give good scores to 10 of the worst scored anime",
+        icon: (size) => {
+            return /*html*/ `
+            <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24">
+                <path fill="#f5d0fe" d="M7 21q-.825 0-1.413-.588T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.588 1.413T17 21H7Zm2-4h2V8H9v9Zm4 0h2V8h-2v9Z"/>
+            </svg>`
+        },
+        styles: {
+            border: "2px solid #6b21a8",
+            background: "linear-gradient(205deg, #3b0764 45%, #000 100%)",
+            color: "black",
+        },
+        canHaveBadge: (animeList) => {
+            const GOOD_SCORE = 7;
+            const BAD_SCORE = 4;
+            const total = Enumerable.from(animeList)
+                .where((anime) => anime.node.mean <= BAD_SCORE && anime.list_status.score >= GOOD_SCORE)
+                .count();
+            return total >= 10;
+        }
+    },
 ] as AnimeBadge[]
 
 export default genresBadges;

@@ -54,14 +54,14 @@ const customBadges = [
         name: "Fujoshi",
         description: "Watched 20 or more Boys Love anime",
         icon: badgeImage({
-            src: '/images/fujoshi.jpg',
+            src: '/images/fujoshi.png',
             alt: 'Fujoshi',
             height: 32,
             width: 32
         }),
         styles: {
             px: 10,
-            background: "linear-gradient(90deg, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%)",
+            background: "linear-gradient(90deg, rgba(0,0,0,1) 47%, rgba(255,255,255,1) 43%)",
             border: "2px solid white",
             color: "black"
         },
