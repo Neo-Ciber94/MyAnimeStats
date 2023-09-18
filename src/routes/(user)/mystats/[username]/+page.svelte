@@ -32,50 +32,52 @@
 <SEO title="MyStats" />
 
 <PageTransition>
-	<div class="relative flex flex-col md:flex-row h-full w-full grow">
+	<div class="flex flex-col md:flex-row h-full w-full grow">
 		<StatSidebar user={result?.user ?? null} />
 
-		{#if loading || $myStatsLoading}
-			<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
-				<CubesLoader size={30} class="text-violet-500" />
-			</div>
-		{:else if result}
-			<div class="w-full h-full">
-				<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
-					<div slot="me-footer">
-						{#if result.canRecalculate && $session.user?.id === result.user.id}
-							<div
-								class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
-					h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
-							>
-								<CalculateStatsButton on:data={onSubmit}>
-									<span class="text-sm md:text-lg">Re-Calculate Stats</span>
-								</CalculateStatsButton>
-							</div>
-						{/if}
-
-						<div class="mb-10" />
-					</div>
-				</StatTabs>
-			</div>
-		{:else}
-			<div class="flex flex-col gap-3 justify-center p-4 w-full items-center">
-				<div
-					class="w-full flex flex-row justify-center items-center opacity-70
-				flex-wrap text-center mt-[10%] h-fit mb-20 gap-4 text-violet-300"
-				>
-					<InboxSolid class="w-8 h-8" />
-
-					<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
+		<div class="relative w-full">
+			{#if loading || $myStatsLoading}
+				<div class="flex flex-row justify-center items-center h-[50vh] w-full text-white">
+					<CubesLoader size={30} class="text-violet-500" />
 				</div>
+			{:else if result}
+				<div class="w-full h-full" transition:fade={{ duration: 200 }}>
+					<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
+						<div slot="me-footer">
+							{#if result.canRecalculate && $session.user?.id === result.user.id}
+								<div
+									class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
+										h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
+								>
+									<CalculateStatsButton on:data={onSubmit}>
+										<span class="text-sm md:text-lg">Re-Calculate Stats</span>
+									</CalculateStatsButton>
+								</div>
+							{/if}
 
-				<!-- This button will never be visible for an user -->
-				{#if dev}
-					<CalculateStatsButton on:data={onSubmit}>
-						<span class="text-sm md:text-lg">Re-Calculate Stats (DEV)</span>
-					</CalculateStatsButton>
-				{/if}
-			</div>
-		{/if}
+							<div class="mb-10" />
+						</div>
+					</StatTabs>
+				</div>
+			{:else}
+				<div class="flex flex-col gap-3 justify-center p-4 w-full items-center">
+					<div
+						class="w-full flex flex-row justify-center items-center opacity-70
+					flex-wrap text-center mt-[10%] h-fit mb-20 gap-4 text-violet-300"
+					>
+						<InboxSolid class="w-8 h-8" />
+
+						<span class="text-lg md:text-2xl"> User stats had not been calculated </span>
+					</div>
+
+					<!-- This button will never be visible for an user -->
+					{#if dev}
+						<CalculateStatsButton on:data={onSubmit}>
+							<span class="text-sm md:text-lg">Re-Calculate Stats (DEV)</span>
+						</CalculateStatsButton>
+					{/if}
+				</div>
+			{/if}
+		</div>
 	</div>
 </PageTransition>
