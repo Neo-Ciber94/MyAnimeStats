@@ -24,7 +24,6 @@
 		type AnimeObjectWithStatus,
 		type AnimeSeason,
 		type Genre,
-		type WatchStatus,
 		watchStatusSchema
 	} from '@/lib/myanimelist/common/types';
 	import ANIME_GENRES from '@/generated/animeGenres';
@@ -81,10 +80,11 @@
 	let status: UserWatchStatus | undefined = undefined;
 
 	const releaseYears = Enumerable.from(data.data.userAnimeList?.animeList || [])
-		.select((x) => x.node.start_season!.year)
+		.select((x) => x.node.start_season?.year)
+		.where((x) => x != null)
 		.distinct()
 		.orderByDescending((x) => x)
-		.toArray();
+		.toArray() as number[];
 
 	const formatSearch = (s: string) => {
 		if (s == null) {
@@ -110,7 +110,7 @@
 				case 'score_desc':
 					return -Number(anime.node.mean);
 				case 'rank_asc':
-					return anime.node.rank;
+					return Number(anime.node.rank);
 				case 'rank_desc':
 					return -Number(anime.node.rank);
 				default:
@@ -162,7 +162,7 @@
 					return true;
 				}
 
-				const selectedGenreIds = node.genres.map((x) => x.id);
+				const selectedGenreIds = (node.genres || []).map((x) => x.id);
 				return selectedGenres.every((genreId) => selectedGenreIds.includes(genreId));
 			})
 			.where(({ node, list_status }) => {
@@ -364,18 +364,18 @@
 					<slot slot="anime" let:anime>
 						<AnimeCard {anime}>
 							<slot slot="header">
-								{#if anime.node.my_list_status}
-									{@const my_list = anime.node.my_list_status}
+								{#if anime.list_status}
+									{@const list_status = anime.list_status}
 
-									{#if my_list.status}
+									{#if list_status.status}
 										<Badge rounded color="dark" class="font-bold text-[10px]">
-											{AnimeHelper.watchStatusToString(my_list.status)}
+											{AnimeHelper.watchStatusToString(list_status.status)}
 										</Badge>
 									{/if}
 
-									{#if my_list.score && my_list.status !== 'plan_to_watch'}
+									{#if list_status.score && list_status.status !== 'plan_to_watch'}
 										<Badge rounded color="yellow" class="font-bold text-[10px]" title="My score">
-											{my_list.score.toFixed(2)}
+											{list_status.score.toFixed(2)}
 										</Badge>
 									{/if}
 								{/if}

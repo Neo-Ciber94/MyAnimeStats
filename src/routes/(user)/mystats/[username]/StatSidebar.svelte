@@ -6,6 +6,14 @@
 	import session from '$stores/session';
 
 	export let user: User | null;
+
+	$: username = (function () {
+		if (user?.id === $session.user?.id || user == null) {
+			return '@me';
+		}
+
+		return user.name;
+	})();
 </script>
 
 {#if user}
@@ -40,7 +48,7 @@
 			</div>
 
 			<div class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-1 gap-4 w-full mt-5">
-				<a href="/mylist/@me?status=watching">
+				<a href={`/mylist/${username}?status=watching`}>
 					<StatIndicator color="rgb(49 196 141)">
 						<span slot="count" class="text-white">
 							{user.anime_statistics?.num_items_watching ?? 0}
@@ -49,7 +57,7 @@
 					</StatIndicator>
 				</a>
 
-				<a href="/mylist/@me?status=completed">
+				<a href={`/mylist/${username}?status=completed`}>
 					<StatIndicator color="#FF8A40">
 						<span slot="count" class="text-white">
 							{user.anime_statistics?.num_items_completed ?? 0}
@@ -58,14 +66,14 @@
 					</StatIndicator>
 				</a>
 
-				<a href="/mylist/@me?status=on_hold">
+				<a href={`/mylist/${username}?status=on_hold`}>
 					<StatIndicator color="#ffff00">
 						<span slot="count">{user.anime_statistics?.num_items_on_hold ?? 0}</span>
 						<span slot="text" class="text-white text-xs xs:text-base lg:text-xl">On Hold</span>
 					</StatIndicator>
 				</a>
 
-				<a href="/mylist/@me?status=dropped">
+				<a href={`/mylist/${username}?status=dropped`}>
 					<StatIndicator color="#ff0000">
 						<span slot="count" class="text-white">
 							{user.anime_statistics?.num_items_dropped ?? 0}
@@ -74,7 +82,7 @@
 					</StatIndicator>
 				</a>
 
-				<a href="/mylist/@me?status=plan_to_watch">
+				<a href={`/mylist/${username}?status=plan_to_watch`}>
 					<StatIndicator color="#cfcfcf">
 						<span slot="count">{user.anime_statistics?.num_items_plan_to_watch ?? 0}</span>
 						<span slot="text" class="text-white text-xs xs:text-base lg:text-xl">Plan To Watch</span
