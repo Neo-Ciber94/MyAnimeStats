@@ -9,8 +9,9 @@ export const handle = (async ({ event, resolve }) => {
     return response;
 }) satisfies Handle;
 
-export const handleError: HandleServerError = ({ error, event }) => {
-    logger.error({ error, event });
+export const handleError: HandleServerError = (input) => {
+    const error = input.error?.toString();
+    logger.error({ error });
 
     return {
         message: 'Something went wrong',
