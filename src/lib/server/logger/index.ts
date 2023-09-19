@@ -1,7 +1,7 @@
 function log(level: 'info' | 'warn' | 'error', args: unknown[]) {
     const logFunction = console[level];
 
-    logFunction(JSON.stringify({ level, ...args }), null, 2)
+    logFunction({ level, ...args })
 }
 
 export const logger = {
