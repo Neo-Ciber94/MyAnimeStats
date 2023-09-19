@@ -3,7 +3,6 @@
 	import { Spinner, Tooltip } from 'flowbite-svelte';
 	import type { User } from '@/lib/myanimelist/common/user';
 	import * as DOMPurify from 'isomorphic-dompurify';
-	import { browser } from '$app/environment';
 
 	export let badge: AnimeBadge;
 	export let user: User;
@@ -47,9 +46,9 @@
 	}
 
 	// This seems like non-sense, but `isomorphic-dompurify`
-	// is failing on the server because `window` is not defined
+	// we are getting this error: ReferenceError: window is not defined
 	function sanitizeHTML(rawHtml: string) {
-		if (browser) {
+		if (typeof window !== 'undefined') {
 			return DOMPurify.sanitize(rawHtml);
 		} else {
 			return null;
