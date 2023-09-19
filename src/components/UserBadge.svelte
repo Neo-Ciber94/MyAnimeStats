@@ -2,7 +2,7 @@
 	import type { AnimeBadge } from '@/lib/badges/AnimeBadge';
 	import { Spinner, Tooltip } from 'flowbite-svelte';
 	import type { User } from '@/lib/myanimelist/common/user';
-	import * as DOMPurify from 'isomorphic-dompurify';
+	import * as DOMPurify from 'dompurify';
 
 	export let badge: AnimeBadge;
 	export let user: User;
@@ -47,6 +47,10 @@
 
 	// We are getting this error: ReferenceError: window is not defined
 	function sanitizeHTML(rawHtml: string) {
+		if (typeof window === 'undefined') {
+			return null;
+		}
+
 		return DOMPurify.sanitize(rawHtml);
 	}
 
