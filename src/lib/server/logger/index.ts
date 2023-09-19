@@ -1,14 +1,7 @@
-import { env } from '$env/dynamic/private';
-import * as axiomhq from '@axiomhq/js';
+function log(level: 'info' | 'warn' | 'error', args: unknown[]) {
+    const logFunction = console[level];
 
-const axiom = new axiomhq.Axiom({
-    token: env.AXIOM_TOKEN,
-    orgId: env.AXIOM_ORG_ID,
-});
-
-function log(level: 'info' | 'warn' | 'fatal', args: unknown[]) {
-    axiom.ingest(env.AXIOM_DATASET, [{ level }, ...args]);
-    axiom.flush();
+    logFunction(JSON.stringify({ level, ...args }), null, 2)
 }
 
 export const logger = {
@@ -20,7 +13,7 @@ export const logger = {
         log('warn', args);
     },
 
-    fatal(...args: unknown[]) {
-        log('fatal', args);
+    error(...args: unknown[]) {
+        log('error', args);
     }
 }

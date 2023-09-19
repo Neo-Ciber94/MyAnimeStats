@@ -10,7 +10,7 @@ export const handle = (async ({ event, resolve }) => {
 }) satisfies Handle;
 
 export const handleError: HandleServerError = ({ error, event }) => {
-    logger.fatal({ error, event }, "MyAnimeStats fatal error");
+    logger.error({ error, event }, "MyAnimeStats fatal error");
 
     return {
         message: 'Something went wrong',
