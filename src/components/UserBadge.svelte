@@ -45,14 +45,9 @@
 		return result instanceof Promise ? result : Promise.resolve(result);
 	}
 
-	// This seems like non-sense, but `isomorphic-dompurify`
-	// we are getting this error: ReferenceError: window is not defined
+	// We are getting this error: ReferenceError: window is not defined
 	function sanitizeHTML(rawHtml: string) {
-		if (typeof window !== 'undefined') {
-			return DOMPurify.sanitize(rawHtml);
-		} else {
-			return null;
-		}
+		return DOMPurify.sanitize(rawHtml);
 	}
 
 	const badgeIcon = getIcon();
