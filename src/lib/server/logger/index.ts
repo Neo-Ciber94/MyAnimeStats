@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
-import { Axiom } from '@axiomhq/js';
+import { default as axiomhq } from '@axiomhq/js';
 
-const axiom = new Axiom({
+const axiom = new axiomhq.Axiom({
     token: env.AXIOM_TOKEN,
     orgId: env.AXIOM_ORG_ID,
 });
