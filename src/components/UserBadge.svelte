@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { AnimeBadge } from '@/lib/badges/AnimeBadge';
 	import { Spinner, Tooltip } from 'flowbite-svelte';
-	import * as DOMPurify from 'isomorphic-dompurify';
 	import type { User } from '@/lib/myanimelist/common/user';
+	import * as DOMPurify from 'isomorphic-dompurify';
+	import { browser } from '$app/environment';
 
 	export let badge: AnimeBadge;
 	export let user: User;
@@ -45,6 +46,16 @@
 		return result instanceof Promise ? result : Promise.resolve(result);
 	}
 
+	// This seems like non-sense, but `isomorphic-dompurify`
+	// is failing on the server because `window` is not defined
+	function sanitizeHTML(rawHtml: string) {
+		if (browser) {
+			return DOMPurify.sanitize(rawHtml);
+		} else {
+			return null;
+		}
+	}
+
 	const badgeIcon = getIcon();
 </script>
 
@@ -58,11 +69,11 @@
 		<Spinner bg="bg-transparent" size={'8'} />
 	{:then icon}
 		{#if icon}
-			{@html DOMPurify.sanitize(icon)}
+			{@html sanitizeHTML(icon)}
 		{/if}
 	{/await}
 
-	{@html DOMPurify.sanitize(getBadgeName())}
+	{@html sanitizeHTML(getBadgeName())}
 </div>
 <Tooltip
 	class="bg-gray-950 border border-gray-200 text-white text-sm p-3"

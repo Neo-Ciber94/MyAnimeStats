@@ -12,3 +12,4 @@ private
 .cache
 *.log
 /dev-dist
+.wrangler

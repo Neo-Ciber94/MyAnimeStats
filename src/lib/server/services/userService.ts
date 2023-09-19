@@ -3,7 +3,7 @@
 import { PLACEHOLDER_IMAGE } from "@/common/constants";
 import type { WatchStatus } from "@/lib/myanimelist/common/types";
 import type { User } from "@/lib/myanimelist/common/user";
-import parse, { HTMLElement } from "node-html-parser";
+import parse, { type HTMLElement as NodeHTMLElement } from "node-html-parser";
 
 export namespace UserService {
     export async function getUserDetails(username: string): Promise<User | null> {
@@ -154,7 +154,7 @@ export namespace UserService {
 
 }
 
-function getUserName(doc: HTMLElement) {
+function getUserName(doc: NodeHTMLElement) {
     const content = doc.querySelector("h1 span.di-ib.po-r")?.textContent?.trim();
 
     if (content == null) {
@@ -170,7 +170,7 @@ function getUserName(doc: HTMLElement) {
     return matches[1];
 }
 
-function getStatsData(doc: HTMLElement) {
+function getStatsData(doc: NodeHTMLElement) {
     const statusElements = doc.querySelectorAll("ul.stats-data.fl-r li");
     let numItems = 0;
     let numRewatched = 0;
