@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import { default as axiomhq } from '@axiomhq/js';
+import * as axiomhq from '@axiomhq/js';
 
 const axiom = new axiomhq.Axiom({
     token: env.AXIOM_TOKEN,
