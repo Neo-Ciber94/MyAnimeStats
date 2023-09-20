@@ -48,7 +48,7 @@ function authMiddleware(): Handle {
                 console.error(err);
             }
         } else {
-            event.locals.session = undefined;
+            event.locals.session = null;
         }
 
         return resolve(event);

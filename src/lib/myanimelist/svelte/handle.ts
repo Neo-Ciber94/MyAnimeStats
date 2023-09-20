@@ -4,6 +4,7 @@ import { getApiUrl } from "../common/getApiUrl";
 import { MALClient } from "../api";
 import { COOKIE_AUTH_ACCESS_TOKEN, COOKIE_AUTH_CODE_CHALLENGE, COOKIE_AUTH_CSRF, COOKIE_AUTH_SESSION, generateJwt, getServerSession } from "./auth";
 import type { User } from "../common/user";
+import { dev } from "$app/environment";
 
 export const MY_ANIME_LIST_API_URL = "https://api.myanimelist.net/v2";
 export const DEFAULT_SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days;
@@ -144,15 +145,17 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 
             event.cookies.set(COOKIE_AUTH_CSRF, state, {
                 path: "/",
-                sameSite: 'lax',
                 httpOnly: true,
+                sameSite: 'lax',
+                secure: dev === false,
                 maxAge: sessionDurationSeconds
             });
 
             event.cookies.set(COOKIE_AUTH_CODE_CHALLENGE, codeChallenge, {
                 path: "/",
-                sameSite: 'lax',
                 httpOnly: true,
+                sameSite: 'lax',
+                secure: dev === false,
                 maxAge: 60 * 15, // 15min
             });
 
@@ -165,6 +168,7 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
             event.cookies.delete(COOKIE_AUTH_SESSION, { path: "/" })
             event.cookies.delete(COOKIE_AUTH_CODE_CHALLENGE, { path: "/" });
             event.cookies.delete(COOKIE_AUTH_ACCESS_TOKEN, { path: "/" });
+            event.cookies.delete(COOKIE_AUTH_CSRF, { path: "/" });
 
             // sign-out callback
             options.callbacks?.onSignOut?.(event);
@@ -209,18 +213,20 @@ async function handleAuth(event: RequestEvent, options: HandleAuthOptions) {
 
             event.cookies.set(COOKIE_AUTH_SESSION, sessionToken, {
                 path: "/",
-                maxAge: sessionDurationSeconds,
                 httpOnly: true,
-                sameSite: 'strict'
+                secure: dev === false,
+                sameSite: 'lax',
+                maxAge: sessionDurationSeconds,
             });
 
             const { access_token: accessToken, expires_in } = await Auth.refreshToken({ refreshToken: tokens.refresh_token });
 
             event.cookies.set(COOKIE_AUTH_ACCESS_TOKEN, accessToken, {
                 path: "/",
-                maxAge: expires_in,
                 httpOnly: true,
-                sameSite: 'strict'
+                secure: dev === false,
+                sameSite: 'lax',
+                maxAge: expires_in,
             });
 
             // remove the auth code challenge cookie

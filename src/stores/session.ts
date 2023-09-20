@@ -81,7 +81,7 @@ async function initialize(session?: InitializeSession | null) {
         return;
     }
 
-    if (session) {
+    if (session !== undefined) {
         setUserSession(session);
     }
     else {
