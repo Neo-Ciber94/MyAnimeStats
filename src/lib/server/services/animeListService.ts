@@ -97,7 +97,7 @@ export namespace AnimeListService {
 		});
 
 		const cacheKey = `anime/${year}/${season}`;
-		let animeList: AnimeObject[] | null = null;
+		let animeList: AnimeObject[] | null = await RedisService.get<AnimeObject[]>(cacheKey);
 
 		if (!animeList) {
 			animeList = [];
