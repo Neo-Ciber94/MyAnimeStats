@@ -30,7 +30,7 @@
 		{ label: 'User Score Descending', value: 'score_desc' },
 		{ label: 'User Score Ascending', value: 'score_asc' },
 		{ label: 'Rank Descending', value: 'rank_desc' },
-		{ label: 'Rank Ascending', value: 'rank_asc' },
+		{ label: 'Rank Ascending', value: 'rank_asc' }
 	];
 
 	$: selectedItem = items.find((x) => x.value === selected) || items[0];

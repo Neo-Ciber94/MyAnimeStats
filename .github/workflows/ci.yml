@@ -1,32 +1,38 @@
 name: CI
 
+env:
+  MAL_CLIENT_ID: ${{ secrets.MAL_CLIENT_ID}}
+  MAL_CLIENT_SECRET: ${{ secrets.MAL_CLIENT_SECRET}}
+  MAL_SECRET_KEY: ${{ secrets.MAL_SECRET_KEY}}
+  UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL}}
+  UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN}}
+
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 16
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-        cache: 'yarn'
-        
-    - name: Install deps
-      run: yarn install --frozen-lockfile
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
 
-    - name: Build
-      run: export NODE_ENV=test yarn build
+      - name: Install deps
+        run: yarn install --frozen-lockfile
 
-    # This is failing with Response.json and env imported by sveltekit
-    #- name: Check
-    #  run: yarn run check
-      
-    - name: Run tests
-      run: export NODE_ENV=test yarn test
+      - name: Build
+        run: export NODE_ENV=test yarn build
+
+      - name: Check
+        run: yarn run check
+
+      - name: Run tests
+        run: export NODE_ENV=test yarn test

@@ -10,7 +10,7 @@
 	} from 'flowbite-svelte-icons';
 	import AnimeByGenreGraph from '$components/graphs/AnimeByGenreGraph.svelte';
 	import AnimeWatchedByYear from '$components/graphs/AnimeWatchedByYearGraph.svelte';
-	import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
+	import type { AnimeObjectWithStatus, User } from '$lib/myanimelist/common/types';
 	import StatScores from './StatScores.svelte';
 	import UserBadgeList from '$components/UserBadgeList.svelte';
 	import { useUserBadges } from '$stores/userBadges';
@@ -18,7 +18,6 @@
 	import { fly } from 'svelte/transition';
 	import StatsExportData from './StatsDownloadData.svelte';
 	import LevelIndicator from './LevelIndicator.svelte';
-	import type { User } from '@/lib/myanimelist/common/user';
 	import session from '$stores/session';
 
 	export let stats: CalculatedStats;

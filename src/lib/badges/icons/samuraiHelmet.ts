@@ -1,6 +1,5 @@
-
 export default function samuraiHelmet(size: number) {
-    return /*html*/`<?xml version="1.0" encoding="iso-8859-1"?>
+	return /*html*/ `<?xml version="1.0" encoding="iso-8859-1"?>
     <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
     <!-- License: CC0. Made by SVG Repo: https://www.svgrepo.com/svg/300491/samurai -->
     <svg version="1.1" id="Layer_1" width="100%" height="${size}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

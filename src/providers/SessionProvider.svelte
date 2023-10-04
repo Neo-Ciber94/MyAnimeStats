@@ -1,18 +1,11 @@
-<script context="module" lang="ts">
-	export type UserSession = {
-		user: User;
-		accessToken: string;
-	};
-</script>
-
 <script lang="ts">
 	import session from '../stores/session';
-	import type { User } from '@/lib/myanimelist/common/user';
+	import type { Session } from '@animelist/auth-sveltekit/client';
 
-	export let userSession: UserSession | undefined | null = undefined;
+	export let userSession: Session | undefined | null = undefined;
 
 	// Initialize the session
 	session.initialize(userSession).catch(console.error);
 </script>
 
-<slot session={session.current} />
+<slot session={userSession} />

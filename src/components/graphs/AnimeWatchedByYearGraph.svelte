@@ -5,7 +5,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables } from 'chart.js';
-	import type { AnimeObject, AnimeObjectWithStatus, AnimeSeason } from '$lib/myanimelist/common/types';
+	import type {
+		AnimeObject,
+		AnimeObjectWithStatus,
+		AnimeSeason
+	} from '$lib/myanimelist/common/types';
 	import dayjs from 'dayjs';
 	import Enumerable from 'linq';
 	import { getAnimeWatchedByYear } from '$lib/utils/getAnimeWatchedByYear';

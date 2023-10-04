@@ -1,18 +1,18 @@
-import { readable } from "svelte/store";
+import { readable } from 'svelte/store';
 
 export function useMediaQuery(query: string, defaultValue = false) {
-    return readable(defaultValue, (set) => {
-        if (typeof window === 'undefined') {
-            set(defaultValue);
-            return;
-        }
+	return readable(defaultValue, (set) => {
+		if (typeof window === 'undefined') {
+			set(defaultValue);
+			return;
+		}
 
-        const mediaMatch = window.matchMedia(query);
+		const mediaMatch = window.matchMedia(query);
 
-        set(mediaMatch.matches);
+		set(mediaMatch.matches);
 
-        mediaMatch.addEventListener('change', (event) => {
-            set(event.matches)
-        });
-    })
-} 
+		mediaMatch.addEventListener('change', (event) => {
+			set(event.matches);
+		});
+	});
+}

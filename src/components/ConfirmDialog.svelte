@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { useMediaQuery } from '@/hooks/useMediaQuery';
 	import { Button } from 'flowbite-svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { quintOut } from 'svelte/easing';
-	import { fade, scale } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import AlertDialog from './AlertDialog.svelte';
 
@@ -93,10 +90,7 @@
 <AlertDialog
 	{isOpen}
 	on:close={handleCancel}
-	dialogClass={twMerge(
-		'p-2 bg-white text-black rounded-lg',
-		$$restProps.class
-	)}
+	dialogClass={twMerge('p-2 bg-white text-black rounded-lg', $$restProps.class)}
 >
 	<slot />
 

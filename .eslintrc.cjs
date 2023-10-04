@@ -18,6 +18,7 @@ module.exports = {
 		es2017: true,
 		node: true
 	},
+	ignorePatterns: ['dev-dist/**', 'private/**'],
 	overrides: [
 		{
 			files: ['*.svelte'],

@@ -18,7 +18,7 @@ const config = {
 				exclude: ['<all>']
 			}
 		}),
-		
+
 		serviceWorker: {
 			register: false
 		},

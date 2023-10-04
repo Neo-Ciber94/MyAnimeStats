@@ -15,7 +15,7 @@
 	const percentage = spring(0, {
 		damping: 0.5
 	});
-	
+
 	onMount(() => {
 		const timeout = window.setTimeout(() => {
 			percentage.set(initialPercentage);

@@ -1,7 +1,7 @@
-import { writable } from "svelte/store";
+import { writable } from 'svelte/store';
 
 const myStatsLoadingStore = writable(false);
 
 export default {
-    ...myStatsLoadingStore
-}
+	...myStatsLoadingStore
+};

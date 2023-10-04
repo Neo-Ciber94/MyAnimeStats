@@ -63,7 +63,7 @@
 		{ label: 'Spring', value: 'spring' },
 		{ label: 'Summer', value: 'summer' },
 		{ label: 'Fall', value: 'fall' },
-		{ label: 'Winter', value: 'winter' },
+		{ label: 'Winter', value: 'winter' }
 	];
 
 	const statusItems: SelectItem<UserWatchStatus | undefined>[] = [
@@ -72,8 +72,8 @@
 		{ label: 'Watching', value: 'watching' },
 		{ label: 'On Hold', value: 'on_hold' },
 		{ label: 'Plan to Watch', value: 'plan_to_watch' },
-		{ label: 'Needs Review', value: 'needs_review' }, 
-		{ label: 'Dropped', value: 'dropped' }, 
+		{ label: 'Needs Review', value: 'needs_review' },
+		{ label: 'Dropped', value: 'dropped' }
 	];
 
 	function handleFilter() {

@@ -445,7 +445,7 @@
 	/>
 {/if}
 
-<style>
+<style lang="postcss">
 	:global(body) {
 		overflow-y: scroll;
 	}
