@@ -94,7 +94,7 @@
 							color: 'white'
 						},
 						max: 100,
-                        beginAtZero: true,
+						beginAtZero: true
 					}
 				},
 				plugins: {

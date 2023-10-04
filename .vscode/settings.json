@@ -1,39 +1,31 @@
 {
-    "tailwindCSS.classAttributes": [
-        "class",
-        "className",
-        "ngClass",
-        "contentClass",
-        "defaultClass",
-        "activeClass",
-        "activeClasses",
-        "inactiveClass",
-        "listClass",
-        "containerClass"
-    ],
-    "tailwindCSS.experimental.classRegex": [
-        [
-            "(?:twMerge|twJoin)\\(([^\\);]*)[\\);]",
-            "[`'\"`]([^'\"`,;]*)[`'\"`]"
-        ],
-        [
-            "\\w+Class=\\s*(?:\"|'|{`)([^(?:\"|'|`})]*)"
-        ],
-        [
-            "classList.(?:add|remove)\\(([^)]*)\\)",
-            "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"
-        ]
-    ],
-    "colorize.languages": [
-        "css",
-        "sass",
-        "scss",
-        "less",
-        "postcss",
-        "sss",
-        "stylus",
-        "xml",
-        "svg",
-        "svelte"
-    ]
+	"tailwindCSS.classAttributes": [
+		"class",
+		"className",
+		"ngClass",
+		"contentClass",
+		"defaultClass",
+		"activeClass",
+		"activeClasses",
+		"inactiveClass",
+		"listClass",
+		"containerClass"
+	],
+	"tailwindCSS.experimental.classRegex": [
+		["(?:twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"],
+		["\\w+Class=\\s*(?:\"|'|{`)([^(?:\"|'|`})]*)"],
+		["classList.(?:add|remove)\\(([^)]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
+	],
+	"colorize.languages": [
+		"css",
+		"sass",
+		"scss",
+		"less",
+		"postcss",
+		"sss",
+		"stylus",
+		"xml",
+		"svg",
+		"svelte"
+	]
 }

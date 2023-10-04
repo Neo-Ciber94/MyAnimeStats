@@ -1,5 +1,3 @@
-
-
 <script lang="ts">
 	import session from '../stores/session';
 	import type { Session } from '@animelist/auth-sveltekit/client';

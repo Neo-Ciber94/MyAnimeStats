@@ -191,7 +191,7 @@
 					<div class="pb-5">
 						<h3 class="text-orange-500 text-2xl mb-2">Genres</h3>
 						<div class="flex flex-row flex-wrap gap-4">
-							{#each (anime.genres || []) as genre}
+							{#each anime.genres || [] as genre}
 								<button
 									class="text-white px-4 py-1 min-w-[50px] hover:bg-violet-800 rounded-lg text-xs bg-violet-600"
 								>

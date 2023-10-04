@@ -93,10 +93,7 @@
 <AlertDialog
 	{isOpen}
 	on:close={handleCancel}
-	dialogClass={twMerge(
-		'p-2 bg-white text-black rounded-lg',
-		$$restProps.class
-	)}
+	dialogClass={twMerge('p-2 bg-white text-black rounded-lg', $$restProps.class)}
 >
 	<slot />
 

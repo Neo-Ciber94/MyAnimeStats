@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
-import { SvelteKitPWA } from '@vite-pwa/sveltekit'
+import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
 const nodePolyfill = await loadNodePolyfill();
 
@@ -12,15 +12,15 @@ export default defineConfig({
 		port: 5175
 	},
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}', "tests/**/*.test.{js,ts}"],
+		include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.test.{js,ts}']
 	},
 	optimizeDeps: {
-		include: ['./src/lib/badges/**'],
+		include: ['./src/lib/badges/**']
 	},
 	define: {
 		__DATE__: `'${new Date().toISOString()}'`,
 		__RELOAD_SW__: false,
-		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"',
+		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
 	},
 	plugins: [
 		nodePolyfill,
@@ -43,40 +43,40 @@ export default defineConfig({
 				start_url: '/',
 				scope: '/',
 				display: 'fullscreen',
-				theme_color: "#9333ea",
-				background_color: "#111827",
+				theme_color: '#9333ea',
+				background_color: '#111827',
 				icons: [
 					{
 						src: '/icons/my-anime-stats-512x512.png',
 						sizes: '512x512',
-						type: 'image/png',
+						type: 'image/png'
 					},
 					{
 						src: '/icons/my-anime-stats-192x192.png',
 						sizes: '192x192',
-						type: 'image/png',
+						type: 'image/png'
 					},
 					{
 						src: '/icons/my-anime-stats-144x144.png',
 						sizes: '144x144',
-						type: 'image/png',
+						type: 'image/png'
 					},
 					{
 						src: '/icons/my-anime-stats-96x96.png',
 						sizes: '96x96',
-						type: 'image/png',
+						type: 'image/png'
 					},
 					{
 						src: '/icons/my-anime-stats-72x72.png',
 						sizes: '72x72',
-						type: 'image/png',
+						type: 'image/png'
 					},
 					{
 						src: '/icons/my-anime-stats-48x48.png',
 						sizes: '48x48',
-						type: 'image/png',
-					},
-				],
+						type: 'image/png'
+					}
+				]
 			},
 			injectManifest: {
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
@@ -84,18 +84,18 @@ export default defineConfig({
 			workbox: {
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}'],
 				cleanupOutdatedCaches: true,
-				disableDevLogs: process.env.NODE_ENV !== 'development',
+				disableDevLogs: process.env.NODE_ENV !== 'development'
 			},
 			devOptions: {
 				enabled: true,
 				suppressWarnings: process.env.SUPPRESS_WARNING === 'true',
 				type: 'module',
-				navigateFallback: '/',
+				navigateFallback: '/'
 			},
 			// if you have shared info in svelte config file put in a separate module and use it also here
 			kit: {}
-		}),
-	],
+		})
+	]
 });
 
 // For some reason this crash because cannot found `process/browser.js` so we only import during development

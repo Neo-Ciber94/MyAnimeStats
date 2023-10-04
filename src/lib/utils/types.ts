@@ -1,4 +1,3 @@
-
 /**
  * A function used to set a value.
  */

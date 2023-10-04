@@ -1,6 +1,5 @@
-
 export default function lesbianIcon(size: number) {
-    return /*html*/`
+	return /*html*/ `
     <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!-- License: CC0. Made by SVG Repo: https://www.svgrepo.com/svg/275592/couple-lesbian -->
