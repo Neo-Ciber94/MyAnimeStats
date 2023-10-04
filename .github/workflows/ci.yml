@@ -24,9 +24,8 @@ jobs:
       - name: Build
         run: export NODE_ENV=test yarn build
 
-      # This is failing with Response.json and env imported by sveltekit
-      #- name: Check
-      #  run: yarn run check
+      - name: Check
+        run: yarn run check
 
       - name: Run tests
         run: export NODE_ENV=test yarn test
