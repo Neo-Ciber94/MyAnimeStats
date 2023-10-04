@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import session from '$stores/session';
-	import { signIn } from '@/lib/myanimelist/auth/client';
+	import { signIn } from '@animelist/auth-sveltekit/client';
 	import { Button } from 'flowbite-svelte';
 	import { HeartSolid } from 'flowbite-svelte-icons';
 	import type { PageServerData } from './$types';

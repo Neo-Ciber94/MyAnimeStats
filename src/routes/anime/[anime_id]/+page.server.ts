@@ -1,4 +1,4 @@
-import { MALClient } from "@/lib/myanimelist/api";
+import { MALClient } from "@animelist/client";
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { Retry, runAndRetryOnThrow } from "@/lib/utils/retry";

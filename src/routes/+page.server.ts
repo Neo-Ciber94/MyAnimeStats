@@ -1,4 +1,4 @@
-import { MALClient } from "@/lib/myanimelist/api";
+import { MALClient } from "@animelist/client";
 import type { PageServerLoad } from "./$types";
 import type { AiringStatus } from "@/lib/myanimelist/common/types";
 import { invariant } from "@/lib/utils/invariant";

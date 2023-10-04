@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { error, type Cookies } from "@sveltejs/kit";
 import { KV } from "$lib/server/kv";
-import { MALClient, MalHttpError, type AnimeFields, type UpdateMyAnimeListStatusOptions } from "$lib/myanimelist/api";
+import { MALClient, MalHttpError, type AnimeFields, type UpdateMyAnimeListStatusOptions } from "@animelist/client";
 import type { AnimeNode, AnimeObjectWithStatus } from "$lib/myanimelist/common/types";
 import { Retry, runAndRetryOnThrow } from "$lib/utils/retry";
-import { getRequiredServerSession } from "$lib/myanimelist/svelte/auth";
+import { getRequiredServerSession } from "@animelist/auth-sveltekit/server";
 import { z } from "zod";
 import { Parser as CSVParser } from '@json2csv/plainjs';
 import { UserService } from "./userService";

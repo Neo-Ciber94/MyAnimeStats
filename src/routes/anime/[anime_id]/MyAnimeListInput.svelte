@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ConfirmDialog from '$components/ConfirmDialog.svelte';
 	import session from '$stores/session';
-	import { MALClient } from '@/lib/myanimelist/api';
+	import { MALClient } from '@animelist/client';
 	import type { AnimeObject, WatchStatus } from '@/lib/myanimelist/common/types';
 	import cx from '@/lib/utils/cx';
 	import { numberRange } from '@/lib/utils/helpers';

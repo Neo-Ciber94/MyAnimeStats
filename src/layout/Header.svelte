@@ -2,7 +2,7 @@
 	import Logo from './Logo.svelte';
 	import session from '../stores/session';
 	import { Avatar, Button, Dropdown, DropdownItem, Spinner } from 'flowbite-svelte';
-	import { signIn, signOut } from '$lib/myanimelist/auth/client';
+	import { signIn, signOut } from '@animelist/auth-sveltekit/client';
 	import NavSearchBar from './NavSearchBar.svelte';
 	import { page } from '$app/stores';
 	import elementEmphasis, { ELEMENT_EMPHASIS_IDS } from '$stores/elementEmphasis';

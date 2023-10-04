@@ -1,4 +1,4 @@
-import { getRequiredServerSession } from "@/lib/myanimelist/svelte/auth";
+import { getRequiredServerSession } from "@animelist/auth-sveltekit/server";
 import type { RequestHandler } from "./$types";
 import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
 import type { AnimeApiResponse } from "@/hooks/useAnimeListQuery";
@@ -8,7 +8,7 @@ import Enumerable from "linq";
 import { z } from 'zod'
 import { error } from "@sveltejs/kit";
 import ANIME_GENRES from "@/generated/animeGenres";
-import { MALClient } from "@/lib/myanimelist/api";
+import { MALClient } from "@animelist/client";
 import { COOKIE_ANIME_WATCHLIST } from "@/common/constants";
 import dayjs from "dayjs";
 

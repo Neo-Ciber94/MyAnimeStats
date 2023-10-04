@@ -1,4 +1,4 @@
-import { MALClient } from "@/lib/myanimelist/api";
+import { MALClient } from "@animelist/client";
 import type { RequestHandler } from "./$types";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { parseNumberOrNull } from "@/lib/utils/helpers";

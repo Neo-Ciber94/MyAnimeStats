@@ -3,7 +3,7 @@
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
 import { z } from "zod";
 import { KV } from "$lib/server/kv";
-import { MALClient } from "$lib/myanimelist/api";
+import { MALClient } from "@animelist/client";
 import type { AnimeObject, AnimeObjectWithRanking, AnimeSeason } from "$lib/myanimelist/common/types";
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';

@@ -1,10 +1,8 @@
 import { dev } from "$app/environment";
 import { initializeKv } from "$lib/server/kv";
-import { MALClient } from "$lib/myanimelist/api";
-import { getServerSession } from "$lib/myanimelist/svelte/auth";
-import { createMyAnimeListHandler } from "$lib/myanimelist/svelte/handle";
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
+import { createMyAnimeListFetchHandler, getUser } from "@animelist/auth-sveltekit/server"
 
 function miniflareMiddleware(): Handle {
     return async ({ event, resolve }) => {
@@ -22,11 +20,11 @@ function miniflareMiddleware(): Handle {
 
 function myAnimeListMiddleware(): Handle {
     return ({ event, resolve }) => {
-        const myAnimeListHandler = createMyAnimeListHandler();
+        const myAnimeListHandler = createMyAnimeListFetchHandler();
         const pathname = event.url.pathname;
 
-        if (pathname.startsWith("/api/myanimelist") && !event.isDataRequest) {
-            return myAnimeListHandler({ event, resolve });
+        if (pathname.startsWith("/api/myanimelist")) {
+            return myAnimeListHandler(event.request);
         }
 
         return resolve(event);
@@ -35,20 +33,12 @@ function myAnimeListMiddleware(): Handle {
 
 function authMiddleware(): Handle {
     return async ({ event, resolve }) => {
-        const session = await getServerSession(event.cookies);
-
-        if (session) {
-            try {
-                const { accessToken } = session;
-                const malClient = new MALClient({ accessToken });
-                const user = await malClient.getMyUserInfo({ fields: ['anime_statistics'] });
-                event.locals.session = { user, accessToken };
-            }
-            catch (err) {
-                console.error(err);
-            }
-        } else {
-            event.locals.session = null;
+        try {
+            event.locals.session = await getUser(event.cookies);
+        }
+        catch (err) {
+            console.error(err);
+            event.locals.session = undefined;
         }
 
         return resolve(event);
