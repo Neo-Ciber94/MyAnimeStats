@@ -1,5 +1,12 @@
 name: CI
 
+env:
+  MAL_CLIENT_ID: ${{ secrets.MAL_CLIENT_ID}}
+  MAL_CLIENT_SECRET: ${{ secrets.MAL_CLIENT_SECRET}}
+  MAL_SECRET_KEY: ${{ secrets.MAL_SECRET_KEY}}
+  UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL}}
+  UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN}}
+
 on:
   workflow_dispatch:
   push:
