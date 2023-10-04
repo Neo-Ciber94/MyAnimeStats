@@ -97,7 +97,7 @@ export namespace AnimeListService {
 		});
 
 		const cacheKey = `anime/${year}/${season}`;
-		let animeList: AnimeObject[] | null = await RedisService.get<AnimeObject[]>(cacheKey);
+		let animeList: AnimeObject[] | null = null;
 
 		if (!animeList) {
 			animeList = [];
@@ -120,7 +120,7 @@ export namespace AnimeListService {
 						'start_season',
 						'end_date',
 						'broadcast',
-						'main_picture',
+						//'main_picture', Adding this field cause receiving an incorrect image
 						'alternative_titles',
 						'media_type',
 						'popularity',
