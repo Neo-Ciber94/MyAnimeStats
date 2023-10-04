@@ -1,7 +1,6 @@
 import { MALClient } from "@animelist/client";
 import type { PageServerLoad } from "./$types";
 import type { AiringStatus } from "@/lib/myanimelist/common/types";
-import { invariant } from "@/lib/utils/invariant";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { shuffleArray } from "@/lib/utils/helpers";
 import { MAL_CLIENT_ID } from "$env/static/private";
@@ -38,7 +37,9 @@ async function getCurrentSeasonAnimeList({ limit }: { limit: number }) {
     const AVAILABLE_STATUSES = ['currently_airing', 'finished_airing'] as AiringStatus[];
 
     const animeList = result.data.filter(({ node }) => {
-        invariant(node.start_season, "start season not defined");
+        if (node.start_season == null) {
+            return false;
+        }
 
         const genres = node.genres || [];
         return node.start_season.season == season

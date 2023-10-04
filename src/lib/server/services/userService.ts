@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import { PLACEHOLDER_IMAGE } from "@/common/constants";
-import type { WatchStatus } from "@/lib/myanimelist/common/types";
-import type { User } from "@/lib/myanimelist/common/user";
+import type { WatchStatus, User } from "@/lib/myanimelist/common/types";
 import parse, { type HTMLElement as NodeHTMLElement } from "node-html-parser";
 
 export namespace UserService {

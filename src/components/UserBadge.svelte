@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { AnimeBadge } from '@/lib/badges/AnimeBadge';
 	import { Spinner, Tooltip } from 'flowbite-svelte';
-	import type { User } from '@/lib/myanimelist/common/user';
+	import type { User } from '@/lib/myanimelist/common/types';
 	import DOMPurify from 'dompurify';
 
 	export let badge: AnimeBadge;

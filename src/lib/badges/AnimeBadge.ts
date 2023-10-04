@@ -1,5 +1,4 @@
-import type { AnimeObjectWithStatus } from "../myanimelist/common/types";
-import type { User } from "../myanimelist/common/user";
+import type { AnimeObjectWithStatus, User } from "../myanimelist/common/types";
 
 /**
  * Render the badge icon for the given size.

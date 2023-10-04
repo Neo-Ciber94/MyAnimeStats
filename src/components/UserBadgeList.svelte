@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { User } from '@/lib/myanimelist/common/user';
+	import type { User } from '@/lib/myanimelist/common/types';
 	import UserBadge from './UserBadge.svelte';
 	import type { AnimeBadge } from '@/lib/badges/AnimeBadge';
 	import EmojiSad from './svgs/EmojiSad.svelte';

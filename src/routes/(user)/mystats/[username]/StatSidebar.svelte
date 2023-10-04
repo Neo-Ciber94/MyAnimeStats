@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Spinner } from 'flowbite-svelte';
 	import StatIndicator from '@/routes/(user)/mystats/[username]/StatIndicator.svelte';
-	import type { User } from '@/lib/myanimelist/common/user';
+	import type { User } from '@/lib/myanimelist/common/types';
 	import cx from '@/lib/utils/cx';
 	import session from '$stores/session';
 
