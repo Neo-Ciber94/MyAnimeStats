@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
+import { MAL_CLIENT_ID } from "$env/static/private";
 import { z } from "zod";
 import { KV } from "$lib/server/kv";
 import { MALClient } from "@animelist/client";
@@ -24,7 +24,7 @@ export namespace AnimeListService {
     export async function calculatePopularAnimeList() {
         console.log("🕑 Fetching most popular anime");
 
-        const malClient = new MALClient({ clientId: MY_ANIME_LIST_CLIENT_ID });
+        const malClient = new MALClient({ clientId: MAL_CLIENT_ID });
         const result = await malClient.getAnimeRanking({
             limit: 50,
             ranking_type: 'tv',
@@ -89,7 +89,7 @@ export namespace AnimeListService {
     export async function getSeasonAnime(opts: GetSeasonAnimeOptions) {
         const { season, year, offset = 0, limit = 500, nsfw = false } = opts;
         const malClient = new MALClient({
-            clientId: MY_ANIME_LIST_CLIENT_ID
+            clientId: MAL_CLIENT_ID
         })
 
         const cacheKey = `anime/${year}/${season}`;
