@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { useMediaQuery } from '@/hooks/useMediaQuery';
 	import { Button } from 'flowbite-svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { quintOut } from 'svelte/easing';
-	import { fade, scale } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 	import AlertDialog from './AlertDialog.svelte';
 
