@@ -6,7 +6,7 @@ import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 import { AnimeListService } from "@/lib/server/services/animeListService";
 import Enumerable from "linq";
 import { z } from 'zod'
-import { error } from "@sveltejs/kit";
+import { error, json } from "@sveltejs/kit";
 import ANIME_GENRES from "@/generated/animeGenres";
 import { MALClient } from "@animelist/client";
 import { COOKIE_ANIME_WATCHLIST } from "@/common/constants";
@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ cookies, request }) => {
     const userAnimeList = await UserAnimeListService.getUserAnimeListById(userId);
 
     if (userAnimeList?.animeList == null) {
-        return Response.json({ data: [] } satisfies AnimeApiResponse)
+        return json({ data: [] } satisfies AnimeApiResponse)
     }
 
     const seasonAnimeList = await AnimeListService.getSeasonAnime({ season, year });
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ cookies, request }) => {
         .orderBy(anime => anime.node.popularity)
         .toArray();
 
-    return Response.json({ data: seasonAnimeToWatch } satisfies AnimeApiResponse)
+    return json({ data: seasonAnimeToWatch } satisfies AnimeApiResponse)
 }
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
             expires: showNextPromptAt
         });
 
-        return Response.json({ success: true })
+        return json({ success: true })
     }
     catch (err) {
         console.error(err);

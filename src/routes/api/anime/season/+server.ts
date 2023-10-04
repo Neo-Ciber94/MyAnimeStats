@@ -4,7 +4,7 @@ import { parseNumberOrNull } from "@/lib/utils/helpers";
 import { AnimeHelper } from "@/lib/myanimelist/common/helper";
 import { AnimeListService } from "@/lib/server/services/animeListService";
 import { AnimeSeasonYear } from "@/lib/myanimelist/common/AnimeSeasonYear";
-import { error } from "@sveltejs/kit";
+import { error, json } from "@sveltejs/kit";
 
 const LIMIT = 100;
 
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 
     // Cache results for 1 hour
     setHeaders({ ...cacheHeaders })
-    return Response.json({ data: animeList, next });
+    return json({ data: animeList, next });
 }
 
 type SeasonalAnimeQuery = {

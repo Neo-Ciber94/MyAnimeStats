@@ -1,4 +1,4 @@
-import { error, type RequestHandler } from "@sveltejs/kit";
+import { error, json, type RequestHandler } from "@sveltejs/kit";
 import { env } from '$env/dynamic/private';
 import { z } from 'zod';
 import { parseJson } from "@/lib/utils/parseJson";
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const popularAnimeList = await AnimeListService.calculatePopularAnimeList();
 
-    return Response.json({
+    return json({
         success: true,
         data: {
             popularAnimeList

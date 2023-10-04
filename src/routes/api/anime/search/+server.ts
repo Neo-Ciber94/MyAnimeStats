@@ -4,6 +4,7 @@ import ANIME_GENRES from "@/generated/animeGenres";
 import { parseNumberOrNull } from "@/lib/utils/helpers";
 import { _getSeasonalAnime } from "../season/+server";
 import { MY_ANIME_LIST_CLIENT_ID } from "$env/static/private";
+import { json } from "@sveltejs/kit";
 
 const LIMIT = 100;
 
@@ -22,14 +23,14 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 
         // Cache results for 1 hour
         setHeaders({ ...cacheHeaders });
-        return Response.json({ data: animeList, next });
+        return json({ data: animeList, next });
     }
 
     const { animeList, next } = await getAnimeByQuery({ q, offset, allowNsfw });
 
     // Cache results for 1 hour
     setHeaders({ ...cacheHeaders })
-    return Response.json({ data: animeList, next });
+    return json({ data: animeList, next });
 }
 
 type AnimeQuery = {

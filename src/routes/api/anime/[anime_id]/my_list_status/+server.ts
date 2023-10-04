@@ -2,7 +2,7 @@ import { MALClient } from "@animelist/client";
 import { watchStatusSchema } from "@/lib/myanimelist/common/types";
 import { getRequiredServerSession } from "@animelist/auth-sveltekit/server";
 import { UserAnimeListService } from "@/lib/server/services/userAnimeListService";
-import { error, type RequestHandler } from "@sveltejs/kit";
+import { error, json, type RequestHandler } from "@sveltejs/kit";
 import { z } from 'zod';
 
 const updateMyAnimeListStatusSchema = z.object({
@@ -52,7 +52,7 @@ export const PATCH: RequestHandler = async ({ request, params, cookies, locals }
         console.error(`Failed to update anime cache for user '${userId}' (${userName}`, err);
     }
 
-    return Response.json(updateResult)
+    return json(updateResult)
 }
 
 export const DELETE: RequestHandler = async ({ params, cookies, locals }) => {
@@ -75,5 +75,5 @@ export const DELETE: RequestHandler = async ({ params, cookies, locals }) => {
         console.error(`Failed to delete anime '${animeId}' for user ${userId} (${userName}) cache`, err)
     }
 
-    return Response.json(deletedResult);
+    return json(deletedResult);
 }
