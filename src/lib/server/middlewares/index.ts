@@ -34,7 +34,9 @@ function myAnimeListMiddleware(): Handle {
 function authMiddleware(): Handle {
 	return async ({ event, resolve }) => {
 		try {
-			event.locals.session = await getUser(event.cookies);
+			event.locals.session = await getUser(event.cookies, {
+				fields: ['anime_statistics']
+			});
 		} catch (err) {
 			console.error(err);
 			event.locals.session = undefined;
