@@ -44,6 +44,7 @@
 		searchParams.set(query);
 
 		if (searchString != '' && searchString.length < 3) {
+			$animeQuery.refetch({ q: '', nsfw });
 			return;
 		}
 
