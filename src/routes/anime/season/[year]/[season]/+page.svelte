@@ -31,6 +31,10 @@
 	const animeQuery = useAnimeListQuery<Query>('/api/anime/season');
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
 
+	// seasons
+	const minSeason = AnimeSeasonYear.from(data.minSeason.season, data.minSeason.year);
+	const maxSeason = AnimeSeasonYear.from(data.maxSeason.season, data.maxSeason.year);
+
 	onMount(async () => {
 		await $animeQuery.refetch({ season: data.season, year: data.year, nsfw });
 	});
@@ -43,14 +47,6 @@
 		if ($canLoadMore) {
 			$animeQuery.fetchNextPage();
 		}
-	}
-
-	function getMaxSeason() {
-		return AnimeSeasonYear.from(data.maxSeason.season, data.maxSeason.year).next;
-	}
-
-	function getMinSeason() {
-		return AnimeSeasonYear.from(data.minSeason.season, data.minSeason.year);
 	}
 
 	async function goToSeason(season: AnimeSeason, year: number) {
@@ -86,8 +82,8 @@
 					{#key [data.season, data.year]}
 						<AnimeSeasonSelector
 							current={AnimeSeasonYear.from(data.season, data.year)}
-							min={getMinSeason()}
-							max={getMaxSeason()}
+							min={minSeason}
+							max={maxSeason}
 							on:click={(e) => {
 								const { season, year } = e.detail;
 								goToSeason(season, year);

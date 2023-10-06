@@ -29,9 +29,11 @@
 
 <button
 	on:click
+	data-season={season.season}
+	data-season-year={season.year}
 	class="text-sm text-white transition duration-200 rounded-lg w-full
-bg-violet-500 hover:bg-pink-600 px-4 py-2 font-semibold min-w-[120px]
-flex flex-row items-center gap-2 justify-center pr-4 group"
+		bg-violet-500 hover:bg-pink-600 px-4 py-2 font-semibold min-w-[120px]
+		flex flex-row items-center gap-2 justify-center pr-4 group"
 >
 	<svelte:component this={SEASONS[season.season].icon} size={18} class="season-svg" />
 
