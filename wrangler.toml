@@ -1,7 +1,8 @@
 name = "myanimestats"
 main = "src/index.js"
-compatibility_date = "2023-08-20"
+compatibility_date = "2023-08-14"
 workers_dev = false
+node_compat = true
 
 [env.staging]
 name = "myanimestats_dev"

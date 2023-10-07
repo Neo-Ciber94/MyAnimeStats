@@ -27,14 +27,11 @@ export default defineConfig({
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.test.{js,ts}']
 	},
-	optimizeDeps: {
-		include: ['./src/lib/badges/**']
-	},
 	define: {
+		...defineProcessEnv(),
 		__DATE__: `'${new Date().toISOString()}'`,
 		__RELOAD_SW__: false,
-		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"',
-		...defineProcessEnv()
+		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
 	},
 	plugins: [
 		nodePolyfill,
@@ -119,5 +116,5 @@ async function loadNodePolyfill() {
 	}
 
 	const { nodePolyfills: viteNodePolyfill } = await import('vite-plugin-node-polyfills');
-	return viteNodePolyfill({ globals: { global: true, process: true } });
+	return viteNodePolyfill();
 }
