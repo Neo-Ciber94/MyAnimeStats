@@ -116,5 +116,5 @@ async function loadNodePolyfill() {
 	}
 
 	const { nodePolyfills: viteNodePolyfill } = await import('vite-plugin-node-polyfills');
-	return viteNodePolyfill();
+	return viteNodePolyfill({ globals: { global: true, process: true } });
 }
