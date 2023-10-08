@@ -4,17 +4,18 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && yarn replace-envs",
 		"preview": "vite preview",
+		"preview:cf": "npx wrangler pages dev .svelte-kit/cloudflare --port 5175",
 		"prepare": "svelte-kit sync",
+		"replace-envs": "tsx ./scripts/replaceEnvs.ts .svelte-kit/cloudflare/**/*.js --name=\"MAL_SECRET_KEY,MAL_CLIENT_ID,MAL_CLIENT_SECRET\"",
 		"test": "npm run test:e2e && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"test:e2e": "playwright test",
-		"test:unit": "vitest run",
-		"cf:dev": "npx wrangler pages dev .svelte-kit/cloudflare  --port 5175"
+		"test:unit": "vitest run"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20230814.0",
