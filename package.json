@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && yarn replace-envs",
 		"preview": "vite preview",
 		"preview:cf": "npx wrangler pages dev .svelte-kit/cloudflare --port 5175",
 		"prepare": "svelte-kit sync",
