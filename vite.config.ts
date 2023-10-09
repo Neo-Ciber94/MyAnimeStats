@@ -112,7 +112,7 @@ export default defineConfig({
 	]
 });
 
-// For some reason this crash because cannot found `process/browser.js` so we only import during development
+// For some reason this crash because is unable to found `process/browser.js` so we only import during development
 async function loadNodePolyfill() {
 	if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
 		return undefined;
