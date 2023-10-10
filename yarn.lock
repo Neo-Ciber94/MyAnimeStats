@@ -20,37 +20,37 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@animelist/auth-sveltekit@^0.0.1-alpha.11":
-  version "0.0.1-alpha.11"
-  resolved "https://registry.yarnpkg.com/@animelist/auth-sveltekit/-/auth-sveltekit-0.0.1-alpha.11.tgz#d7ed14b39260c44d63d4ca3852c06a175c33f8d6"
-  integrity sha512-faqd1YgO+jjR4ZvBDyRjEG612tNzcGTvmDu43eoF3FHuAkxIJWVnD0CHY7aCA4THB8vwJJDC+1WraOv9Km/c8w==
+"@animelist/auth-sveltekit@^0.0.1-alpha.13":
+  version "0.0.1-alpha.13"
+  resolved "https://registry.yarnpkg.com/@animelist/auth-sveltekit/-/auth-sveltekit-0.0.1-alpha.13.tgz#8d2ff256aa0e67d848d77548a8d8d2df6b5eba4e"
+  integrity sha512-E9wZDDAREKD2fON1oYKU/OLV6QiLwBkkGnVuE/4TOi/Cfk/aTf7B1C7xQC474trtF00Z6CFnm1lltl0Dv2//pg==
   dependencies:
-    "@animelist/auth" "0.0.1-alpha.11"
-    "@animelist/client" "0.0.1-alpha.11"
-    "@animelist/core" "0.0.1-alpha.11"
+    "@animelist/auth" "0.0.1-alpha.13"
+    "@animelist/client" "0.0.1-alpha.12"
+    "@animelist/core" "0.0.1-alpha.12"
     svelte "^4.0.5"
 
-"@animelist/auth@0.0.1-alpha.11":
-  version "0.0.1-alpha.11"
-  resolved "https://registry.yarnpkg.com/@animelist/auth/-/auth-0.0.1-alpha.11.tgz#df6472f570faf43afeb531460bb1e62c508d65ec"
-  integrity sha512-K0uVEnDDEjachYJrcvxNJP+n1rQ5m69HmomYXIVSUdrr3Rz2qp0kBL1S2twZDhp109QEVSZmzSU1F1sUAH8wOA==
+"@animelist/auth@0.0.1-alpha.13":
+  version "0.0.1-alpha.13"
+  resolved "https://registry.yarnpkg.com/@animelist/auth/-/auth-0.0.1-alpha.13.tgz#8f630aa4b2cffd76294be6218ce6656a19e591d8"
+  integrity sha512-X/CZKeI3ppTv9z6V522ig/WEhA957IM1umSyfzp/6pqB5+44ztc8R56j4hYjdm6gCEsiEz+YH+Rgqpc//hyDBw==
   dependencies:
-    "@animelist/client" "0.0.1-alpha.11"
-    "@animelist/core" "0.0.1-alpha.11"
+    "@animelist/client" "0.0.1-alpha.12"
+    "@animelist/core" "0.0.1-alpha.12"
     cookie "^0.5.0"
     crypto-es "2.0.4"
     jose "^4.15.2"
     zod "3.22.2"
 
-"@animelist/client@0.0.1-alpha.11", "@animelist/client@^0.0.1-alpha.11":
-  version "0.0.1-alpha.11"
-  resolved "https://registry.yarnpkg.com/@animelist/client/-/client-0.0.1-alpha.11.tgz#bacb3b85f93135b896958a365961da10ea375ecb"
-  integrity sha512-5kd7DbW22uJVfpZLC6KcYcbV7/K4i98dQOK2KVHPdainDrE8TXdU47OYkGs3svFS24Xvh+C52WCD/B9tuEFrWQ==
+"@animelist/client@0.0.1-alpha.12", "@animelist/client@^0.0.1-alpha.12":
+  version "0.0.1-alpha.12"
+  resolved "https://registry.yarnpkg.com/@animelist/client/-/client-0.0.1-alpha.12.tgz#a5dbbaf97427f1b037553fdb3e6c118828db8f1a"
+  integrity sha512-zc+G8wDZZiu0vI6a5syXGnS/2BoAtiHRXA/xn/GysPXB4Tw3fivwplT/nmJaVNHGifxZ2aCRzs5hSQbfCam3Fw==
 
-"@animelist/core@0.0.1-alpha.11":
-  version "0.0.1-alpha.11"
-  resolved "https://registry.yarnpkg.com/@animelist/core/-/core-0.0.1-alpha.11.tgz#ccab287a3c36faef38969c63d657dc3f857b4646"
-  integrity sha512-fi51xT9UgNLo5mN1Ds0NsSvMuRYe8F93XiNoAGkPuRH+a+vFxnaxE4urLuEbJgnAAbtaN573HOGwlP5y0bfSkQ==
+"@animelist/core@0.0.1-alpha.12":
+  version "0.0.1-alpha.12"
+  resolved "https://registry.yarnpkg.com/@animelist/core/-/core-0.0.1-alpha.12.tgz#ee64b4c9b19b17279f2e14abff444478fa55823c"
+  integrity sha512-etrXqZ7pyHfCSvVf6Hg/3PPx7Qj0A6dBMBG4oiV6EEBHnW7aRIjrvQuTNuLjaoYcPMPjXAQaAa1jJ0NPVDTLiw==
 
 "@apideck/better-ajv-errors@^0.3.1":
   version "0.3.6"
