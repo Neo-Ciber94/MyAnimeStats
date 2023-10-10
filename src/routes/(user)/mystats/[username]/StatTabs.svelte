@@ -37,7 +37,7 @@
 	}
 </script>
 
-<div class="w-full mt-10 p-4 flex flex-col justify-center items-center h-full overflow-hidden">
+<div class="w-full mt-10 p-4 flex flex-col items-center h-full overflow-hidden">
 	<Tabs
 		divider={true}
 		style="underline"
