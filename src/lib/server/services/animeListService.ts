@@ -120,7 +120,7 @@ export namespace AnimeListService {
 						'start_season',
 						'end_date',
 						'broadcast',
-						//'main_picture', Adding this field cause receiving an incorrect image
+						// 'main_picture', // Adding this field cause receiving an incorrect image
 						'alternative_titles',
 						'media_type',
 						'popularity',
@@ -149,7 +149,7 @@ export namespace AnimeListService {
 			// We only cache if we had data
 			if (animeList.length > 0) {
 				await RedisService.set(cacheKey, animeList, {
-					ex: 1000 * 60 * 60 * 3 // 3 hours of cache
+					ex: 60 * 60 * 3 // 3 hours of cache
 				});
 			}
 		}
