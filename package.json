@@ -58,8 +58,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@animelist/auth-sveltekit": "^0.0.1-alpha.14",
-		"@animelist/client": "^0.0.1-alpha.14",
+		"@animelist/auth-sveltekit": "^0.1.0",
+		"@animelist/client": "^0.1.0",
 		"@json2csv/plainjs": "^7.0.3",
 		"@tanstack/svelte-query": "^4.32.6",
 		"@types/dompurify": "^3.0.3",
