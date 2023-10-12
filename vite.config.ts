@@ -19,7 +19,7 @@ const defineProcessEnv = () => {
 
 export default defineConfig({
 	ssr: {
-		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons']
+		noExternal: ['flowbite-svelte', 'flowbite-svelte-icons', '@animelist/auth']
 	},
 	server: {
 		port: 5175
