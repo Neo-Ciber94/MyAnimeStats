@@ -194,7 +194,7 @@ export namespace AnimeHelper {
 	}
 
 	export function getNextAnimeSeason(season: AnimeSeason, year: number) {
-		if (season === 'winter') {
+		if (season === 'fall') {
 			year += 1;
 		}
 
