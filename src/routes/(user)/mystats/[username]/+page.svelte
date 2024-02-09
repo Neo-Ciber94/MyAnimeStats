@@ -38,7 +38,8 @@
 				});
 
 				if (!res.ok) {
-					toast.error('Failed to calculate user stats');
+					console.error('Failed to calculate user anime stats');
+					return;
 				}
 
 				const updatedStats = (await res.json()) as UserStats;

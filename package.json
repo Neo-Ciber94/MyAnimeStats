@@ -77,10 +77,10 @@
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animated": "^1.0.1",
 		"vite-plugin-pwa": "^0.16.4",
-		"zod": "^3.21.4"
+		"zod": "^3.21.4",
+		"node-html-parser": "^6.1.10"
 	},
 	"optionalDependencies": {
-		"node-html-parser": "^6.1.10",
 		"puppeteer": "^20.9.0"
 	}
 }
