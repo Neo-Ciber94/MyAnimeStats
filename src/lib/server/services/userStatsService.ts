@@ -3,9 +3,12 @@
 import { z } from 'zod';
 import { KV } from '../kv';
 import {
+	calculatePersonalStats,
 	calculatedStatsSchema,
 	type CalculatedStats
 } from '$lib/utils/calculatePersonalStats.server';
+import { UserAnimeListService } from './userAnimeListService';
+import type { Cookies } from '@sveltejs/kit';
 
 export const userAnimeStatsSchema = z.object({
 	lastUpdated: z.coerce.date(),
@@ -34,4 +37,44 @@ export namespace UserStatsService {
 		await kv.set(getKey(userId), userAnimeStatsSchema, userStats);
 		return userStats;
 	}
+
+	export async function calculateUserStats({
+		userId,
+		cookies,
+		userName
+	}: {
+		userId: number;
+		userName?: string;
+		cookies: Cookies;
+	}) {
+		const animeList =
+			userName != null
+				? await UserAnimeListService.fetchUserAnimeListByName(userName, cookies)
+				: await UserAnimeListService.fetchUserAnimeListById(userId, cookies);
+
+		console.log(`🍙 ${animeList.length} anime loaded from user ${userId}`);
+
+		let userStats = await UserStatsService.getStats(userId);
+
+		if (userStats) {
+			return {
+				userStats,
+				animeList
+			};
+		}
+
+		// Calculate stats
+		const stats: CalculatedStats = calculatePersonalStats(animeList);
+
+		userStats = {
+			stats,
+			lastUpdated: new Date()
+		};
+
+		await UserStatsService.setStats(userId, stats);
+
+		return { userStats, animeList };
+	}
 }
+
+export type UserStats = Awaited<ReturnType<typeof UserStatsService.calculateUserStats>>;

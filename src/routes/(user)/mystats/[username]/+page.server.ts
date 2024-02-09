@@ -1,10 +1,6 @@
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
-import { error, type Cookies, redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { AnimeObjectWithStatus } from '$lib/myanimelist/common/types';
-import {
-	calculatePersonalStats,
-	type CalculatedStats
-} from '$lib/utils/calculatePersonalStats.server';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import dayjs from 'dayjs';
 import { UserAnimeListService } from '@/lib/server/services/userAnimeListService';
@@ -36,8 +32,7 @@ export const load = (async (event) => {
 		}
 
 		const dayToRecalculate = dayjs(userAnimeStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
-		const canRecalculate =
-			dayjs(userAnimeStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
+		const canRecalculate = dayjs().isSameOrAfter(dayToRecalculate, 'day') || dev;
 
 		return {
 			data: {
@@ -72,24 +67,26 @@ export const actions = {
 
 		try {
 			const userName = event.params.username;
-			const { userStats, animeList } = await calculateUserStats({
+			const calculatedStats = await UserStatsService.calculateUserStats({
 				userId: user.id,
 				cookies: event.cookies,
 				userName: userName === '@me' ? undefined : userName
 			});
 
-			const dayToRecalculate = dayjs(userStats.lastUpdated).add(RECALCULATE_WAIT_DAYS, 'day');
-			const canRecalculate =
-				dayjs(userStats.lastUpdated).isSameOrAfter(dayToRecalculate, 'day') || dev;
+			const dayToRecalculate = dayjs(calculatedStats.userStats.lastUpdated).add(
+				RECALCULATE_WAIT_DAYS,
+				'day'
+			);
+			const canRecalculate = dayjs().isSameOrAfter(dayToRecalculate, 'day') || dev;
 
 			// set a timestamp cookie
 			event.cookies.set(COOKIE_MY_LIST_TIMESTAMP, String(Date.now()));
 
 			return {
 				data: {
-					stats: userStats.stats,
-					animeList,
-					lastUpdated: userStats.lastUpdated,
+					stats: calculatedStats.userStats.stats,
+					animeList: calculatedStats.animeList,
+					lastUpdated: calculatedStats.userStats.lastUpdated,
 					canRecalculate,
 					user
 				}
@@ -153,42 +150,4 @@ async function getUserFromRequest(event: RequestEvent) {
 	}
 
 	return user;
-}
-
-async function calculateUserStats({
-	userId,
-	cookies,
-	userName
-}: {
-	userId: number;
-	userName?: string;
-	cookies: Cookies;
-}) {
-	const animeList =
-		userName != null
-			? await UserAnimeListService.fetchUserAnimeListByName(userName, cookies)
-			: await UserAnimeListService.fetchUserAnimeListById(userId, cookies);
-
-	console.log(`🍙 ${animeList.length} anime loaded from user ${userId}`);
-
-	let userStats = await UserStatsService.getStats(userId);
-
-	if (userStats) {
-		return {
-			userStats,
-			animeList
-		};
-	}
-
-	// Calculate stats
-	const stats: CalculatedStats = calculatePersonalStats(animeList);
-
-	userStats = {
-		stats,
-		lastUpdated: new Date()
-	};
-
-	await UserStatsService.setStats(userId, stats);
-
-	return { userStats, animeList };
 }

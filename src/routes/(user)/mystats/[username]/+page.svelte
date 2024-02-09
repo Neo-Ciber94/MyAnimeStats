@@ -13,14 +13,45 @@
 	import myStatsLoading from '$stores/myStatsLoading';
 	import { fade } from 'svelte/transition';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
+	import toast from 'svelte-french-toast';
+	import type { UserStats } from '@/lib/server/services/userStatsService';
 
 	export let data: PageServerData;
 	export let form: ActionData;
 
 	let loading = true;
 
-	onMount(() => {
-		loading = false;
+	// onMount(() => {
+	// 	loading = false;
+	// });
+
+	onMount(async () => {
+		if (result.canRecalculate) {
+			try {
+				const res = await fetch('/api/stats/calculate', {
+					method: 'POST',
+					body: JSON.stringify({
+						userName: data.data.user.name
+					})
+				});
+
+				if (!res.ok) {
+					toast.error('Failed to calculate user stats');
+				}
+
+				const updatedStats = (await res.json()) as UserStats;
+				data.data.animeList = updatedStats.animeList;
+				data.data.stats = updatedStats.userStats.stats;
+				data.data.lastUpdated = updatedStats.userStats.lastUpdated;
+				data.data.canRecalculate = false;
+			} catch (err) {
+				console.error(err);
+			} finally {
+				loading = false;
+			}
+		} else {
+			loading = false;
+		}
 	});
 
 	function onSubmit(e: CustomEvent<Record<string, unknown>>) {
@@ -48,7 +79,7 @@
 				<div class="w-full h-full" transition:fade={{ duration: 200 }}>
 					<StatTabs stats={result.stats} animeList={result.animeList} user={result.user}>
 						<div slot="me-footer">
-							{#if result.canRecalculate && isCurrentUser}
+							{#if isCurrentUser}
 								<div
 									class="w-10/12 mx-auto flex flex-row justify-center mt-[10%]
 										h-fit mb-20 border-2 border-violet-700 rounded-lg py-10"
