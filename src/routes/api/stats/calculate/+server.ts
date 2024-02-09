@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 		headers: {
 			'Cache-Control': isCurrentUser
 				? 'public, max-age=300, stale-while-revalidate=600'
-				: 'public, max-age=300, stale-while-revalidate=600'
+				: 'public, max-age=3600, stale-while-revalidate=7200'
 		}
 	});
 };

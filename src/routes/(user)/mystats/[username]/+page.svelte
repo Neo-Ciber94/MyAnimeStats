@@ -44,6 +44,12 @@
 				}
 
 				const updatedStats = (await res.json()) as UserStats;
+
+				// If the user have already the most recent data, don't update the data
+				if (data.data.lastUpdated && data.data.lastUpdated > updatedStats.userStats.lastUpdated) {
+					return;
+				}
+
 				data.data.animeList = updatedStats.animeList;
 				data.data.stats = updatedStats.userStats.stats;
 				data.data.lastUpdated = updatedStats.userStats.lastUpdated;
