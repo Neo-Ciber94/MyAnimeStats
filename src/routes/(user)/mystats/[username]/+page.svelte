@@ -21,16 +21,18 @@
 
 	let loading = true;
 
-	// onMount(() => {
-	// 	loading = false;
-	// });
+	const userId = data.data?.user.id;
+	$: isCurrentUser = userId && $session.user?.id === userId;
+	$: result = data.data || form?.data || null;
+	$: needsReviewCount = (result?.animeList || []).filter((x) => AnimeHelper.needsReview(x)).length;
 
 	onMount(async () => {
-		if (result.canRecalculate) {
+		if (result.canRecalculate && isCurrentUser) {
 			try {
 				const res = await fetch('/api/stats/calculate', {
 					method: 'POST',
 					body: JSON.stringify({
+						userId: data.data.user.id,
 						userName: data.data.user.name
 					})
 				});
@@ -57,11 +59,6 @@
 	function onSubmit(e: CustomEvent<Record<string, unknown>>) {
 		data = e.detail as PageServerData;
 	}
-
-	const userId = data.data?.user.id;
-	$: isCurrentUser = userId && $session.user?.id === userId;
-	$: result = data.data || form?.data || null;
-	$: needsReviewCount = (result?.animeList || []).filter((x) => AnimeHelper.needsReview(x)).length;
 </script>
 
 <SEO title="MyStats" />
