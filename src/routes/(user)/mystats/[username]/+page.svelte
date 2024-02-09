@@ -13,7 +13,6 @@
 	import myStatsLoading from '$stores/myStatsLoading';
 	import { fade } from 'svelte/transition';
 	import { AnimeHelper } from '@/lib/myanimelist/common/helper';
-	import toast from 'svelte-french-toast';
 	import type { UserStats } from '@/lib/server/services/userStatsService';
 
 	export let data: PageServerData;
@@ -27,7 +26,9 @@
 	$: needsReviewCount = (result?.animeList || []).filter((x) => AnimeHelper.needsReview(x)).length;
 
 	onMount(async () => {
-		if (result.canRecalculate && isCurrentUser) {
+		const canCalculateThisUserStats = result.canRecalculate === true || !isCurrentUser;
+
+		if (canCalculateThisUserStats) {
 			try {
 				const res = await fetch('/api/stats/calculate', {
 					method: 'POST',
