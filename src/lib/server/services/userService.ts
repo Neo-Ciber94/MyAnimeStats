@@ -2,7 +2,8 @@
 
 import { PLACEHOLDER_IMAGE } from '@/common/constants';
 import type { WatchStatus, User } from '@/lib/myanimelist/common/types';
-import parse, { type HTMLElement as NodeHTMLElement } from 'node-html-parser';
+import type { HTMLElement as NodeHTMLElement } from 'node-html-parser';
+import { default as parse } from 'node-html-parser';
 
 export namespace UserService {
 	export async function getUserDetails(username: string): Promise<User | null> {
