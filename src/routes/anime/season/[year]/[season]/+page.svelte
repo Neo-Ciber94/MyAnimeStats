@@ -23,10 +23,13 @@
 	import { capitalize } from '@/lib/utils/helpers';
 	import AnimeGenreDistributionGraph from '$components/graphs/AnimeGenreDistributionGraph.svelte';
 	import SEO from '$components/SEO.svelte';
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
 	export let data: PageData;
 
 	let nsfw = false;
+	let mounted = false;
 	let loadMoreMarkerElement: Element | undefined;
 	const animeQuery = useAnimeListQuery<Query>('/api/anime/season');
 	$: canLoadMore = useInterceptionObserver(loadMoreMarkerElement);
@@ -34,6 +37,12 @@
 	// seasons
 	const minSeason = AnimeSeasonYear.from(data.minSeason.season, data.minSeason.year);
 	const maxSeason = AnimeSeasonYear.from(data.maxSeason.season, data.maxSeason.year);
+
+	onMount(() => {
+		const { searchParams } = $page.url;
+		nsfw = searchParams.get('nsfw') === 'true';
+		mounted = true;
+	});
 
 	onMount(async () => {
 		await $animeQuery.refetch({ season: data.season, year: data.year, nsfw });
@@ -47,6 +56,24 @@
 		if ($canLoadMore) {
 			$animeQuery.fetchNextPage();
 		}
+	}
+
+	$: {
+		if (browser && mounted) {
+			const { searchParams } = $page.url;
+
+			if (nsfw) {
+				searchParams.set('nsfw', 'true');
+			} else {
+				searchParams.delete('nsfw');
+			}
+
+			goto(`?${searchParams.toString()}`);
+		}
+	}
+
+	async function refresh() {
+		await $animeQuery.refetch({ season: data.season, year: data.year, nsfw });
 	}
 
 	async function goToSeason(season: AnimeSeason, year: number) {
@@ -92,7 +119,9 @@
 					{/key}
 
 					<div class="flex flex-row items-center justify-start mt-4 text-white text-xs">
-						<Checkbox bind:checked={nsfw} class="text-white" color="purple">nsfw</Checkbox>
+						<Checkbox bind:checked={nsfw} on:change={refresh} class="text-white" color="purple"
+							>nsfw</Checkbox
+						>
 					</div>
 				</div>
 
