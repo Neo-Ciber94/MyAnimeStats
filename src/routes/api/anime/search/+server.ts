@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ request, setHeaders }) => {
 	};
 
 	if (q.length < 3) {
-		const { animeList, next } = await _getSeasonalAnime({ allowNsfw, offset });
+		const { animeList, next } = await _getSeasonalAnime({ nsfw: allowNsfw, offset });
 
 		// Cache results for 1 hour
 		setHeaders({ ...cacheHeaders });
