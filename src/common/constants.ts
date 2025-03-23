@@ -38,4 +38,8 @@ export const PLACEHOLDER_IMAGE = 'https://placehold.co/300x400/fbcfe8/db2777?tex
  */
 export const COOKIE_MY_LIST_TIMESTAMP = 'mas.timestamp';
 export const COOKIE_ANIME_WATCHLIST = 'watchlist-reminder';
+
+/**
+ * Default session duration in seconds.
+ */
 export const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30; // 30 days 
