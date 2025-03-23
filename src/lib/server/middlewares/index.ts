@@ -3,6 +3,7 @@ import { initializeKv } from '$lib/server/kv';
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { createMyAnimeListFetchHandler, getUser } from '@animelist/auth-sveltekit/server';
+import { SESSION_DURATION_SECONDS } from '@/common/constants';
 
 function miniflareMiddleware(): Handle {
 	return async ({ event, resolve }) => {
@@ -20,7 +21,9 @@ function miniflareMiddleware(): Handle {
 
 function myAnimeListMiddleware(): Handle {
 	return ({ event, resolve }) => {
-		const myAnimeListHandler = createMyAnimeListFetchHandler();
+		const myAnimeListHandler = createMyAnimeListFetchHandler({
+			sessionDurationSeconds: SESSION_DURATION_SECONDS
+		});
 		const pathname = event.url.pathname;
 
 		if (pathname.startsWith('/api/myanimelist')) {
