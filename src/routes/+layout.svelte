@@ -45,7 +45,6 @@
 	{@html webManifestLink}
 
 	<!-- Google analytics -->
-	<!-- Google analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-K4HQJNPQNB"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
