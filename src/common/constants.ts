@@ -42,4 +42,4 @@ export const COOKIE_ANIME_WATCHLIST = 'watchlist-reminder';
 /**
  * Default session duration in seconds.
  */
-export const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30; // 30 days
+export const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 90; // 90 days
